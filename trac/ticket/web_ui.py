@@ -691,7 +691,17 @@ class TicketModule(Component):
                             add_ticket_link('next', int(next_id))
                     break
 
-        add_script_data(req, {'comments_prefs': self._get_prefs(req)})
+        # Data need for Javascript-specific logic
+        old_values = {}
+        for field in ticket.fields:
+            name = field['name']
+            old = ticket[name]
+            if isinstance(old, datetime): # not JSON serializable
+                old = to_utimestamp(old)
+            old_values[name] = old
+
+        add_script_data(req, {'comments_prefs': self._get_prefs(req),
+                              'old_values': old_values})
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
