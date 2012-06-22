@@ -88,6 +88,20 @@ $info.description</textarea>
       </form>
 
       <py:otherwise>
+        <form py:if="any(not info.alias for info in repositories.itervalues())"
+              class="addnew" id="trac-addalias" method="post" action="">
+          <fieldset>
+            <legend>Add Alias:</legend>
+            <div class="field">
+              <label>Name:<br/><input type="text" name="name"/></label>
+            </div>
+            ${alias_field(True)}
+            <div class="buttons">
+              <input type="submit" name="add_alias" value="${_('Add')}"/>
+            </div>
+          </fieldset>
+        </form>
+
         <form class="addnew" id="trac-addrepos" method="post" action="">
           <fieldset>
             <legend>Add Repository:</legend>
@@ -100,20 +114,6 @@ $info.description</textarea>
             </div>
             <div class="buttons">
               <input type="submit" name="add_repos" value="${_('Add')}"/>
-            </div>
-          </fieldset>
-        </form>
-
-        <form py:if="any(not info.alias for info in repositories.itervalues())"
-              class="addnew" id="trac-addalias" method="post" action="">
-          <fieldset>
-            <legend>Add Alias:</legend>
-            <div class="field">
-              <label>Name:<br/><input type="text" name="name"/></label>
-            </div>
-            ${alias_field(True)}
-            <div class="buttons">
-              <input type="submit" name="add_alias" value="${_('Add')}"/>
             </div>
           </fieldset>
         </form>

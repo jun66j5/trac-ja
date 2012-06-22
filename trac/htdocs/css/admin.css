@@ -43,7 +43,17 @@ p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 
 #enumlist tbody td { vertical-align: middle; }
 
-#tabcontent form.addnew { clear: right; float: right; margin: -2em 0 2em 2em; width: 33%; overflow: visible; padding: 0 }
+#tabcontent form { clear: right }
+#tabcontent .addnew {
+ float: right;
+ clear: none;
+ margin: 0 0 1.5em 1.5em;
+ min-width: 240px;
+ max-width: 33%;
+ overflow: visible;
+ padding: 0;
+}
+#tabcontent .addnew fieldset { margin: 0; }
 #tabcontent form.mod { margin-top: 1em; overflow: visible; padding: 0 }
 form.mod fieldset { margin: 0 }
 form.mod .field { margin: .5em 0; }
