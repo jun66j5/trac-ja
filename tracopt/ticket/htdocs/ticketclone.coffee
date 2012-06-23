@@ -3,8 +3,11 @@
 # The script is added via the tracopt.ticket.clone component.
 #
 # It uses the following Trac global variables:
-#  - form_token (from add_script_data in web.chrome)
-#  - old_values (from add_script_data in ticket.web_ui)
+#  - from add_script_data in web.chrome: form_token
+#  - from add_script_data in ticket.web_ui:
+#     * old_values: {name: value} for each field of the current ticket
+#     * changes: list of objects containing the following properties,
+#       {author, date, cnum, comment, comment_history, fields, permanent}
 
 $ = jQuery
 
@@ -13,7 +16,7 @@ $ = jQuery
 
 addField = (form, name, value) ->
   form.append $ """
-    <input type="hidden" name="field_#{name}" value="#{value}">
+    <input type="hidden" name="field_#{name}" value="#{$.htmlEscape value}">
   """
 
 
@@ -38,11 +41,8 @@ addCloneAction = (container) ->
     ]
 
   # for each comment, retrieve comment number and add specific form
-  container.each () ->
-    comment = $('.comment p', $(this).parent()).text()
-    return unless comment
-
-    cnum_a_href = $('h3 .cnum a', $(this).parent()).attr 'href'
+  for [btns, c] in container
+    return unless btns.length
 
     # clone a specific form for this comment, as we need 2 specific fields
     cform = form.clone()
@@ -51,12 +51,19 @@ addCloneAction = (container) ->
         ticketid: ticketid, summary: old_values['summary']
     addField cform, 'description',
       _ "Copied from [%(source)s]:\n----\n%(description)s",
-        source: "ticket:" + ticketid + cnum_a_href,
-        description: comment
+        source: "ticket:#{ticketid}#comment:#{c.cnum}",
+        description: c.comment
 
-    $(this).prepend cform
+    btns.prepend cform
+
+
+commentClone = (chgs) ->
+  addCloneAction (
+    [$("#trac-change-#{c.cnum}-#{c.date} .trac-ticket-buttons"), c] \
+    for c in chgs
+  )
 
 
 $(document).ready () ->
-  addCloneAction $('#changelog .change').has('.cnum').
-    find('.trac-ticket-buttons') if old_values?
+  if old_values? and changes?
+    commentClone (c for c in changes when c.cnum? and c.comment and c.permanent)

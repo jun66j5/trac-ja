@@ -692,16 +692,12 @@ class TicketModule(Component):
                     break
 
         # Data need for Javascript-specific logic
-        old_values = {}
-        for field in ticket.fields:
-            name = field['name']
-            old = ticket[name]
-            if isinstance(old, datetime): # not JSON serializable
-                old = to_utimestamp(old)
-            old_values[name] = old
-
+        old_values = dict((name, ticket[name]) for name in
+                          [field['name'] for field in ticket.fields])
         add_script_data(req, {'comments_prefs': self._get_prefs(req),
-                              'old_values': old_values})
+                              'old_values': old_values,
+                              'changes': data['changes'],
+                              })
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
