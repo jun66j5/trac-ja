@@ -58,9 +58,8 @@ addCloneAction = (container) ->
 
 
 commentClone = (chgs) ->
-  addCloneAction (
-    [$("#trac-change-#{c.cnum}-#{c.date} .trac-ticket-buttons"), c] \
-    for c in chgs
+  addCloneAction (for c in chgs
+    [$("#trac-change-#{c.cnum}-#{c.date} .trac-ticket-buttons"), c]
   )
 
 
