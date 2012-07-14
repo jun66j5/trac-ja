@@ -39,7 +39,8 @@ class TicketCloneButton(Component):
     def post_process_request(self, req, template, data, content_type):
         if template == 'ticket.html':
             add_script(req, 'ticketopt/ticketclone.js')
-            add_script_data(req, baseurl=req.href())
+            add_script_data(req, baseurl=req.href(), ui={
+                    'use_symbols': req.session.get('ui.use_symbols')})
         return template, data, content_type
 
     # ITemplateProvider methods

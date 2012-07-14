@@ -13,6 +13,9 @@
 
 $ = jQuery
 
+captionedButton = (symbol, text) ->
+  if ui.use_symbols then symbol else "#{symbol} #{text}"
+
 addField = (form, name, value) ->
   form.append $ """
     <input type="hidden" name="field_#{name}" value="#{$.htmlEscape value}">
@@ -25,7 +28,7 @@ addCloneAction = (container) ->
     <form action="#{baseurl}/newticket" method="post">
      <div class="inlinebuttons">
       <input type="submit" name="clone"
-             value="#{_ "Clone"}"
+             value="#{captionedButton '+#', _ 'Clone'}"
              title="#{_ "Create a new ticket from this comment"}">
       <input type="hidden" name="__FORM_TOKEN" value="#{form_token}">
       <input type="hidden" name="preview" value="">
