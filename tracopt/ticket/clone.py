@@ -18,7 +18,7 @@ from trac.core import Component, implements
 from trac.util.presentation import captioned_button
 from trac.util.translation import _
 from trac.web.api import IRequestFilter, ITemplateStreamFilter
-from trac.web.chrome import ITemplateProvider, add_script
+from trac.web.chrome import ITemplateProvider, add_script, add_script_data
 
 
 class TicketCloneButton(Component):
@@ -39,6 +39,7 @@ class TicketCloneButton(Component):
     def post_process_request(self, req, template, data, content_type):
         if template == 'ticket.html':
             add_script(req, 'ticketopt/ticketclone.js')
+            add_script_data(req, baseurl=req.href())
         return template, data, content_type
 
     # ITemplateProvider methods

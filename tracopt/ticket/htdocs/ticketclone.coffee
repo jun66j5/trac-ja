@@ -3,16 +3,15 @@
 # The script is added via the tracopt.ticket.clone component.
 #
 # It uses the following Trac global variables:
-#  - from add_script_data in web.chrome: form_token
-#  - from add_script_data in ticket.web_ui:
+#  - from add_script_data in tracopt.ticket.clone: baseurl, ui
+#    (TODO: generalize this)
+#  - from add_script_data in trac.web.chrome: form_token
+#  - from add_script_data in trac.ticket.web_ui:
 #     * old_values: {name: value} for each field of the current ticket
 #     * changes: list of objects containing the following properties,
 #       {author, date, cnum, comment, comment_history, fields, permanent}
 
 $ = jQuery
-
-# retrieve ticket number  (TODO: should be script data)
-[_0, baseurl, ticketid] = /(.*)\/ticket\/(\d+)/.exec location.href
 
 addField = (form, name, value) ->
   form.append $ """
@@ -48,10 +47,10 @@ addCloneAction = (container) ->
     cform = form.clone()
     addField cform, 'summary',
       _ "(part of #%(ticketid)s) %(summary)s",
-        ticketid: ticketid, summary: old_values['summary']
+        ticketid: old_values.id, summary: old_values.summary
     addField cform, 'description',
       _ "Copied from [%(source)s]:\n----\n%(description)s",
-        source: "ticket:#{ticketid}#comment:#{c.cnum}",
+        source: "ticket:#{old_values.id}#comment:#{c.cnum}",
         description: c.comment
 
     btns.prepend cform
