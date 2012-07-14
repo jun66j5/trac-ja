@@ -79,7 +79,7 @@ class TicketCloneButton(Component):
         return tag.form(
             tag.div(
                 tag.input(type="submit", name="clone",
-                          value=captioned_button(req, '+#', _("Clone")),
+                          value=captioned_button(req, '+', _("Clone")),
                           title=_("Create a copy of this ticket")),
                 [tag.input(type="hidden", name='field_' + n, value=v)
                  for n, v in fields.iteritems()],

@@ -28,7 +28,7 @@ addCloneAction = (container) ->
     <form action="#{baseurl}/newticket" method="post">
      <div class="inlinebuttons">
       <input type="submit" name="clone"
-             value="#{captionedButton '+#', _ 'Clone'}"
+             value="#{captionedButton '+', _ 'Clone'}"
              title="#{_ "Create a new ticket from this comment"}">
       <input type="hidden" name="__FORM_TOKEN" value="#{form_token}">
       <input type="hidden" name="preview" value="">

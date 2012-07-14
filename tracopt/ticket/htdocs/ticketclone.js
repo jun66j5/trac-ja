@@ -18,7 +18,7 @@
 
   addCloneAction = function(container) {
     var btns, c, cform, form, name, oldvalue, _i, _len, _ref;
-    form = $("<form action=\"" + baseurl + "/newticket\" method=\"post\">\n <div class=\"inlinebuttons\">\n  <input type=\"submit\" name=\"clone\"\n         value=\"" + (captionedButton('+#', _('Clone'))) + "\"\n         title=\"" + (_("Create a new ticket from this comment")) + "\">\n  <input type=\"hidden\" name=\"__FORM_TOKEN\" value=\"" + form_token + "\">\n  <input type=\"hidden\" name=\"preview\" value=\"\">\n </div>\n</form>");
+    form = $("<form action=\"" + baseurl + "/newticket\" method=\"post\">\n <div class=\"inlinebuttons\">\n  <input type=\"submit\" name=\"clone\"\n         value=\"" + (captionedButton('+', _('Clone'))) + "\"\n         title=\"" + (_("Create a new ticket from this comment")) + "\">\n  <input type=\"hidden\" name=\"__FORM_TOKEN\" value=\"" + form_token + "\">\n  <input type=\"hidden\" name=\"preview\" value=\"\">\n </div>\n</form>");
     for (name in old_values) {
       oldvalue = old_values[name];
       if (name !== "id" && name !== "summary" && name !== "description" && name !== "status" && name !== "resolution") {
