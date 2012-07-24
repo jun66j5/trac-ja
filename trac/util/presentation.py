@@ -16,8 +16,14 @@
 tasks such as grouping or pagination.
 """
 
+from datetime import datetime
 from math import ceil
 import re
+
+from genshi.builder import Fragment
+
+from .datefmt import to_utimestamp
+from .text import javascript_quote
 
 __all__ = ['captioned_button', 'classes', 'first_last', 'group', 'istext',
            'prepared_paginate', 'paginate', 'Paginator']
@@ -298,7 +304,14 @@ try:
         """Encode `value` to JSON."""
         def replace(match):
             return _js_quote[match.group(0)]
-        text = dumps(value, sort_keys=True, separators=(',', ':'))
+        def encode(obj):
+            if isinstance(obj, datetime):
+                return to_utimestamp(obj)
+            elif isinstance(obj, Fragment):
+                return '"%s"' % javascript_quote(unicode(obj))
+            raise TypeError("%r is not JSON serialazable" % obj)
+        text = dumps(value, sort_keys=True, separators=(',', ':'),
+                     default=encode)
         return _js_quote_re.sub(replace, text)
 
 except ImportError:
@@ -323,5 +336,9 @@ except ImportError:
         elif isinstance(value, dict):
             return '{%s}' % ','.join('%s:%s' % (to_json(k), to_json(v))
                                      for k, v in sorted(value.iteritems()))
+        elif isinstance(value, datetime):
+            return to_utimestamp(value)
+        elif isinstance(obj, Fragment):
+            return to_js_string(unicode(obj))
         else:
-            raise TypeError('Cannot encode type %s' % value.__class__.__name__)
+            raise TypeError("%r is not JSON serialazable" % value)

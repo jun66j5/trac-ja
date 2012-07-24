@@ -14,6 +14,28 @@
     <h2>Manage Permissions and Groups</h2>
 
     <py:if test="'PERMISSION_GRANT' in perm">
+      <form id="addsubj" class="addnew" method="post" action="">
+        <fieldset>
+          <legend>Add Subject to Group:</legend>
+          <table>
+            <tr class="field">
+              <th><label for="sg_subject">Subject:</label></th>
+              <td><input id="sg_subject" type="text" name="subject" /></td>
+            </tr>
+            <tr class="field">
+              <th><label for="sg_group">Group:</label></th>
+              <td><input id="sg_group" type="text" name="group" /></td>
+            </tr>
+          </table>
+          <p class="help">
+            Add a user or group to an existing permission group.
+          </p>
+          <div class="buttons">
+            <input type="submit" name="add" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
+
       <form id="addperm" class="addnew" method="post" action="">
         <fieldset>
           <legend>Grant Permission:</legend>
@@ -40,28 +62,11 @@
           </div>
         </fieldset>
       </form>
-  
-      <form id="addsubj" class="addnew" method="post" action="">
-        <fieldset>
-          <legend>Add Subject to Group:</legend>
-          <table>
-            <tr class="field">
-              <th><label for="sg_subject">Subject:</label></th>
-              <td><input id="sg_subject" type="text" name="subject" /></td>
-            </tr>
-            <tr class="field">
-              <th><label for="sg_group">Group:</label></th>
-              <td><input id="sg_group" type="text" name="group" /></td>
-            </tr>
-          </table>
-          <p class="help">
-            Add a user or group to an existing permission group.
-          </p>
-          <div class="buttons">
-            <input type="submit" name="add" value="${_('Add')}"/>
-          </div>
-        </fieldset>
-      </form>
+
+      <p class="help" i18n:msg="">
+        Note that <em>Subject</em> or <em>Group</em> names can't be all upper-case,
+        as that is reserved for permission names.
+      </p>
     </py:if>
 
     <form id="revokeform" method="post" action="" py:with="can_revoke = 'PERMISSION_REVOKE' in perm">
@@ -117,11 +122,6 @@
         <input type="submit" name="remove" value="${_('Remove selected items')}" />
       </div>
     </form>
-
-    <p class="help" i18n:msg="">
-      Note that <em>Subject</em> or <em>Group</em> names can't be all upper-case,
-      as that is reserved for permission names.
-    </p>
   </body>
 
 </html>
