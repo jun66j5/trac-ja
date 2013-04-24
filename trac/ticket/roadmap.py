@@ -299,9 +299,9 @@ class RoadmapModule(Component):
     stats_provider = ExtensionOption('roadmap', 'stats_provider',
                                      ITicketGroupStatsProvider,
                                      'DefaultTicketGroupStatsProvider',
-        """Name of the component implementing `ITicketGroupStatsProvider`, 
-        which is used to collect statistics on groups of tickets for display
-        in the roadmap views.""")
+        """`ITicketGroupStatsProvider` を implement するコンポーネントの名前を設定します。
+        ロードマップビューの表示で使用する、チケットのグループでの統計情報を収集する
+        ために使用されます。""") 
 
     # INavigationContributor methods
 
@@ -498,9 +498,9 @@ class MilestoneModule(Component):
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
                                      'DefaultTicketGroupStatsProvider',
-        """Name of the component implementing `ITicketGroupStatsProvider`, 
-        which is used to collect statistics on groups of tickets for display
-        in the milestone views.""")
+        """`ITicketGroupStatsProvider` を implement するコンポーネントの名前を設定します。
+        マイルストーンビューの表示で使用する、チケットのグループでの統計情報を収集する
+        ために使用されます。""")
     
 
     # INavigationContributor methods

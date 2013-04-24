@@ -53,25 +53,25 @@ class LoginModule(Component):
     implements(IAuthenticator, INavigationContributor, IRequestHandler)
 
     check_ip = BoolOption('trac', 'check_auth_ip', 'false',
-         """Whether the IP address of the user should be checked for
-         authentication (''since 0.9'').""")
+        """認証時に、ユーザの IP アドレスをチェックするかどうかを
+        設定します (''0.9 以降'') 。""")
 
     ignore_case = BoolOption('trac', 'ignore_auth_case', 'false',
-        """Whether login names should be converted to lower case
-        (''since 0.9'').""")
+        """ログイン名をすべて小文字に変換してから使用するかを設定します
+        (''0.9 以降'') 。""")
 
     auth_cookie_lifetime = IntOption('trac', 'auth_cookie_lifetime', 0,
-        """Lifetime of the authentication cookie, in seconds.
+        """認証用 cookie の生存時間を秒数で設定します。
         
-        This value determines how long the browser will cache authentication
-        information, and therefore, after how much inactivity a user will have
-        to log in again. The default value of 0 makes the cookie expire at the
-        end of the browsing session. (''since 0.12'')""")
+        この値はブラウザがいつまで認証情報をキャッシュするかを指定します。
+        したがって、ユーザが何もしないままこの時間を経過すると
+        再びログインしなければなりません。デフォルト値 0 はブラウザのセッション
+        が終了したときに、 cookie の期限が切れます (''0.12 以降'')""")
     
     auth_cookie_path = Option('trac', 'auth_cookie_path', '',
-        """Path for the authentication cookie. Set this to the common base path
-        of several Trac instances if you want them to share the cookie.
-        (''since 0.12'')""")
+        """認証用 cookie のパスを指定します。 cookie を複数の Trac のインスタンスで共有させたいならば、
+        この値を 共有させたい Trac のベースとなるパスを設定して下さい。
+        (''0.12 以降'')""")
 
     # IAuthenticator methods
 

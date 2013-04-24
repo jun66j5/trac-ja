@@ -481,14 +481,14 @@ Congratulations!
         
 
 class TracAdminHelpMacro(WikiMacroBase):
-    """Display help for trac-admin commands.
+    """trac-admin コマンドのヘルプを表示します。
 
-    Examples:
+    例:
     {{{
-    [[TracAdminHelp]]               # all commands
-    [[TracAdminHelp(wiki)]]         # all wiki commands
-    [[TracAdminHelp(wiki export)]]  # the "wiki export" command
-    [[TracAdminHelp(upgrade)]]      # the upgrade command
+    [[TracAdminHelp]]               # 全てのコマンド
+    [[TracAdminHelp(wiki)]]         # 全ての wiki コマンド
+    [[TracAdminHelp(wiki export)]]  # "wiki export" コマンド
+    [[TracAdminHelp(upgrade)]]      # upgrade コマンド
     }}}
     """
 

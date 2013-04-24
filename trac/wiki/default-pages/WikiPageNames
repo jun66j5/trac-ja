@@ -1,42 +1,42 @@
-= Wiki Page Names =
+= Wiki ページ名 = #WikiPageNames
 [[TracGuideToc]]
 
-Wiki page names commonly use the CamelCase convention. Within wiki text, any word in CamelCase automatically becomes a hyperlink to the wiki page with that name.
+Wiki のページ名には通常、 CamelCase の仕様に従います。 Wiki テキストの中では、 CamelCase に相当するすべての単語が、同じ名前を持つ Wiki ページへのハイパーリンクになります。
 
-CamelCase page names must follow these rules:
+CamelCase のページ名は以下のルールに沿っていなければなりません:
 
- 1. The name must consist of '''alphabetic characters only'''. No digits, spaces, punctuation, or underscores are allowed.
- 2. A name must have at least two capital letters.
- 3. The first character must be capitalized.
- 4. Every capital letter must be followed by one or more lower-case letters. 
- 5. The use of slash ( / ) is permitted in page names (possibly representing a hierarchy).
+ 1. ページ名は '''アルファベットだけ''' で構成されていなければなりません。数字、空白文字、句点、アンダースコア ( _ ) などは許されていません。
+ 1. ページ名は少なくとも2つの大文字が含まれていなければなりません。
+ 1. 最初の文字は大文字でなければなりません。
+ 1. 大文字に続いて1文字以上、小文字が続いていなければなりません。
+ 1. スラッシュ ( / ) をページ名に含めることが許されています (階層構成を表すときなど)。
 
-If you want to create a wiki page that doesn't follow CamelCase rules you can use the following syntax:
+CamelCase ルールに適合しない Wiki ページを生成したいならば、以下のシンタックスを使用することによってできます:
 {{{
  * [wiki:Wiki_page], [wiki:ISO9000],
-   and with a label: [wiki:ISO9000 ISO 9000 standard]
+   ラベル付: [wiki:ISO9000 ISO 9000 準拠]
  * [wiki:"Space Matters"]
-   and with a label: [wiki:"Space Matters" all about white space]
- * or simply: ["WikiPageName"]s
- * even better, the new [[WikiCreole link style]]
-   and with a label: [[WikiCreole link style|WikiCreole style links]]
+   ラベル付: [wiki:"Space Matters" all about white space]
+ * またはシンプルに: ["WikiPageName"]s
+ * さらに, 新しい [[WikiCreole link style]]
+   ラベル付: [[WikiCreole link style|WikiCreole style links]]
 }}}
 
-This will be rendered as:
+このように表示されます:
  * [wiki:Wiki_page], [wiki:ISO9000],
-   and with a label: [wiki:ISO9000 ISO 9000 standard]
- * [wiki:"Space Matters"] ''(that page name embeds space characters)''
-   and with a label: [wiki:"Space Matters" all about white space]
- * or simply: ["WikiPageName"]s ''(old !MoinMoin's internal free links style)''
- * even better, the new [[WikiCreole link style]]
-   and with a label: [[WikiCreole link style|WikiCreole style links]]
-   ''(since 0.12, also now adopted by !MoinMoin)''
+   ラベル付: [wiki:ISO9000 ISO 9000 準拠]
+ * [wiki:"Space Matters"] ''(ページ名にスペースが含まれています)''
+   ラベル付: [wiki:"Space Matters" all about white space]
+ * または、シンプルに: ["WikiPageName"]s ''(古い !MoinMoin 内部の自由なリンク形式)''
+ * さらに, 新しい [[WikiCreole link style]]
+   ラベル付: [[WikiCreole link style|WikiCreole style links]]
+   ''(0.12 以降, 現在 !MoinMoin においても採用されています)''
 
 
-Starting with Trac 0.11, it's also possible to link to a specific ''version'' of a Wiki page, as you would do for a specific version of a file, for example: WikiStart@1.
+Trac-0.11 以降では、 Wiki ページの特定 ''バージョン'' にリンクすることができます。リポジトリのファイルの特定バージョンにリンクするときと同じ要領で WikiStart@1 のように記述してください。
 
-You can also prevent a CamelCase name to be interpreted as a TracLinks, by quoting it. See TracLinks#EscapingLinks.
+CamelCase の名前をクオートすることによって [TracLinks Trac リンク] として解釈されないようにすることができます。 [TracLinks#EscapingLinks リンクをエスケープする]を参照して下さい。
 
-As visible in the example above, one can also append an anchor to a Wiki page name, in order to link to a specific section within that page. The anchor can easily be seen by hovering the mouse over a section heading, then clicking on the [[html(&para;)]] sign that appears at its end. The anchor is usually generated automatically, but it's also possible to specify it explicitly: see WikiFormatting#using-explicit-id-in-heading.
+上記の例でも見られるとおり、ページ内の特定のセクションへのリンクを追加するために、 Wiki ページにアンカーをつけることもできます。アンカーはセクションのヘッダにマウスポインタをおくことによって簡単に見ることができます。そして、セクションヘッダ行末にある [[html(&para;)]] をクリックできます。アンカーは通常自動で作成されますが、明示的に指定することも可能です: [WikiFormatting#using-explicit-id-in-heading 明示的な id] を参照して下さい。
 ----
 See also: WikiNewPage, WikiFormatting, TracWiki, TracLinks

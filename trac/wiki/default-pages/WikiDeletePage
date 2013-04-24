@@ -1,16 +1,16 @@
-= Deleting a Wiki Page =
+= Wiki ページを削除する = #DeletingaWikiPage
 
-Existing wiki pages can be completely deleted using the ''Delete Page'' or the ''Delete this Version'' buttons at the bottom of the wiki page. These buttons are only visible for users with `WIKI_DELETE` permissions.
+既に存在する Wiki ページを完全に削除するためには、 Wiki ページの下にある ''このページを削除'' や ''このバージョンを削除'' ボタンを使用します。これらのボタンは `WIKI_DELETE` 権限を付与されたユーザだけに表示されます。
 
-'''Note:''' Deleting a wiki page is an irreversible operation.
+'''Note:''' Wiki ページの削除は元に戻すことができない操作です。
 
-If you want to delete a page because you actually re-created a new page with the same content but a different name, it is recommended to keep the page and use it as a redirection page instead of completely deleting it, as to not frustrate the visitor with broken links when coming to the site from a search engine. 
+もし違う Wiki ページ名で同じ内容の新しいページを作り直したため、あるページを削除したいならば、そのページを完全に削除せずに残しておいて、新しいページへのリダイレクトのページとしておくことを推奨します。そうすれば、検索エンジンからサイトに飛んできた人がリンク切れでイライラすることもないでしょう。
 
-In this situation, chances are that you actually wanted to [[WikiNewPage#renaming|rename]] the page instead of doing a copy + delete. 
-The ''Rename'' operation also offers you the possibility to create a redirection page.
-A redirection page is a short page that  contains a link such as  “See !SomeOtherPage”. 
+この場合、ページのコピー + 削除という操作なしに、 [[WikiNewPage#renaming|ページの名前変更]] をしたいと思うかもしれません。 
+''名前変更'' の操作もまた、リダイレクトのページを作ることをあなたに提示します。
+リダイレクションページは "See !SomeOtherPage" などのリンクを含む短いページです。
 
-However, deleting specific versions or even complete pages can make sense to remove spam or other abusive submissions.
+しかしながら、 spam やその他の不正な更新を削除するという意味で、特定のバージョンやページそのものを完全に削除するのも納得がいく話です。
 
 ----
 See also: TracWiki, TracPermissions

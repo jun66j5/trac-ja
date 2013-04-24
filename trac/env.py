@@ -93,103 +93,106 @@ class Environment(Component, ComponentManager):
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
-        """Path to the //shared plugins directory//.
+        """//共有するプラグインをおくディレクトリ// のパスを指定します。
         
-        Plugins in that directory are loaded in addition to those in the
-        directory of the environment `plugins`, with this one taking 
-        precedence.
+        このディレクトリに配置されたプラグインは、 Environemnt の `plugins`
+        ディレクトリのプラグインに加えて、
+        優先してロードされます。
         
-        (''since 0.11'')""")
+        (''0.11 以降'')""")
 
     base_url = Option('trac', 'base_url', '',
-        """Reference URL for the Trac deployment.
+        """Trac がデプロイされている URL を設定します。
         
-        This is the base URL that will be used when producing documents that
-        will be used outside of the web browsing context, like for example
-        when inserting URLs pointing to Trac resources in notification
-        e-mails.""")
+        ドキュメントを生成するときに使用される base URL です。
+        Web でブラウズできるコンテキスト外で利用されます。たとえば、
+        通知メールで Trac のリソースを指す URL を挿入する場合
+        などです。""")
 
     base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
             False, 
-        """Optionally use `[trac] base_url` for redirects.
+        """`[trac] base_url` をリダイレクトにも使用するか設定します。
         
-        In some configurations, usually involving running Trac behind a HTTP
-        proxy, Trac can't automatically reconstruct the URL that is used to
-        access it. You may need to use this option to force Trac to use the
-        `base_url` setting also for redirects. This introduces the obvious
-        limitation that this environment will only be usable when accessible
-        from that URL, as redirects are frequently used. ''(since 0.10.5)''""")
+        Trac を HTTP プロキシの背後で動作させる設定下では、
+        自動ではアクセスに使用された URL を再構成できないため、
+        このオプションを使って、強制的に `base_url` の設定先にリダイレクトするよう
+        Trac を設定する必要があります。この使用で制限事項が追加されます。
+        その Environment はリダイレクト先として使用される URL からアクセスしないと
+        使いづらくなります。 ''(0.10.5 以降)''""")
 
     secure_cookies = BoolOption('trac', 'secure_cookies', False,
-        """Restrict cookies to HTTPS connections.
+        """Cookie を HTTPS 接続で使用します。
         
-        When true, set the `secure` flag on all cookies so that they are
-        only sent to the server on HTTPS connections. Use this if your Trac
-        instance is only accessible through HTTPS. (''since 0.11.2'')""")
+        True に設定された場合、すべての Cookie に `secure` フラグを付与
+        することで、 HTTPS 接続でサーバに送信されるようにします。このオ
+        プションは Trac への接続に HTTPS が使える場合だけ、使用するよう
+        にしてください。 (''since 0.11.2 以降'')""")
 
     project_name = Option('project', 'name', 'My Project',
-        """Name of the project.""")
+        """プロジェクトの名前を設定します。""")
 
     project_description = Option('project', 'descr', 'My example project',
-        """Short description of the project.""")
+        """プロジェクトの概要を設定します。""")
 
     project_url = Option('project', 'url', '',
-        """URL of the main project web site, usually the website in which
-        the `base_url` resides. This is used in notification e-mails.""")
+        """プロジェクトのメインとなる Web サイトの URL を設定します。
+        通常、 `base_url` が示すウェブサイトを指定します。
+        この設定は通知メールで使用されます。""")
 
     project_admin = Option('project', 'admin', '',
-        """E-Mail address of the project's administrator.""")
+        """プロジェクトの管理者のメールアドレスを設定します。""")
 
     project_admin_trac_url = Option('project', 'admin_trac_url', '.',
-        """Base URL of a Trac instance where errors in this Trac should be
-        reported.
+        """この Trac で発生したエラーを報告する先の Trac インスタンスの
+        ベース URL を設定します。
         
-        This can be an absolute or relative URL, or '.' to reference this
-        Trac instance. An empty value will disable the reporting buttons.
-        (''since 0.11.3'')""")
+        絶対 URL, 相対 URL, およびこの Trac インスタンスを指す '.' が
+        指定可能です。空白値を指定すると報告ボタンが表示されなくなります。
+        (''0.11.3 以降'')""")
 
     project_footer = Option('project', 'footer',
                             N_('Visit the Trac open source project at<br />'
                                '<a href="http://trac.edgewall.org/">'
                                'http://trac.edgewall.org/</a>'),
-        """Page footer text (right-aligned).""")
+        """ページのフッタに表示するテキストを指定します (右詰めで表示されます)。""")
 
     project_icon = Option('project', 'icon', 'common/trac.ico',
-        """URL of the icon of the project.""")
+        """プロジェクトのアイコンの URL を指定します。""")
 
     log_type = Option('logging', 'log_type', 'none',
-        """Logging facility to use.
+        """出力するログの種類を設定します。
         
-        Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
+        値は (`none`, `file`, `stderr`, `syslog`, `winlog`) の、どれかでなければなりません。""")
 
     log_file = Option('logging', 'log_file', 'trac.log',
-        """If `log_type` is `file`, this should be a path to the log-file.""")
+        """`log_type` が `file` のときのログファイルへのパスを設定します。""")
 
     log_level = Option('logging', 'log_level', 'DEBUG',
-        """Level of verbosity in log.
+        """ログレベルを設定します。
         
-        Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`).""")
+        値は (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`) の、どれかでなければなりません。""")
 
     log_format = Option('logging', 'log_format', None,
-        """Custom logging format.
+        """ログのフォーマットをカスタマイズします。
 
-        If nothing is set, the following will be used:
+        デフォルトでは以下のフォーマットが使用されます :
         
         Trac[$(module)s] $(levelname)s: $(message)s
 
-        In addition to regular key names supported by the Python logger library
-        (see http://docs.python.org/library/logging.html), one could use:
-         - $(path)s     the path for the current environment
-         - $(basename)s the last path component of the current environment
-         - $(project)s  the project name
+        Python のロガーライブラリがサポートしている標準のキー 
+        (http://docs.python.org/library/logging.html 参照) に加えて、
+        以下のキーを使用することができます:
+         - $(path)s     現在の環境へのパス 
+         - $(basename)s 現在の環境のパスの一番最後の部分 
+         - $(project)s  プロジェクト名 
 
-        Note the usage of `$(...)s` instead of `%(...)s` as the latter form
-        would be interpreted by the ConfigParser itself.
+        `%(...)s` を使用すると !ConfigParser が解釈し展開してしまうので、
+        代わりに `$(...)s` を使用して下さい。
 
-        Example:
+        例:
         `($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`
 
-        ''(since 0.10.5)''""")
+        ''(0.10.5 以降)''""")
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.

@@ -70,7 +70,7 @@ class PostgreSQLConnector(Component):
     implements(IDatabaseConnector)
 
     pg_dump_path = Option('trac', 'pg_dump_path', 'pg_dump',
-        """Location of pg_dump for Postgres database backups""")
+        """Postgres データベースバックエンドをバックアップするために使用する pg_dump のパスを設定します""")
 
     def __init__(self):
         self._version = None

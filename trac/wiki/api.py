@@ -199,20 +199,20 @@ class WikiSystem(Component):
     syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
     ignore_missing_pages = BoolOption('wiki', 'ignore_missing_pages', 'false',
-        """Enable/disable highlighting CamelCase links to missing pages
-        (''since 0.9'').""")
+        """存在しないページへの CamelCase リンクをハイライトするかどうかを設定します
+        (''0.9 以降'').""")
 
     split_page_names = BoolOption('wiki', 'split_page_names', 'false',
-        """Enable/disable splitting the WikiPageNames with space characters
-        (''since 0.10'').""")
+        """スペースで WikiPageNames を区切るのを可能にするかどうかを設定します
+        (''0.10 以降'').""")
 
     render_unsafe_content = BoolOption('wiki', 'render_unsafe_content', 'false',
-        """Enable/disable the use of unsafe HTML tags such as `<script>` or
-        `<embed>` with the HTML [wiki:WikiProcessors WikiProcessor]
-        (''since 0.10.4'').
+        """`<script>` や `<embed>` のようなセキュリティ上安全とはいえない HTML タグを
+        HTML [wiki:WikiProcessors Wiki プロセッサ] で使用可能にするかどうかを設定します。
+        (''0.10.4 以降'').
 
-        For public sites where anonymous users can edit the wiki it is
-        recommended to leave this option disabled (which is the default).""")
+        誰でも Wiki を編集できるような公開サイトでは、このオプションを無効に
+        設定しておくことを推奨します。 (デフォルトは、無効に設定されています)。""")
 
     @cached
     def pages(self, db):

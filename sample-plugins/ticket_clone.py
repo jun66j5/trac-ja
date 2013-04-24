@@ -4,8 +4,8 @@ from trac.web.api import ITemplateStreamFilter
 from genshi.builder import tag
 from genshi.filters import Transformer
 
-revision = "$Rev$"
-url = "$URL$"
+revision = "$Rev: 8149 $"
+url = "$URL: https://svn.edgewall.org/repos/trac/trunk/sample-plugins/ticket_clone.py $"
 
 class SimpleTicketCloneButton(Component):
     """Add a 'Clone' button to the ticket box. 

@@ -119,7 +119,7 @@ def pretty_timedelta(time1, time2=None, resolution=None):
     return ''
 
     
-def format_datetime(t=None, format='%x %X', tzinfo=None):
+def format_datetime(t=None, format='%Y/%m/%d %H:%M:%S', tzinfo=None):
     """Format the `datetime` object `t` into an `unicode` string
 
     If `t` is None, the current time will be used.
@@ -153,7 +153,7 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
         # Python 2.3 on windows doesn't know about 'XYZ' alias for 'cpXYZ'
     return unicode(text, encoding, 'replace')
 
-def format_date(t=None, format='%x', tzinfo=None):
+def format_date(t=None, format='%Y/%m/%d', tzinfo=None):
     """Convenience method for formatting the date part of a `datetime` object.
     See `format_datetime` for more details.
     """
@@ -161,7 +161,7 @@ def format_date(t=None, format='%x', tzinfo=None):
         format = 'iso8601date'
     return format_datetime(t, format, tzinfo=tzinfo)
 
-def format_time(t=None, format='%X', tzinfo=None):
+def format_time(t=None, format='%H:%M:%S', tzinfo=None):
     """Convenience method for formatting the time part of a `datetime` object.
     See `format_datetime` for more details.
     """
@@ -243,7 +243,7 @@ def parse_date(text, tzinfo=None):
             pass
     if dt is None:
         for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
-                       '%b %d, %Y']:
+                       '%b %d, %Y', '%Y/%m/%d %H:%M:%S', '%Y/%m/%d']:
             try:
                 tm = time.strptime(text, format)
                 dt = tzinfo.localize(datetime(*tm[0:6]))

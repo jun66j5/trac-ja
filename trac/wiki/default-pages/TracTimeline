@@ -1,35 +1,35 @@
-= The Trac Timeline =
+= Trac タイムライン = #TheTracTimeline
 [[TracGuideToc]]
 
-The timeline provides a historic view of the project in a single report.
+タイムラインは簡単なレポート形式でプロジェクトの履歴を提供します。
 
-It lists all Trac events that have occurred in chronological order, a
-brief description of each event and if applicable, the person responsible for
-the change.
+タイムラインは時間順に起こった Trac のイベントを、
+簡単な説明と、もし当てはまるならばその変更を行った人を
+リストします。
 
-The timeline lists these kinds of events:
- * '''Wiki page events''' — Creation and changes
- * '''Ticket events''' — Creation and resolution/closing (and optionally other changes)
- * '''Source code changes ''' — Repository check-ins
- * '''Milestone ''' — Milestone completed
+タイムラインはこれらの種類のイベントをリストします:
+ * '''Wiki ページ''' — 登録と変更
+ * '''チケット''' — 登録と解決/クローズ (オプションとしてその他の変更)
+ * '''ソースコードの変更 ''' — リポジトリへのチェックイン
+ * '''マイルストーン ''' — マイルストーン完了
 
-Each event entry provides a hyperlink to the specific event in question, who authored the change as well as
-a brief excerpt of the actual comment or text, if available.
+それぞれのイベントのエントリは発生したイベントの箇所へのハイパーリンクや変更を加えた人の情報を提供し、
+実際のコメントかテキストの簡単な抜粋が利用可能であるなら表示します。
 
-It is possible to filter the displayed events with the various filters in the option panel:
- * ''View changes from'' — the date from which to start displaying events (current date if empty). Events that occurred after this date will not be shown, only those that occurred before that date.
- * ''and X days back'' — how many days backwards in time to get events.
- * ''done by'' — the author of an event. It accepts a space-separated list of authors for which events should be included. Alternatively, if the author names are prefixed by a "-" character, then the events having those authors will be excluded, and all the others included. Single or double quotes can be used for specifying author names containing space characters. ''(since 0.12)''
- * ''Changesets in all repositories'' — if you have more than one repository connected to your Trac project, then you can filter the output so events from specific repositories are not shown. ''(since 0.12)''
- * ''Milestones reached'' — display or hide milestones reached.
- * ''Opened and closed tickets'' — display or hide ticket open or close events.
- * ''Wiki changes'' — display or hide Wiki change events.
+オプションパネル内で、いろいろなフィルタを適用して、表示されるイベントをフィルタすることができます:
+ * ''表示期間'' - 何日前のイベントから表示するかを設定する ( 空の場合は、現在日時が指定されます ) 。指定した日付の後に起こったイベントは表示されず、指定した日付より前に起こったイベントのみが表示されます。
+ * ''X 日前まで'' — 何日前のイベントまでさかのぼって表示するか。
+ * ''更新者'' — イベントにおける更新者。空白区切りのリスト形式で、複数の更新者を含めることができます。もしくは、更新者の名前のプレフィックスがハイフン ("-") になっている場合、イベントの更新者から除外され、その他の人 (ハイフンがついていない人) のみが含まれます。更新者の名前に空白文字が含まれている場合、シングルクオテーションまたはダブルクオテーションでくくることができます。 ''(0.12　以降)''
+ * ''すべてのリポジトリのチェンジセット'' — Trac プロジェクトに複数のリポジトリを接続しているならば、特定のリポジトリのイベントを表示しないようにフィルタをかけることができます。 ''(0.12 以降)''
+ * ''マイルストーンの完了'' — マイルストーンの完了の表示/非表示の設定
+ * ''チケットの登録と解決'' — チケット登録/解決のイベントの表示/非表示の設定
+ * ''Wiki ページの変更'' — Wiki ページの変更の表示/非表示の設定
 
-See !TracIni's [wiki:TracIni#timeline-section "[timeline] section"] for timeline configuration options.
+タイムラインのコンフィグについては、 !TracIni の [wiki:TracIni#timeline-section "[timeline] セクション"] を参照して下さい。
 
-== RSS Support ==
+== RSS 対応 == #RSSSupport
 
-The Timeline module supports subscription using RSS 2.0 syndication. To subscribe to project events, click the orange '''XML''' icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
+タイムラインモジュールは、 RSS 2.0 を提供しています。プロジェクトのイベントを購読するためには、ページの下部にあるオレンジ色の '''XML''' アイコンをクリックしてください。 Trac における RSS 対応についてのより多くの情報は TracRss を参考にして下さい。
 
 ----
 See also: TracGuide, TracIni, TracWiki, WikiFormatting, TracRss, TracNotification

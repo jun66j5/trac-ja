@@ -1,138 +1,138 @@
-= Upgrade Instructions =
+= アップグレードの説明 = #UpgradeInstructions
 [[TracGuideToc]]
 
-== Instructions ==
+== 一般的な手順 == #Instructions
 
-Typically, there are seven steps involved in upgrading to a newer version of Trac:
+通常、 Trac を新しいバージョンにアップグレードするときに、 7 ステップを踏まなければなりません: 
 
-=== 1. Update the Trac Code === #UpdatetheTracCode
+=== 1. Trac のコードを更新する === #UpdatetheTracCode
 
-Get the new version as described in TracInstall, or your operating system specific procedure.
+TracInstall または、あなたの OS に合った方法で新しいバージョンの Trac を取得してください。
 
-If you already have a 0.11 version of Trac installed via `easy_install`, it might be the easiest to use it also to upgrade you Trac installation.
+`easy_install` を使って、 0.11 のバージョンの Trac をインストールしていた場合は、最も簡単に Trac をアップグレードできます。
 
 {{{
 # easy_install --upgrade Trac==0.12b1
 }}}
-(once beta1 is released, that is)
+(これは、 0.12 のベータ 1 がリリースされたときのものです)
 
-If you do a manual (not operating system specific) upgrade, you should also stop any running Trac server before the installation. Doing "hot" upgrades is not advised, especially not on Windows ([trac:ticket:7625 #7265]).
+手で (OS 特有でない) アップグレードをするのであれば、インストールを実行する前に起動中の Trac サーバを停止してください。 "ホット" アップグレードは問題を生じることが多いです。特に Windows では出来ないと考えてください ([trac:ticket:7625 #7265])。
 
-You may also want to remove the pre-existing Trac code by deleting the `trac` directory from the Python `lib/site-packages` directory, or remove Trac .eggs from former versions.
-The location of the site-packages directory depends on the operating system, and the location in which Python was installed. However, the following locations are common:
- * on Linux: `/usr/lib/python2.X/site-packages`
- * on Windows: `C:\Python2.X\lib\site-packages`
- * on MacOSX: `/Library/Python/2.X/site-packages`
+すでに存在する Trac のコードを削除するには、 Python の `lib/site-packages` ディレクトリから `trac` ディレクトリか、 Trac の .egg の古いバージョンを削除します。
+site-packages ディレクトリの位置は OS のシステム、および Python のインストールパスにより異なりますが、一般的には以下の位置にあります:
+ * Linux の場合: `/usr/lib/python2.X/site-packages`
+ * Windows の場合: `C:\Python2.X\lib\site-packages`
+ * MacOSX の場合: `/Library/Python/2.X/site-packages`
 
-You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
+また、 `share/trac` (正確な位置はプラットフォームに依存しますが一般的にはこの位置です。) ディレクトリ内の `cgi-bin`, `htdocs`, `templates`, `wiki-default` といったディレクトリを削除してもかまいません。 (訳注: 0.11 では、これらのディレクトリは `site-packages/trac` の配下に移動しています)
 
-This cleanup is not mandatory, but it makes it easier to troubleshoot issues later on, as you won't waste your time looking at code or templates from a previous release that are not being used anymore... As usual, make a backup before actually deleting things.
+このクリーンアップは必須ではありませんが、あとでトラブルシュートを行う場合の切り分けが容易になります。すでに使われていない前のリリースのコードやテンプレートを見るなどという時間の浪費をしたくないのであれば、削除しておく方が楽です。もちろん、ファイルを削除する前にバックアップを作成する方が良いでしょう。
 
-=== 2. Upgrade the Trac Environment === #UpgradetheTracEnvironment
+=== 2. TracEnvironment をアップグレードする === #UpgradetheTracEnvironment
 
-Environment upgrades are not necessary for minor version releases unless otherwise noted. 
+Environment のアップグレードは、マイナーバージョンアップに特別な注意書きがない限り、不要です。 
 
-After restarting, Trac should show the instances which need a manual upgrade via the automated upgrade scripts to ease the pain. These scripts are run via [TracAdmin trac-admin]:
+アップグレードした Trac がロードされると、アップグレードする必要があるインスタンスが表示されます。アップグレードはオートメーションされたスクリプトを手で実行します。これらのスクリプトでは [TracAdmin trac-admin] を使用します。
 {{{
 trac-admin /path/to/projenv upgrade
 }}}
 
-This command will do nothing if the environment is already up-to-date.
+このコマンドはもし TracEnvironment がすでに最新の状態になっているときは、何もしません。
 
-Note that a backup of your database will be performed automatically prior to the upgrade. 
-This feature is relatively new for the PostgreSQL or MySQL database backends, so if it fails, you will have to backup the database manually. Then, to perform the actual upgrade, run:
+Note: データベースのバックアップはアップグレード時に自動で行われます。
+この機能は最近の更新で、データベースバックエンドに PostgreSQL や MySQL を使用している場合にも対応しましたが、失敗してしまう場合は手動でバックアップしてください。その後、バックアップをスキップしてアップグレードを行うために、下記のコマンドを実行してください:
 {{{
 trac-admin /path/to/projenv upgrade --no-backup
 }}}
 
-=== 3. Update the Trac Documentation === #UpdatetheTracDocumentation
+=== 3. Trac ドキュメントを更新する === #UpdatetheTracDocumentation
 
-Every [TracEnvironment Trac environment] includes a copy of the Trac documentation for the installed version. As you probably want to keep the included documentation in sync with the installed version of Trac, [TracAdmin trac-admin] provides a command to upgrade the documentation:
+すべての [TracEnvironment Trac Environment] で、インストールされたバージョンの Trac ドキュメントのコピーを含んでいます。新しくインストールした Trac のドキュメントと同期を取りたいでしょう。 [TracAdmin trac-admin] がドキュメントを更新するコマンドを提供しています:
 {{{
 trac-admin /path/to/projenv wiki upgrade
 }}}
 
-Note that this procedure will of course leave your `WikiStart` page intact.
+当然このプロシージャはあなたの `WikiStart` ページ (訳注: `InterMapText` も) をまったく変更せず、そのままに残しておきます。
 
-=== 4. Resynchronize the Trac Environment Against the Source Code Repository ===
+=== 4. Trac Environment とソースコードリポジトリの再同期 ===　#a4.ResynchronizetheTracEnvironmentAgainsttheSourceCodeRepository
 
-Each [TracEnvironment Trac environment] must be resynchronized against the source code repository in order to avoid errors such as "[http://trac.edgewall.org/ticket/6120 No changeset ??? in the repository]" while browsing the source through the Trac interface:
+Trac でソースコードをブラウズしているときに "[http://trac.edgewall.org/ticket/6120 リポジトリにチェンジセット ??? が存在しません]" のようなエラーが出る場合は、それぞれの [TracEnvironment Trac environment] のソースコードリポジトリと再同期をする必要があります。
 
 {{{
 trac-admin /path/to/projenv repository resync '*'
 }}}
 
-=== 5. Refresh static resources ===
+=== 5. 静的リソースをリフレッシュする === #a5.Refreshstaticresources
 
-If you've setup web server to give out static resources directly (accessed using /chrome/ URL) then you need to refresh them using the same command:
+もし、静的リソースを直接配布できる ( URL /chrome/ を使用してアクセス) ようにウェブサーバをセットアップしていたら、同じくコマンドを使用してそれらをリフレッシュする必要があります:
 {{{
 trac-admin /path/to/env deploy /deploy/path
 }}}
-this will extract static resources and CGI scripts (trac.wsgi, etc) from new Trac version and its plugins into `/deploy/path`.
+このコマンドは、新しい Trac のバージョンとそのプラグインから `/deploy/path` に静的リソースと CGI スクリプト (trac.wsgi, など) を抽出します。
 
-Some web browsers cache the CSS and Javascript file in a strong way, so you'll perhaps need to refresh the cache of the browsers by a force reload (and tell your users to do so!).
+いくつかのウェブブラウザは CSS や Javascript のファイルを強力な方法でキャッシュします。したがって、強制的にブラウザのキャッシュをリフレッシュする必要があります ( あなたの Trac ユーザにもそう伝えてください !)。
 
-=== 6. Steps specific to a given Trac version  ===
-==== Upgrading from Trac 0.11 to Trac 0.12 ====
-===== Python 2.3 no longer supported =====
-The minimum supported version of python is now 2.4
+=== 6. 特定の Trac バージョンでの特記事項  === #a6.StepsspecifictoagivenTracversion
+==== Trac 0.11 から Trac 0.12 にアップグレードする ==== #UpgradingfromTrac0.11toTrac0.12
+===== Python 2.3 サポート ===== #Python2.3nolongersupported
+現在 Python 2.4 以降 をサポートします。
 
-===== SQLite v3.x required =====
-SQLite v2.x is no longer supported, if you happen to still use a Trac database using this format, you'll need to convert it to SQLite v3.x first. See [trac:PySqlite#UpgradingSQLitefrom2.xto3.x] for details.
+===== SQLite v3.x ===== #SQLitev3.xrequired
+SQLite v2.x のサポートは終了しました。もしいまだに Trac で SQLite v2.x のデータベースを使用しているようならば、まず最初に SQLite v3.x に変換する必要があります。詳細は [trac:PySqlite#UpgradingSQLitefrom2.xto3.x] を参照して下さい。
 
-===== Multiple Repository Support =====
-If you plan to add more repositories to your Trac instance, as this is now possible with the newly introduced multiple repository support, please refer to TracRepositoryAdmin#Migration.
+===== 複数のリポジトリのサポート===== #MultipleRepositorySupport
+Trac に複数のリポジトリを追加する予定であるならば、今では複数のリポジトリを扱えるようになっています。詳細については、 [TracRepositoryAdmin#Migration 単一リポジトリからの移行手順] を参照して下さい。
 
-This can be of interest even if you only have one repository, as there's now a way to avoid the potentially costly resync check at every request.
+もし単一のリポジトリでの運用を行なっていたとしてもこの手順は興味深いものとなりえます。なぜなら、この方法によってリクエスト毎に発生する潜在的に負荷の高い再同期のチェックを避けることができるからです。
 
-===== Improved repository synchronization =====
-In addition to supporting multiple repositories, a new more efficient method for synchronizing Trac and your repositories was implemented.
+===== 向上したリポジトリの再同期 ===== #Improvedrepositorysynchronization
+複数のリポジトリをサポートするのに加えて、 Trac と リポジトリの同期をより効果的に行なう新しい方法が実装されました。
 
-While you can keep the same synchronization as in 0.11 adding the post-commit hook as outlined in TracRepositoryAdmin#Synchronization and TracRepositoryAdmin#ExplicitSync will allow more efficient synchronization and is more or less required for multiple repositories.
+バージョン 0.11 と同様に post-comit フックを使用した同期方法を続けることもできますが、[TracRepositoryAdmin#Synchronization リポジトリの同期方法] や [TracRepositoryAdmin#ExplicitSync 明示的な同期] に書かれている方法の方が、より効果的な同期を行なうことができ、多かれ少なかれ、複数のリポジトリを扱う際に必須となります。
 
-Note that if you were using the `trac-post-commit-hook`, ''you're strongly advised to upgrade it'' to the new hook documented in the above references, as the old hook will not work with anything else than the default repository and even for this case, it won't trigger the appropriate notifications.
+Note: もし、 `trac-post-commit-hook` を使用していたならば、上記を参照して、新しいフックに ''アップグレードすることを強くお勧めします'' 。なぜなら、古いフックはデフォルトのリポジトリ以外では動きません。そしてこの場合、適切な通知のトリガーとなりません。
 
-==== Upgrading from Trac 0.10 to Trac 0.11 ====
-===== Site Templates and Styles =====
-The templating engine has changed in 0.11 to Genshi, please look at TracInterfaceCustomization for more information.
+==== Trac 0.10 から Trac 0.11 へのアップグレード ==== #UpgradingfromTrac0.10toTrac0.11
+===== テンプレート と スタイルシート ===== #SiteTemplatesandStyles
+テンプレートエンジンが Trac 0.11 から Genshi に変わりました。詳細については、 TracInterfaceCustomization を参照して下さい。
 
-If you are using custom CSS styles or modified templates in the `templates` directory of the TracEnvironment, you will need to convert them to the Genshi way of doing things. To continue to use your style sheet, follow the instructions at TracInterfaceCustomization#SiteAppearance.
+もし、TracEnvironment の `templates` ディレクトリの中のカスタマイズされた CSS や 修正したテンプレートを使用しているならば、 Genshi のスタイルに変換する必要があります。カスタマイズしたスタイルシートを使い続けるためには、[TracInterfaceCustomization#SiteAppearance サイトの外観] の手順に従ってください。
 
-===== Trac Macros, Plugins =====
-The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of [trac:ClearSilver ClearSilver] and the HDF); they need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
+===== Trac マクロプラグイン ===== #TracMacrosPlugins
+[trac:ClearSilver ClearSilver] と HDF が使用されなくなったことで、古いスタイルの Wiki マクロ は使用できなくなります。そのため Trac マクロを適応させる必要があるでしょう; 新しいスタイルのマクロに変更する必要があれば WikiMacros を参照してください。新しいスタイルにコンバートした後、配置するディレクトリは wiki-macros ではなく、 plugins を使用してください。 wiki-macros ディレクトリからマクロやプラグインを探すことはもうありません。
 
-===== For FCGI/WSGI/CGI users =====
-For those who run Trac under the CGI environment, run this command in order to obtain the trac.*gi file:
+===== FCGI/WSGI/CGI を使用する場合 ===== #ForFCGIWSGICGIusers
+CGI で Trac を起動している場合、以下のコマンドを実行して trac.*gi ファイルを取得してください:
 {{{
 trac-admin /path/to/env deploy /deploy/directory/path
 }}}
 
-This will create a deploy directory with the following two subdirectories: `cgi-bin` and `htdocs`. Then update your Apache configuration file `httpd.conf` with this new `trac.cgi` location and `htdocs` location.
+このコマンドでは、デプロイ用ディレクトリを作成します。デプロイ用ディレクトリには `cgi-bin` と `htdocs` の二つのサブディレクトリが含まれています。 Apache の `httpd.conf` を新しい `trac.cgi` と `htdocs` の場所に更新してください。
 
-===== Web Admin plugin integrated =====
-If you had the webadmin plugin installed, you can uninstall it as it is part of the Trac code base since 0.11.
+===== Web アドミンプラグインのインテグレーション =====
+もし、 Web アドミンプラグインをインストールしていたら、 Trac 0.11 以降より、 Trac のコードベースの一部となっているのでアンインストールできます。
 
-=== 7. Restart the Web Server === #RestarttheWebServer
+=== 7. Web サーバを再起動する === #RestarttheWebServer
 
-If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.
+[wiki:TracCgi CGI] 以外で起動している場合は、 Web サーバを再起動して、新しい Trac コードをリロードしてください。
 
-== Known Issues ==
+== 既知の問題 == #KnownIssues
 
-=== parent dir ===
-If you use a trac parent env configuration and one of the plugins in one child does not work, none of the children work.
+=== 複数プロジェクトのホストに関して === #parentdir
+複数のプロジェクトをホストした場合に、配下のプロジェクトのうち一つのプロジェクトで、プラグインの一つが動作していないとき、配下のすべてのプロジェクトではそのプラグインは動作していません。
 
-=== Wiki Upgrade ===
-`trac-admin` will not delete or remove default wiki pages that were present in a previous version but are no longer in the new version.
+=== Wiki のアップグレード ===
+`trac-admin` は新しいバージョンでは存在しない以前のバージョンの Wiki ページを削除や移動しません。
 
 
-== Changing Database Backend ==
-=== SQLite to PostgreSQL ===
+== データベースの変更 == #ChangingDatabaseBackend
+=== SQLite から PostgreSQL へ === #SQLitetoPostgreSQL
 
-The [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] script on [http://trac-hacks.org trac-hacks.org] has been written to assist in migrating a SQLite database to a PostgreSQL database
+[http://trac-hacks.org trac-hacks.org] の [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] は SQLite のデータベースを PostgreSQL に移行するためのサポートをするスクリプトです。 
 
-== Older Versions ==
+== より古いバージョン == #OlderVersions
 
-For upgrades from versions older than Trac 0.10, refer first to [trac:wiki:0.10/TracUpgrade#SpecificVersions].
+さらに前のバージョンからのアップグレードについては [trac:wiki:0.10/TracUpgrade#SpecificVersions] を最初に参照してください。
 
 -----
 See also: TracGuide, TracInstall

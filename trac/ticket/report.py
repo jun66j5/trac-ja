@@ -48,6 +48,19 @@ def cell_value(v):
     """
     return v is 0 and '0' or v and unicode(v) or ''
 
+def iso_time(t):
+    return format_time(from_utimestamp(t), 'iso8601')
+
+def iso_datetime(dt):
+    return format_datetime(from_utimestamp(dt), 'iso8601')
+
+col_conversions = (
+    (re.compile(r'^time$'), iso_time),
+    (re.compile(r'^(?:changetime|date(?:time)?|created|modified)$'),
+     iso_datetime),
+    (re.compile(ur'.*(?:日時|時刻|日付)$'), iso_datetime),
+)
+
 
 class ReportModule(Component):
 
@@ -55,12 +68,12 @@ class ReportModule(Component):
                IWikiSyntaxProvider)
 
     items_per_page = IntOption('report', 'items_per_page', 100,
-        """Number of tickets displayed per page in ticket reports,
-        by default (''since 0.11'')""")
+        """レポートの検索結果ページで 1 ページに表示するチケット数の
+        デフォルト値 (''0.11 以降'')""")
 
     items_per_page_rss = IntOption('report', 'items_per_page_rss', 0,
-        """Number of tickets displayed in the rss feeds for reports
-        (''since 0.11'')""")
+        """レポートの RSS フィードに掲載するチケット数
+        (''0.11 以降'')""")
     
     # INavigationContributor methods
 
@@ -726,23 +739,15 @@ class ReportModule(Component):
 
     def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',
                   filename=None):
-        def iso_time(t):
-            return format_time(from_utimestamp(t), 'iso8601')
-
-        def iso_datetime(dt):
-            return format_datetime(from_utimestamp(dt), 'iso8601')
-
-        col_conversions = {
-            'time': iso_time,
-            'datetime': iso_datetime,
-            'changetime': iso_datetime,
-            'date': iso_datetime,
-            'created': iso_datetime,
-            'modified': iso_datetime,
-        }
-
-        converters = [col_conversions.get(c.strip('_'), cell_value)
-                      for c in cols]
+        converters = []
+        for c in cols:
+            c = c.strip('_')
+            for r, f in col_conversions:
+                if r.match(c):
+                    converters.append(f)
+                    break
+            else:
+                converters.append(cell_value)
 
         out = StringIO()
         writer = csv.writer(out, delimiter=sep)

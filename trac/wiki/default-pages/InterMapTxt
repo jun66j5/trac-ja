@@ -1,41 +1,41 @@
-= InterMapTxt =
+= InterMapTxt = #InterMapTxt
 
-== This is the place for defining InterWiki prefixes ==
+== InterWiki のプレフィックスを定義するページです == #ThisistheplacefordefiningInterWikiprefixes
 
-This page was modelled after the MeatBall:InterMapTxt page.
-In addition, an optional comment is allowed after the mapping.
+このページは MeatBall:InterMapTxt ページをモデルとしています。
+Trac ではマッピング文字列の後ろに任意のコメントをつけることができます。
 
 
-This page is interpreted in a special way by Trac, in order to support
-!InterWiki links in a flexible and dynamic way.
+Trac はこのページを特別に解釈し、 
+!InterWiki の柔軟かつ動的なリンクに対応します。
 
-The code block after the first line separator in this page
-will be interpreted as a list of !InterWiki specifications:
+このページでは、最初に見つかったライン区切り (訳注: 水平ライン) より下にあるコードブロック (訳注: 整形済みテキスト) は 
+!InterWiki の仕様に従った行のリストとして解釈されます:
 {{{
-prefix <space> URL [<space> # comment]
+プレフィックス <space> URL [<space> # コメント]
 }}}
 
-By using `$1`, `$2`, etc. within the URL, it is possible to create 
-InterWiki links which support multiple arguments, e.g. Trac:ticket:40.
-The URL itself can be optionally followed by a comment, 
-which will subsequently be used for decorating the links 
-using that prefix.
+URL で `$1`, `$2` などを使用すると、複数の引数をもつ 
+InterWiki リンクを作成することができます。例えば、 Trac:ticket:40 などです。
+この URL には任意のコメントをつけることができます。
+コメントはプレフィックスを使用するリンクを装飾するためにも
+使用されます。(訳注: title 属性に使用されます。マウスオーバすると表示されます)
 
-New !InterWiki links can be created by adding to that list, in real time.
-Note however that ''deletions'' are also taken into account immediately,
-so it may be better to use comments for disabling prefixes.
+新規 !InterWiki リンクは下のリストに追加すると、直ちに使用することができます。
+しかしながら、 ''削除'' もまた、直ちに適用されます。
+そのため、プレフィックスを使用不可にするためには、コメントアウトを使用するほうがいいかもしれません。
 
-Also note that !InterWiki prefixes are case insensitive.
+!InterWiki のプレフィックスでは大文字 / 小文字は区別されません。
 
 
-== List of Active Prefixes ==
+== プレフィックスのリスト == #ListofActivePrefixes
 
 [[InterWiki]]
 
 
 ----
 
-== Prefix Definitions ==
+== プレフィックスの定義 == #PrefixDefinitions
 
 {{{
 PEP     http://www.python.org/peps/pep-$1.html    # Python Enhancement Proposal 
@@ -60,7 +60,7 @@ SvnWiki     http://www.orcaware.com/svn/wiki/ # Subversion Wiki
 MediaWiki    http://www.mediawiki.org/wiki/
 
 #
-# A arbitrary pick of InterWiki prefixes...
+# InterWiki プレフィックスを適当にピックアップしたリスト 
 #
 Acronym          http://www.acronymfinder.com/af-query.asp?String=exact&Acronym=
 C2find           http://c2.com/cgi/wiki?FindPage&value=

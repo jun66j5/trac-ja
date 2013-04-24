@@ -1,7 +1,7 @@
 """Example macro."""
 
-revision = "$Rev$"
-url = "$URL$"
+revision = "$Rev: 6326 $"
+url = "$URL: https://svn.edgewall.org/repos/trac/trunk/sample-plugins/HelloWorld.py $"
 
 #
 # The following shows the code for macro, old-style.

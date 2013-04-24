@@ -126,43 +126,42 @@ class ChangesetModule(Component):
     property_diff_renderers = ExtensionPoint(IPropertyDiffRenderer)
     
     timeline_show_files = Option('timeline', 'changeset_show_files', '0',
-        """Number of files to show (`-1` for unlimited, `0` to disable).
+        """タイムラインに表示するファイル数を設定します (`-1`: 無制限, `0`: 表示しない)。
 
-        This can also be `location`, for showing the common prefix for the
-        changed files. (since 0.11).
+        また、変更のあったファイルに共通するプレフィックスを `位置` として
+        表示します (''0.11 以降'')。
         """)
 
     timeline_long_messages = BoolOption('timeline', 'changeset_long_messages',
                                         'false',
-        """Whether wiki-formatted changeset messages should be multiline or
-        not.
+        """Wiki フォーマットのチェンジセットのログメッセージを複数行表示するかどうかを設定します。
 
-        If this option is not specified or is false and `wiki_format_messages`
-        is set to true, changeset messages will be single line only, losing
-        some formatting (bullet points, etc).""")
+        このオプションが設定されないか、 false である場合、かつ `wiki_format_messages`
+        が true に設定されている場合、チェンジセットのログメッセージは、1 行のみ
+        表示され、いくつかのフォーマット (中点 (bullet points) など) は無視されます。""") 
 
     timeline_collapse = BoolOption('timeline', 'changeset_collapse_events',
                                    'false',
-        """Whether consecutive changesets from the same author having 
-        exactly the same message should be presented as one event.
-        That event will link to the range of changesets in the log view.
-        (''since 0.11'')""")
+        """全く同じログメッセージで、同一編集者による連続したチェンジセットを
+        1 つのイベントとして扱います。
+        この場合、ログビューでは範囲を持つチェンジセットとしてリンクされます。
+        (''0.11 以降'')""") 
 
     max_diff_files = IntOption('changeset', 'max_diff_files', 0,
-        """Maximum number of modified files for which the changeset view will
-        attempt to show the diffs inlined (''since 0.10'').""")
+        """チェンジセットビューの diff で直接表示する
+        更新ファイルの最大数を設定します。(''0.10 以降'')。""")
 
     max_diff_bytes = IntOption('changeset', 'max_diff_bytes', 10000000,
-        """Maximum total size in bytes of the modified files (their old size
-        plus their new size) for which the changeset view will attempt to show
-        the diffs inlined (''since 0.10'').""")
+        """更新したファイル (旧ファイルのサイズと新ファイルのサイズを足したもの)
+        のサイズの最大をバイト単位で指定します。チェンジセットビューの diff で
+        直接表示するサイズを制限します (''0.10 以降'')。""")
 
     wiki_format_messages = BoolOption('changeset', 'wiki_format_messages',
                                       'true',
-        """Whether wiki formatting should be applied to changeset messages.
+        """Wiki フォーマットをチェンジセットのログメッセージに適用するかどうかを設定します。
         
-        If this option is disabled, changeset messages will be rendered as
-        pre-formatted text.""")
+        このオプションが無効になっている場合、チェンジセットのログメッセージは
+        整形済みテキストとして表示されます。""")
 
     # INavigationContributor methods
 
@@ -773,7 +772,8 @@ class ChangesetModule(Component):
                 # Note: unicode filenames are not supported by zipfile.
                 # UTF-8 is not supported by all Zip tools either,
                 # but as some do, I think UTF-8 is the best option here.
-                zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
+                zipinfo.date_time = \
+                    new_node.last_modified.astimezone(req.tz).timetuple()[:6]
                 zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
                 zipinfo.compress_type = ZIP_DEFLATED
                 zipfile.writestr(zipinfo, new_node.get_content().read())

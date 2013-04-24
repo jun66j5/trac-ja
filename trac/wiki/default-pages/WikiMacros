@@ -1,29 +1,29 @@
-= Trac Macros =
+= Trac マクロ = #TracMacros
 
 [[PageOutline]]
 
-Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. A macro inserts dynamic HTML data in any context supporting WikiFormatting.
+Trac マクロとは、 Python で書かれた 'カスタム関数' によって Trac の Wiki エンジンを拡張するプラグインです。 WikiFormatting エンジンが利用可能なあらゆるコンテキストにおいて、マクロを使用することによって、動的な HTML データが挿入されます。
 
-Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting).
+もう 1 種類のマクロは WikiProcessors です。これは通常、 Wiki 以外のマークアップ形式と表示を取り扱うために使用し、多くは、 (ソースコードハイライトのような) より大きいブロックに使用します。
 
-== Using Macros ==
+== マクロの利用 == #UsingMacros
 
-Macro calls are enclosed in two ''square brackets''. Like Python functions, macros can also have arguments, a comma separated list within parentheses.
+マクロ呼び出しは、二つの ''角括弧 (square brackets) '' で括られた箇所です。 Python 関数のように、マクロは引数を取ることができ、括弧 (parenthesis) の中に、カンマで区切ったリストで表記します。
 
-=== Getting Detailed Help ===
-The list of available macros and the full help can be obtained using the !MacroList macro, as seen [#AvailableMacros below].
+=== 詳細なヘルプを見るには ===#GettingDetailedHelp 
+マクロの一覧と完全なヘルプは、 下記の[#AvailableMacros マクロ一覧] にある !MacroList マクロを使用してみることができます。
 
-A brief list can be obtained via ![[MacroList(*)]] or ![[?]].
+簡単なマクロ一覧は ![[MacroList(*)]] や ![[?]] で見ることができます。
 
-Detailed help on a specific macro can be obtained by passing it as an argument to !MacroList, e.g. ![[MacroList(MacroList)]], or, more conveniently, by appending a question mark (?) to the macro's name, like in ![[MacroList?]].
+特定のマクロの詳細なヘルプを参照したい場合は、 !MacroList マクロに引数渡すことによって参照することができます。例) ![[MacroList(MacroList)]] 。もしくは、便宜上、 ![[MacroList?]] のようにマクロ名にクエスチョンマーク (?) をつけることでヘルプをみることができます。
 
 
 
-=== Example ===
+=== 利用例 === #Example
 
-A list of 3 most recently changed wiki pages starting with 'Trac':
+'Trac' で始まる Wiki ページの最近の変更履歴 3 件分を表示するマクロです:
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   [[RecentChanges(Trac,3)]]
@@ -51,28 +51,28 @@ A list of 3 most recently changed wiki pages starting with 'Trac':
 [[?]]
 }}}
 
-== Available Macros ==
+== マクロ一覧 == #AvailableMacros
 
-''Note that the following list will only contain the macro documentation if you've not enabled `-OO` optimizations, or not set the `PythonOptimize` option for [wiki:TracModPython mod_python].''
+''Note: 以下に示すリストはマクロドキュメントを含むものだけです。 `-OO` による最適化や、 [wiki:TracModPython mod_python] での `PythonOptimize` オプションが設定されていると表示されません。''
 
 [[MacroList]]
 
-== Macros from around the world ==
+== 世界のマクロを共有 == #Macrosfromaroundtheworld
 
-The [http://trac-hacks.org/ Trac Hacks] site provides a wide collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you're looking for new macros, or have written one that you'd like to share with the world, please don't hesitate to visit that site.
+[http://trac-hacks.org/ Trac Hacks] というサイトは、コミュニティに寄稿されたマクロと [TracPlugins プラグイン] を収集し提供しています。新しいマクロを探している、共有したいマクロを作成した、などの場合は遠慮なく Trac Hacks のサイトを訪問してください。
 
-== Developing Custom Macros ==
-Macros, like Trac itself, are written in the [http://python.org/ Python programming language] and are developed as part of TracPlugins.
+== カスタムマクロを開発する == #DevelopingCustomMacros
+マクロは、 Trac 本体と同様 [http://python.org/ Python] で書かれています。そして TracPlugins の一種として開発します
 
-For more information about developing macros, see the [trac:TracDev development resources] on the main project site.
+マクロの開発についての詳しい情報は [http://trac.edgewall.org/wiki/TracDev リソースの開発] を参照してください。
 
 
-Here are 2 simple examples showing how to create a Macro with Trac 0.11. 
+Trac 0.11 でマクロを作成する簡単な例を 2 つ紹介します。
 
-Also, have a look at [trac:source:tags/trac-0.11/sample-plugins/Timestamp.py Timestamp.py] for an example that shows the difference between old style and new style macros and at the [trac:source:tags/trac-0.11/wiki-macros/README macros/README] which provides a little more insight about the transition.
+古いマクロと新しいマクロの違いを示す例は [http://trac.edgewall.org/browser/tags/trac-0.11/sample-plugins/Timestamp.py Timestamp.py] を参照してください。また、古いマクロから新しいマクロに移行するための情報は [http://trac.edgewall.org/browser/tags/trac-0.11/wiki-macros/README macros/README] を参照してください。
 
-=== Macro without arguments ===
-To test the following code, you should saved it in a `timestamp_sample.py` file located in the TracEnvironment's `plugins/` directory.
+=== 引数なしのマクロ === #Macrowithoutarguments
+下記のソースコードをテストするためには、このソースコードを `timestamp_sample.py` として保存し、 TracEnvironment の `plugins/` に配置しなければなりません。
 {{{
 #!python
 from datetime import datetime
@@ -94,8 +94,8 @@ class TimeStampMacro(WikiMacroBase):
         return tag.b(format_datetime(t, '%c'))
 }}}
 
-=== Macro with arguments ===
-To test the following code, you should saved it in a `helloworld_sample.py` file located in the TracEnvironment's `plugins/` directory.
+=== 引数付きのマクロ === #Macrowitharguments
+下記のソースコードをテストするためには、このソースコードを `helloworld_sample.py` として保存し、 TracEnvironment の `plugins/` に配置しなければなりません。
 {{{
 #!python
 from genshi.core import Markup
@@ -133,9 +133,9 @@ class HelloWorldMacro(WikiMacroBase):
 
 }}}
 
-Note that `expand_macro` optionally takes a 4^th^ parameter ''`args`''. When the macro is called as a [WikiProcessors WikiProcessor], it's also possible to pass `key=value` [WikiProcessors#UsingProcessors processor parameters]. If given, those are stored in a dictionary and passed in this extra `args` parameter. On the contrary, when called as a macro, `args` is  `None`. (''since 0.12'').
+Note: `expand_macro` は 第4パラメータに、 ''`args`'' を任意に取ることもできます。 このマクロが [WikiProcessors WikiProcessor] として呼ばれたとき、 `key=value` 形式の [WikiProcessors#UsingProcessors プロセッサパラメータ] を渡すことも可能です。もし、このパラメータを指定したとき、これらの値は、ディクショナリの中に保存され、 追加の `args` パラメータによって渡されます。一方で、マクロとして呼び出されたときは、 `args` パラメータは、 `None` として扱われます (''0.12 以降'') 。
 
-For example, when writing:
+例として、このように記述した場合:
 {{{
 {{{#!HelloWorld style="polite"
 <Hello World!>
@@ -147,16 +147,16 @@ For example, when writing:
 
 [[HelloWorld(<Hello World!>)]]
 }}}
-One should get:
+結果はこのようになります:
 {{{
 Hello World, text = <Hello World!> , args = {'style': u'polite'}
 Hello World, text = <Hello World!> , args = {}
 Hello World, text = <Hello World!> , args = None
 }}}
 
-Note that the return value of `expand_macro` is '''not''' HTML escaped. Depending on the expected result, you should escape it by yourself (using `return Markup.escape(result)`) or, if this is indeed HTML, wrap it in a Markup object (`return Markup(result)`) with `Markup` coming from Genshi, (`from genshi.core import Markup`).  
+Note: `expand_macro` が返す値は、 HTML がエスケープされて '''いない''' ことに注意して下さい。期待する戻り値によっては、あなた自身でエスケープする必要があります (`return Markup.escape(result)` を使用できます)。また、戻り値として HTML が返ってくると分かっているならば、結果を (`return Markup(result)`) という風に Genshi が提供している Markup (`from genshi.core import Markup`) オブジェクトでラップすることもできます。
 
-You can also recursively use a wiki Formatter (`from trac.wiki import Formatter`) to process the `text` as wiki markup, for example by doing:
+また、`text` を Wiki としてマークアップする場合、 Wiki Formatter (`from trac.wiki import Formatter`) オブジェクトも再帰的に使用することができます。以下がサンプルです:
 
 {{{
 #!python

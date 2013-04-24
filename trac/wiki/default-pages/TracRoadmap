@@ -1,40 +1,40 @@
-= The Trac Roadmap =
+= ロードマップ = #TheTracRoadmap
 [[TracGuideToc]]
 
-The roadmap provides a view on the [wiki:TracTickets ticket system] that helps planning and managing the future development of a project.
+ロードマップ (英語版では Roadmap) は [wiki:TracTickets チケットシステム] のビューを提供します。プロジェクトの将来の開発計画と管理の役に立つでしょう。
 
-== The Roadmap View ==
+== ロードマップのビュー == #TheRoadmapView
 
-Basically, the roadmap is just a list of future milestones. You can add a description to milestones (using WikiFormatting) describing main objectives, for example. In addition, tickets targeted for a milestone are aggregated, and the ratio between active and resolved tickets is displayed as a milestone progress bar.  It is possible to further [trac:TracRoadmapCustomGroups customise the ticket grouping] and have multiple ticket statuses shown on the progress bar.
+基本的に、ロードマップは将来のマイルストーン (英語版では Milestone) のリストに過ぎません。マイルストーンの説明、例えば主たる開発方針などを WikiFormatting を使用して追加することができます。その上で、あるマイルストーンのターゲットとなるチケットは集められ、未解決チケットと解決済みチケットの比率がマイルストーンの進捗インジケータに表示されます。 [http://trac.edgewall.org/wiki/TracRoadmapCustomGroups チケットのグループ化をカスタマイズする] ことによって、プログレスバーに複数のステータスを表示させる事ができます。(訳注: TracIni#milestone-groups-section を参照してください)
 
-The roadmap can be filtered to show or hide ''completed milestones'' and ''milestones with no due date''. In the case that both ''show completed milestones'' and ''hide milestones with no due date'' are selected, ''completed'' milestones with no due date __will__ be shown.
+ロードマップでは、 ''完了したマイルストーン'' や ''期限のないマイルストール'' の表示 / 非表示を選択することができます。 ''完了したマイルストーンも表示する'' と ''期限のないマイルストールを表示しない'' が同時に指定された場合、期限はないが ''完了した'' マイルストーンは、表示される __でしょう__ 。
 
-== The Milestone View ==
+== マイルストーンのビュー == #TheMilestoneView
 
-You can add a description for each milestone (using WikiFormatting) describing main objectives, for example. In addition, tickets targeted for a milestone are aggregated, and the ratio between active and resolved tickets is displayed as a milestone progress bar.  It is possible to further [trac:TracRoadmapCustomGroups customise the ticket grouping] and have multiple ticket statuses shown on the progress bar.
+各マイルストーンには概要を追加することができます ( WikiFormatting 使用可 ) 。例えば、主とした目的を記述することができます。加えて、あるマイルストーンをターゲットとしたチケットをまとめて、未解決と解決済みのチケットの割合がマイルストーンのプログレスバーに表示されます。さらに、 [trac:TracRoadmapCustomGroups チケットのグルーピングをカスタマイズしたり] 複数のチケットステータスをプログレスバーに表示することが可能です。
 
-It is possible to drill down into this simple statistic by viewing the individual milestone pages. By default, the active/resolved ratio will be grouped and displayed by component. You can also regroup the status by other criteria, such as ticket owner or severity. Ticket numbers are linked to [wiki:TracQuery custom queries] listing corresponding tickets.
+特定のマイルストーンのページを見ることによって、簡単な統計に掘り下げることは可能です。デフォルトでは、未解決/解決済みの比率がコンポーネントごとにグループ化され、表示されています。他の基準、例えば担当者や重要度で再グループ化することができます。チケットの番号は一致するチケットをリストする [wiki:TracQuery カスタムクエリ] にリンクされています。
 
-== Roadmap Administration ==
+== ロードマップ管理 == #RoadmapAdministration
 
-With appropriate permissions it is possible to add, modify and remove milestones using either the web interface (roadmap and milestone pages), web administration interface or by using `trac-admin`. 
+適切な権限を持っているならば、 Web インタフェース ( ロードマップとマイルストーンページ ) や Web アドミニストレーションインタフェースまたは、 `trac-admin` を使用して、マイルストーンの追加、編集、削除を行なうことができます。
 
-'''Note:''' Milestone descriptions can not currently be edited using 'trac-admin'.
+'''Note:''' マイルストーンの概要は `trac-admin` を使って編集することは現在できません。
 
-== iCalendar Support ==
+== iCalendar 対応 == #iCalendarSupport
 
-The Roadmap supports the [http://www.ietf.org/rfc/rfc2445.txt iCalendar] format to keep track of planned milestones and related tickets from your favorite calendar software. Many calendar applications support the iCalendar specification including
- * [http://www.apple.com/ical/ Apple iCal] for Mac OS X
- * the cross-platform [http://www.mozilla.org/projects/calendar/ Mozilla Calendar]
+ロードマップは、 [http://www.ietf.org/rfc/rfc2445.txt iCalendar] フォーマットに対応していますので、好みのカレンダーアプリケーションを使って、計画したマイルストーンと関係する課題を追いかけることが出来ます。多くのカレンダーアプリケーションが iCalendar をサポートしています。
+ * [http://www.apple.com/ical/ Apple iCal] Mac OS X 対応
+ * [http://www.mozilla.org/projects/calendar/ Mozilla Calendar] 複数のプラットフォームで使用可
  * [http://chandlerproject.org Chandler]
- * [http://kontact.kde.org/korganizer/ Korganizer] (the calendar application of the [http://www.kde.org/ KDE] project)
- * [http://www.novell.com/de-de/products/desktop/features/evolution.html Evolution] also support iCalendar
- * [http://office.microsoft.com/en-us/outlook/ Microsoft Outlook] can also read iCalendar files (it appears as a new static calendar in Outlook)
+ * [http://kontact.kde.org/korganizer/ Korganizer] ( [http://www.kde.org/ KDE] プロジェクトのカレンダーアプリケーション )
+ * [http://www.novell.com/de-de/products/desktop/features/evolution.html Evolution] iCalendar 対応
+ * [http://office.microsoft.com/en-us/outlook/ Microsoft Outlook] iCalendar ファイルの読み込み可 (これは、 Outlook の新しい静的カレンダーとして見えます。 )
 
-To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at the bottom of the page) and choose the "Subscribe to remote calendar" action (or similar) of your calendar application, and insert the URL just copied.
+ロードマップを購読するために、ロードマップのページにある iCalendar のリンクをコピーします (リンクはページの下の方にあります)。そして、カレンダーアプリケーションで "リモートカレンダーを購読" (またはこれに似たアクション) を行い、コピーした URL を貼り付けるだけです。
 
-'''Note:''' For tickets to be included in the calendar as tasks, you need to be logged in when copying the link. You will only see tickets assigned to yourself, and associated with a milestone.
+'''Note:''' カレンダーの中に (TO-DOアイテムとして) チケットが含まれているので、リンクをコピーするときに認証されている必要があります。あなた自身が担当者で、マイルストーンに関係するチケットのみ見ることができます。
 
-More information about iCalendar can be found at [http://en.wikipedia.org/wiki/ICalendar Wikipedia].
+より詳しい iCalendar についての情報は[http://en.wikipedia.org/wiki/ICalendar Wikipedia] で見つけることが出来ます。
 ----
 See also: TracTickets, TracReports, TracQuery, [trac:TracRoadmapCustomGroups TracRoadmapCustomGroups]
