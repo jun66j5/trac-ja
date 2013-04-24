@@ -1,68 +1,68 @@
-= Email Notification of Ticket Changes =
+= チケット更新情報のメール通知 = #EmailNotificationofTicketChanges
 [[TracGuideToc]]
 
-Trac supports notification of ticket changes via email. 
+Trac はチケット更新情報をメールで通知出来ます。 (英語版では Notification)
 
-Email notification is useful to keep users up-to-date on tickets/issues of interest, and also provides a convenient way to post all ticket changes to a dedicated mailing list. For example, this is how the [http://lists.edgewall.com/archive/trac-tickets/ Trac-tickets] mailing list is set up.
+メールによる更新通知は、ユーザに関係するチケットについての最新情報を随時に提供したり、専用 ML にチケットの更新情報を配信したりするのに便利な機能です。例えば、 [http://lists.edgewall.com/archive/trac-tickets/ Trac-tickets] を見るとどのようにセットアップされているか見ることができます。
 
-Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
+通知機能はデフォルトでは無効になっています。有効化とコンフィグレーションは [wiki:TracIni trac.ini] で行うことができます。
 
-== Receiving Notification Mails ==
-When reporting a new ticket or adding a comment, enter a valid email address or your username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket (depending on how notification is configured).
+== 通知メールを受け取る == #ReceivingNotificationMails
+新しいチケットを登録したりコメントを追加する際、 ''報告者'' (英語版では ''reporter'')、 ''担当者'' (英語版では ''assigned to/owner'') もしくは ''関係者'' (英語版では ''cc'') フィールドに有効なメールアドレスやユーザ名を入力してください。チケットに更新があると、 Trac が自動的にメールを送信します。 (どのように通知メール機能を設定しているかによります)
 
-This is useful to keep up-to-date on an issue or enhancement request that interests you.
+これは、興味のあるチケットや機能追加に関する最新情報を随時受け取りたい場合に便利な機能です。
 
-=== How to use your username to receive notification mails ===
+=== 通知メールで受信するメールアドレスを設定する方法 === #Howtouseyourusernametoreceivenotificationmails
 
-To receive notification mails, you can either enter a full email address or your username. To get notified with a simple username or login, you need to specify a valid email address in the ''Preferences'' page. 
+完全なメールアドレスあるいはユーザー名を入力することで、通知メールを受け取ることができます。 単純なユーザ名やログイン名で通知を受け取るには、''ユーザ設定 (Preferences)'' ページで、正しいメールアドレスを入力する必要があります。
 
-Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file (see [#ConfigurationOptions Configuration Options] below). In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
+TracIni ファイルにデフォルトドメイン名 ('''`smtp_default_domain`''') を指定することでも、単純なユーザ名で通知を受け取ることができるようになります。 (後述する [#ConfigurationOptions コンフィグレーション オプション] を参照してください) 。この場合、ユーザ名にデフォルトドメインが追加されますので、 "イントラネット" 環境で仕様している場合は便利です。
 
-When using apache and mod_kerb for authentication against Kerberos / Active Directory, usernames take the form ('''`username@EXAMPLE.LOCAL`'''). To avoid this being interpreted as an email address, add the Kerberos domain to  ('''`ignore_domains`''').
+Kerberos / Active Directory 認証に Apache と mod_kerb を使用する際、ユーザ名は ('''`username@EXAMPLE.LOCAL`''') という形式を取ります。これをメールアドレスとして解釈されない様にするためには、 ('''`ignore_domains`''') に Kerberos ドメインを追加します。
 
-== Configuring SMTP Notification ==
+== SMTP 通知の設定 == #ConfiguringSMTPNotification
 
-'''Important:''' For TracNotification to work correctly, the `[trac] base_url` option must be set in [wiki:TracIni trac.ini]. 
+'''重要:''' TracNotification を正しく動作させるには、[wiki:TracIni trac.ini] に `[trac] base_url` を設定する必要があります。
 
-=== Configuration Options ===
-These are the available options for the `[notification]` section in trac.ini.
+=== コンフィグレーション オプション === #ConfigurationOptions
+trac.ini の `[notification]` セクションで設定できるオプションです。[[BR]](訳注: 0.10 以降では `TracIni` マクロを使用することで正確なオプション一覧を取得できます。以下のリストは必要に応じて `[[TracIni(notification)]]` に置き換えて使用してください。)
 
- * '''`smtp_enabled`''': Enable email notification.
- * '''`smtp_from`''': Email address to use for ''Sender''-headers in notification emails.
- * '''`smtp_from_name`''': Sender name to use for ''Sender''-headers in notification emails.
- * '''`smtp_replyto`''': Email address to use for ''Reply-To''-headers in notification emails.
- * '''`smtp_default_domain`''': (''since 0.10'') Append the specified domain to addresses that do not contain one. Fully qualified addresses are not modified. The default domain is appended to all username/login for which an email address cannot be found from the user settings.
- * '''`smtp_always_cc`''': List of email addresses to always send notifications to. ''Typically used to post ticket changes to a dedicated mailing list.''
- * '''`smtp_always_bcc`''': (''since 0.10'') List of email addresses to always send notifications to, but keeps addresses not visible from other recipients of the notification email 
- * '''`smtp_subject_prefix`''': (''since 0.10.1'') Text that is inserted before the subject of the email. Set to "!__default!__" by default.
- * '''`always_notify_reporter`''':  Always send notifications to any address in the reporter field (default: false).
- * '''`always_notify_owner`''': (''since 0.9'') Always send notifications to the address in the owner field (default: false).
- * '''`always_notify_updater`''': (''since 0.10'') Always send a notification to the updater of a ticket (default: true).
- * '''`use_public_cc`''': (''since 0.10'') Addresses in To: (owner, reporter) and Cc: lists are visible by all recipients (default is ''Bcc:'' - hidden copy).
- * '''`use_short_addr`''': (''since 0.10'') Enable delivery of notifications to addresses that do not contain a domain (i.e. do not end with ''@<domain.com>'').This option is useful for intranets, where the SMTP server can handle local addresses and map the username/login to a local mailbox. See also `smtp_default_domain`. Do not use this option with a public SMTP server. 
- * '''`ignore_domains`''': Comma-separated list of domains that should not be considered part of email addresses (for usernames with Kerberos domains).
- * '''`mime_encoding`''': (''since 0.10'') This option allows selecting the MIME encoding scheme. Supported values:
-   * `none`: default value, uses 7bit encoding if the text is plain ASCII, or 8bit otherwise. 
-   * `base64`: works with any kind of content. May cause some issues with touchy anti-spam/anti-virus engines.
-   * `qp` or `quoted-printable`: best for european languages (more compact than base64) if 8bit encoding cannot be used.
- * '''`ticket_subject_template`''': (''since 0.11'') A [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet used to get the notification subject.
- * '''`email_sender`''': (''since 0.12'') Name of the component implementing `IEmailSender`. This component is used by the notification system to send emails. Trac currently provides the following components:
-   * `SmtpEmailSender`: connects to an SMTP server (default).
-   * `SendmailEmailSender`: runs a `sendmail`-compatible executable.   
+ * '''`smtp_enabled`''': メール通知を有効にします。
+ * '''`smtp_from`''': 通知メールの ''Sender''-ヘッダに使用するメールアドレス。
+ * '''`smtp_from_name`''': 通知メールの ''Sender''-ヘッダに使用する送信者名。
+ * '''`smtp_replyto`''': 通知メールの''Reply-To''-ヘッダに使用するメールアドレス。
+ * '''`smtp_default_domain`''': (''0.10 以降'') ドメイン名を含んでいないアドレスに特定のドメイン名を追加します。完全修飾されたアドレスは修正されません。ユーザの設定からメールアドレスが分からないときに、デフォルトドメインをすべてのユーザ名 / ログイン名に追加します。
+ * '''`smtp_always_cc`''': 常に通知メールを送信するメールアドレスのリスト。 ''主に専用MLにチケット更新を通知するのに使用されます。''
+ * '''`smtp_always_bcc`''': (''0.10 以降'') 常に通知メールを送信するメールアドレスの一覧。ただし、通知メールの他の受信者からメールアドレスが見えません。
+ * '''`smtp_subject_prefix`''': (''0.10.1 以降'') e-mail の subject の前に挿入されるテキスト。デフォルトは "!__default!__"
+ * '''`always_notify_reporter`''': 報告者フィールドのすべてのメールアドレスに常に通知メールを送信します。 (default: false)
+ * '''`always_notify_owner`''': (''0.9 以降'') 担当者フィールドのメールアドレスに常に通知メールを送信します。 (default: false)
+ * '''`always_notify_updater`''': (''0.10 以降'') チケットの更新者に常に通知メールを送信します。 (default: false)
+ * '''`use_public_cc`''': (''0.10 以降'') To: (担当者, 報告者) と CC: のアドレスのリストがすべての受信者に見えるかどうかを設定します ( デフォルトは ''Bcc:'' で見えません)
+ * '''`use_short_addr`''': (''0.10 以降'') 通知メールの配信でメールアドレスがドメイン名を含むようにするかどうかを設定します (例 ''@<domain.com>'' で終わらないようにする)。このオプションは SMTP サーバがローカルアドレスをハンドリングでき、ローカルのメールボックスとユーザ名/ログイン名をマップできるような環境、イントラネット内で使用するときに便利です。
+ * '''`ignore_domains`''': メールアドレスの一部と見なされるべきでないドメインのカンマ区切りリスト。 (Kerberos ドメインのユーザ名向け)
+ * '''`mime_encoding`''': (''0.10 以降'') MIME のエンコードのスキームを選択します。サポートする値:
+   * `none`: デフォルト値。テキストがプレーンな ASCII 文字コード、もしくはその他 8 ビットの文字コードであるときに、 7 ビットエンコードを使用します。
+   * `base64`: どのような内容が含まれていても動作します。敏感なアンチスパム / アンチウイルスエンジンではいくつかの問題があるかもしれません。
+   * `qp` または `quoted-printable`: 8 ビットエンコーディングが使用できない場合、ヨーロッパの言語に対して最適です ( base64 よりもコンパクトです )。
+ * '''`ticket_subject_template`''': (''0.11 以降'') 通知メールの件名 (Subject) に使用する [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi テキストテンプレート] 。  * '''`ticket_subject_template`''': (''0.11 以降'') 通知メールの件名 (Subject) に使用する [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi テキストテンプレート] 。
+ * '''`email_sender`''': (''0.12 以降'') `IEmailSender` インタフェースを実装しているコンポーネント名。通知システムは、ここで設定されたコンポーネントを使用してメールを送信します。現在のところ Trac では以下のコンポーネントが提供されています:
+   * `SmtpEmailSender`: SMTP サーバに接続してメールを送信する (デフォルト)。
+   * `SendmailEmailSender`: `sendmail` 互換の実行ファイルを実行してメールを送信する。
 
-Either '''`smtp_from`''' or '''`smtp_replyto`''' (or both) ''must'' be set, otherwise Trac refuses to send notification mails.
+'''`smtp_from`''' か '''`smtp_replyto`''' の一方 (もしくは両方) が ''必ず'' 設定されていなければなりません。設定されていない場合、 Trac は通知メールの送信を拒否します。
 
-The following options are specific to email delivery through SMTP.
- * '''`smtp_server`''': SMTP server used for notification messages.
- * '''`smtp_port`''': (''since 0.9'') Port used to contact the SMTP server.
- * '''`smtp_user`''': (''since 0.9'') User name for authentication SMTP account.
- * '''`smtp_password`''': (''since 0.9'') Password for authentication SMTP account.
- * '''`use_tls`''': (''since 0.10'') Toggle to send notifications via a SMTP server using [http://en.wikipedia.org/wiki/Transport_Layer_Security TLS], such as GMail.
+以下のオプションは SMTP でのメッセージ伝送方法を指定するために使用します。
+ * '''`smtp_server`''': 通知メッセージに使用されるSMTPサーバ。
+ * '''`smtp_port`''': (''0.9 以降'') SMTP サーバが使用するポート番号。
+ * '''`smtp_user`''': (''0.9 以降'') SMTP 認証アカウントのユーザID。
+ * '''`smtp_password`''': (''0.9 以降'') SMTP 認証アカウントのパスワード。
+ * '''`use_tls`''': (''0.10 以降'') SMTP サーバ経由で通知メールを送信するときに、GMail などの [http://en.wikipedia.org/wiki/Transport_Layer_Security TLS] を使用するかどうかを切り替えます。
 
-The following option is specific to email delivery through a `sendmail`-compatible executable.
- * '''`sendmail_path`''': (''since 0.12'') Path to the sendmail executable. The sendmail program must accept the `-i` and `-f` options.
+以下のオプションは `sendmail` 互換の実行ファイルを使用する場合のメッセージ伝送方法を指定するために使用します。
+ * '''`sendmail_path`''': (''0.12 以降'') sendmail の実行ファイルへのパスを設定します。ここで指定する sendmail プログラムは `-i` および `-f` オプションを解釈できなければなりません。
 
-=== Example Configuration (SMTP) ===
+=== コンフィグレーションの例 (SMTP) === #ExampleConfigurationSMTP
 {{{
 [notification]
 smtp_enabled = true
@@ -72,7 +72,7 @@ smtp_replyto = myproj@projects.example.com
 smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 }}}
 
-=== Example Configuration (`sendmail`) ===
+=== コンフィグレーションの例 (`sendmail`) === #ExampleConfigurationsendmail
 {{{
 [notification]
 smtp_enabled = true
@@ -83,21 +83,21 @@ smtp_replyto = myproj@projects.example.com
 smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 }}}
 
-=== Customizing the e-mail subject ===
-The e-mail subject can be customized with the `ticket_subject_template` option, which contains a [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet. The default value is:
+=== メールの件名をカスタマイズする === #Customizingthee-mailsubject
+`ticket_subject_template` オプションを使用することでメールの件名をカスタマイズできます。このオプションには [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi テキストテンプレート] を含めることができます。デフォルト値は以下の通りです:
 {{{
 $prefix #$ticket.id: $summary
 }}}
-The following variables are available in the template:
+テンプレートでは以下の変数が使用可能です:
 
- * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
- * `prefix`: The prefix defined in `smtp_subject_prefix`.
- * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, e.g. `$ticket.milestone`.
+ * `env`: プロジェクトの Environemnt ([http://trac.edgewall.org/browser/trunk/trac/env.py env.py] 参照)。
+ * `prefix`: `smtp_subject_prefix` で定義したプレフィックス。
+ * `summary`: チケットの概要 (Summary), 概要が変更されている場合は古い値。
+ * `ticket`: ticket model オブジェクト ([http://trac.edgewall.org/browser/trunk/trac/ticket/model.py model.py] 参照)。個別のチケット属性は `$ticket.milestone` のように、ドット (.) で区切って (訳注: 英語での) 属性名を加えることで、参照可能。
 
-=== Customizing the e-mail content ===
+=== メールの内容をカスタマイズする === #Customizingthee-mailcontent
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
+通知メールの内容は `trac/templates` の `ticket_notify_email.txt` を基に生成されます。編集した `ticket_notify_email.txt` を Environment の templates ディレクトリに配置することで、カスタマイズすることができます。デフォルトはこのようになっています:
 
 {{{
 $ticket_body_hdr
@@ -128,20 +128,20 @@ $change.comment
 {%   end %}\
 {% end %}\
 
--- 
+--
 ${_('Ticket URL: <%(link)s>', link=ticket.link)}
 $project.name <${project.url or abs_href()}>
 $project.descr
 }}}
-== Sample Email ==
+== Email サンプル == #SampleEmail
 {{{
 #42: testing
 ---------------------------+------------------------------------------------
-       Id:  42             |      Status:  assigned                
+       Id:  42             |      Status:  assigned
 Component:  report system  |    Modified:  Fri Apr  9 00:04:31 2004
- Severity:  major          |   Milestone:  0.9                     
- Priority:  lowest         |     Version:  0.6                     
-    Owner:  anonymous      |    Reporter:  jonas@example.com               
+ Severity:  major          |   Milestone:  0.9
+ Priority:  lowest         |     Version:  0.6
+    Owner:  anonymous      |    Reporter:  jonas@example.com
 ---------------------------+------------------------------------------------
 Changes:
   * component:  changset view => search system
@@ -159,31 +159,31 @@ Ticket URL: <http://example.com/trac/ticket/42>
 My Project <http://myproj.example.com/>
 }}}
 
+== MS Outlook 向け E メールカスタマイズ == #Customizinge-mailcontentforMSOutlook
 
-== Customizing e-mail content for MS Outlook ==
+通常何も設定していなければ、 MS Outlook では可変長フォントのプレーンテキストメールを提示します。そのため、チケットプロパティの表は確実にゴチャゴチャしたように見えます。この問題は、 [#Customizingthee-mailcontent メールテンプレート] のカスタマイズにより解決することができます。
 
-Out-of-the-box, MS Outlook normally presents plain text e-mails with a variable-width font; the ticket properties table will most certainly look like a mess in MS Outlook. This can be fixed with some customization of the [#Customizingthee-mailcontent e-mail template].
 
-Replace the following second row in the template:
+テンプレートの2行目を次のように置き換えます:
 {{{
 $ticket_props
 }}}
 
-with this instead (''requires Python 2.6 or later''):
+この代わりに (''Python 2.6 以降が必要''):
 {{{
 --------------------------------------------------------------------------
 {% with
    pv = [(a[0].strip(), a[1].strip()) for a in [b.split(':') for b in
-         [c.strip() for c in 
+         [c.strip() for c in
           ticket_props.replace('|', '\n').splitlines()[1:-1]] if ':' in b]];
-   sel = ['Reporter', 'Owner', 'Type', 'Status', 'Priority', 'Milestone', 
+   sel = ['Reporter', 'Owner', 'Type', 'Status', 'Priority', 'Milestone',
           'Component', 'Severity', 'Resolution', 'Keywords'] %}\
 ${'\n'.join('%s\t%s' % (format(p[0]+':', ' <12'), p[1]) for p in pv if p[0] in sel)}
 {% end %}\
 --------------------------------------------------------------------------
 }}}
 
-The table of ticket properties is replaced with a list of a selection of the properties. A tab character separates the name and value in such a way that most people should find this more pleasing than the default table, when using MS Outlook.
+チケットプロパティの表は、選択するプロパティのリストに置き換えられます。MS Outlook を使用する際に、デフォルトの表よりわかりやすくなるように、タブ文字で名前と値を分離しています。
 {{{#!div style="margin: 1em 1.75em; border:1px dotted"
 {{{#!html
 #42: testing<br />
@@ -219,17 +219,17 @@ My Project &lt;http://myproj.example.com/&gt;<br />
 }}}
 }}}
 
-**Important**: Only those ticket fields that are listed in `sel` are part of the HTML mail. If you have defined custom ticket fields which shall be part of the mail they have to be added to `sel`, example:
+**重要**: `sel` にリストされているチケットフィールドのみ HTML メールに含まれます。もし、メールに当然含まなくてはならないカスタムチケットフィールドを定義するのであれば、`sel` に追加しなければなりません。例:
 {{{
    sel = ['Reporter', ..., 'Keywords', 'Custom1', 'Custom2']
 }}}
 
-However, it's not as perfect as an automatically HTML-formatted e-mail would be, but presented ticket properties are at least readable by default in MS Outlook...
+しかしながら、 自動的なHTMLフォーマットのメールのように完璧ではありません。それでも、現状のチケットのプロパティをマイクロソフトのアウトルックによって少なくとも読むことは出来ます。。。
 
 
-== Using GMail as the SMTP relay host ==
+== SMTP リレーホストとして GMail を使用する == #UsingGMailastheSMTPrelayhost
 
-Use the following configuration snippet
+以下のような設定を使用します
 {{{
 [notification]
 smtp_enabled = true
@@ -241,43 +241,43 @@ smtp_user = user
 smtp_password = password
 }}}
 
-where ''user'' and ''password'' match an existing GMail account, ''i.e.'' the ones you use to log in on [http://gmail.com]
+''user'' と ''password'' の箇所は、 GMail のアカウントで置き換えてください。 ''たとえば'' [http://gmail.com] にログインするときに使用しているものです。
 
-Alternatively, you can use `smtp_port = 25`.[[br]]
-You should not use `smtp_port = 465`. It will not work and your ticket submission may deadlock. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [comment:ticket:7107:2 #7107] for details.
- 
-== Filtering notifications for one's own changes ==
-In Gmail, use the filter:
+代わりに `smtp_port = 25` を使用することもできます。 (訳注: おそらく `gmail.com` 宛のメールしか届きません)[[br]]
+しかし `smtp_port = 465` は使用できません。これは動作しないだけでなく、通知メール送信がデッドロックします。ポート番号 465 は SMTPS プロトコル (訳注: SSMTP とも言います) に使用されますが、 Trac はこれをサポートしていません。詳しくは [http://trac.edgewall.org/ticket/7107#comment:2 #7107] を参照してください。
+
+== 自分が変更した通知をフィルタする == #Filteringnotificationsforonesownchanges
+Gmail では、以下のフィルタを使用できます:
 
 {{{
 from:(<smtp_from>) (("Reporter: <username>" -Changes) OR "Changes (by <username>)")
 }}}
 
-For Trac .10, use the filter:
+Trac 0.10 の場合は、下記のフィルタを使用してください:
 {{{
 from:(<smtp_from>) (("Reporter: <username>" -Changes -Comment) OR "Changes (by <username>)" OR "Comment (by <username>)")
 }}}
 
-to delete these notifications.
+通知メールを削除する場合などにも使用できます。
 
-In Thunderbird, there is no such solution if you use IMAP
-(see http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body).
+Thunderbird で IMAP を使用している場合は、この方法は使えません
+(http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body 参照)。
 
-The best you can do is to set "always_notify_updater" in conf/trac.ini to false.
-You will however still get an email if you comment a ticket that you own or have reported.
+最良の方法は conf/trac.ini の "always_notify_updater" を false に設定することです。
+しかし、この方法では自分が担当者 (owner) になっていたり、報告 (reporter) したチケットへのコメントが取得できなくなります。
 
-You can also add this plugin:
+プラグインを追加することで解決するかもしれません:
 http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
 
-== Troubleshooting ==
+== トラブルシューティング == #Troubleshooting
 
-If you cannot get the notification working, first make sure the log is activated and have a look at the log to find if an error message has been logged. See TracLogging for help about the log feature.
+通知メールの設定がうまくいかないとき、最初にログが出力されるようになっているか確かめて下さい。そしてどういうエラーメッセージが出力されているかを見てください。[http://trac.edgewall.org/wiki/TracLogging TracLogging] にログについて書いてあるので見て下さい。
 
-Notification errors are not reported through the web interface, so the user who submit a change or a new ticket never gets notified about a notification failure. The Trac administrator needs to look at the log to find the error trace.
+通知メールのエラーは Web インタフェースで報告されないので、誰かがチケットを更新したり、新規のチケットを登録しても通知メールが届かないことにまったく気づかないでしょう。 Trac の管理者はエラートレースを追い、ログをみる必要があります。
 
-=== ''Permission denied'' error ===
+=== ''Permission denied'' エラー === #Permissiondeniederror
 
-Typical error message:
+たいていのエラーメッセージ:
 {{{
   ...
   File ".../smtplib.py", line 303, in connect
@@ -285,41 +285,41 @@ Typical error message:
   error: (13, 'Permission denied')
 }}}
 
-This error usually comes from a security settings on the server: many Linux distributions do not let the web server (Apache, ...) to post email message to the local SMTP server.
+このエラーはたいていサーバのセキュリティの設定に起因します: 多くの Linux のディストリビューションでは Web サーバ (Apache など ...) からローカルの SMTP サーバにメールを送信させません。
 
-Many users get confused when their manual attempts to contact the SMTP server succeed:
+多くのユーザはマニュアルに SMTP サーバに接続できるか試すよう書いてあり、成功するので混乱するでしょう:
 {{{
 telnet localhost 25
 }}}
-The trouble is that a regular user may connect to the SMTP server, but the web server cannot:
+トラブルの原因は、一般ユーザは SMTP サーバに接続できるけれども、 Web サーバは接続できないということです:
 {{{
 sudo -u www-data telnet localhost 25
 }}}
 
-In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help browsing the Trac [trac:MailingList MailingList] archive.
+このような場合、 Web サーバ が SMTP サーバにメールを送信するときに認証を行うように設定する必要があります。実際の設定は使用している Linux のディストリビューションと現在のセキュリティのポリシーによります。 Trac の [http://trac.edgewall.org/wiki/MailingList MailingList] のアーカイブを参照して下さい。
 
-Relevant ML threads:
+関係のあるメーリングリストのスレッド:
  * SELinux: http://article.gmane.org/gmane.comp.version-control.subversion.trac.general/7518
 
-For SELinux in Fedora 10:
+Fedora 10 の SELinux では下記のコマンドで対処できます:
 {{{
 $ setsebool -P httpd_can_sendmail 1
 }}}
-=== ''Suspected spam'' error ===
+=== ''Suspected spam'' エラー === #Suspectedspamerror
 
-Some SMTP servers may reject the notification email sent by Trac.
+SMTP サーバの中には Trac によって送信される通知メールを拒否するのもあるでしょう。
 
-The default Trac configuration uses Base64 encoding to send emails to the recipients. The whole body of the email is encoded, which sometimes trigger ''false positive'' SPAM detection on sensitive email servers. In such an event, it is recommended to change the default encoding to "quoted-printable" using the `mime_encoding` option.
+Trac はデフォルトで通知メールを Base64 エンコーディングして受信者に送信します。メールの本文 (Body) 全体がエンコードされる (訳注:チケットのタイトルに日本語が含まれる場合、通知メールの Subject ヘッダも utf-8 base64 エンコーディングされます) ので、繊細なメールサーバ上の ''false positive'' な SPAM 発見プログラムのトリガになってしまいます。このような状況に遭遇した場合、 `mime_encoding` オプションでデフォルトのエンコーディングを "quoted-printable" に変更することを推奨します。
 
-Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, it is recommended to stick with the Base64 encoding.
+"quoted-printable" エンコーディングは ラテン系の文字セットで使用すると効果があります。アジア系の文字セットでは、 Base64 エンコーディングに固定することを推奨します。 (訳注: 日本語のメールで主に使用されるエンコードは `ISO-2022-JP` ですが、 Trac が送信する通知メールは `UTF-8` でエンコードされ、さらに `BASE64` か `quoted-printable` で 7bit-safe な形式にエンコードされます。 `ISO-2022-JP` エンコーディングでない日本語のメールは Spam 検出エンジンに誤判定されやすくなる傾向があるようです。また、 MUA がこれらのエンコードに対応していない場合、たとえ受信できたとしても文字化けしたり表示できない可能性があります。)
 
-=== ''501, 5.5.4 Invalid Address'' error ===
+=== ''501, 5.5.4 Invalid Address'' エラー === #a5015.5.4InvalidAddresserror
 
-On IIS 6.0 you could get a 
+IIS 6.0 で
 {{{
 Failure sending notification on change to ticket #1: SMTPHeloError: (501, '5.5.4 Invalid Address')
 }}}
-in the trac log. Have a look [http://support.microsoft.com/kb/291828 here] for instructions on resolving it.
+上記のエラーが trac のログにでる場合、 [http://support.microsoft.com/kb/291828 ここ]を参考に解決してください。
 
 
 ----

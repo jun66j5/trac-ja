@@ -48,20 +48,20 @@ class TimelineModule(Component):
     event_providers = ExtensionPoint(ITimelineEventProvider)
 
     default_daysback = IntOption('timeline', 'default_daysback', 30,
-        """Default number of days displayed in the Timeline, in days.
-        (''since 0.9.'')""")
+        """タイムラインに表示する日数にデフォルト値を設定します
+        (''0.9 以降'')。""")
 
     max_daysback = IntOption('timeline', 'max_daysback', 90,
-        """Maximum number of days (-1 for unlimited) displayable in the 
-        Timeline. (''since 0.11'')""")
+        """タイムラインで表示可能な日数の最大値 (-1 は無制限を意味する)
+        (''0.11 以降'')。""")
 
     abbreviated_messages = BoolOption('timeline', 'abbreviated_messages',
                                       True,
-        """Whether wiki-formatted event messages should be truncated or not.
+        """WikiFormatting で書かれたメッセージを切り詰めるかどうかを設定します。
 
-        This only affects the default rendering, and can be overriden by
-        specific event providers, see their own documentation.
-        (''Since 0.11'')""")
+        このオプションは default のレンダリングでのみ有効です。 特定のイベントプロバイダによって、
+        設定が上書きされることがあります。詳しくは、イベントプロバイダのドキュメントを参照して下さい
+        (''0.11 以降'')。""")
 
     _authors_pattern = re.compile(r'(-)?(?:"([^"]*)"|\'([^\']*)\'|([^\s]+))')
 

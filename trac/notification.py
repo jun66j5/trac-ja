@@ -48,72 +48,72 @@ class NotificationSystem(Component):
 
     email_sender = ExtensionOption('notification', 'email_sender',
                                    IEmailSender, 'SmtpEmailSender',
-        """Name of the component implementing `IEmailSender`.
+        """`IEmailSender` を実装しているコンポーネント名を設定します。
         
-        This component is used by the notification system to send emails.
-        Trac currently provides `SmtpEmailSender` for connecting to an SMTP
-        server, and `SendmailEmailSender` for running a `sendmail`-compatible
-        executable. (''since 0.12'')""")
+        ここに設定されたコンポーネントを使って通知システムはメールを送信します。
+        現在のところ Trac では SMTP サーバに接続する `SmtpEmailSender` と、
+        `sendmail` 互換の実行可能ファイルを実行する `SendmailEmailSender`
+        が提供されています。 (''0.12 以降'')""")
 
     smtp_enabled = BoolOption('notification', 'smtp_enabled', 'false',
-        """Enable email notification.""")
+        """メール通知を有効にするかどうかを設定します。""")
 
     smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
-        """Sender address to use in notification emails.""")
+        """通知メールに使用する送信者アドレスを設定します。""")
         
     smtp_from_name = Option('notification', 'smtp_from_name', '',
-        """Sender name to use in notification emails.""")
+        """通知メールに使用する送信者名を設定します。""")
 
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
-        """Reply-To address to use in notification emails.""")
+        """通知メールに使用する返信アドレスを設定します。""")
 
     smtp_always_cc = Option('notification', 'smtp_always_cc', '',
-        """Email address(es) to always send notifications to,
-           addresses can be seen by all recipients (Cc:).""")
+        """常に通知メールを送るメールアドレスを設定します。
+        設定したアドレスは、すべての受信者がみることができます (Cc:)。""")
 
     smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
-        """Email address(es) to always send notifications to,
-           addresses do not appear publicly (Bcc:). (''since 0.10'').""")
+        """常に通知メールを送るメールアドレスを設定します。
+        設定したアドレスを受信者は見ることができません(Bcc:)。(0.10 以降 )。""")
            
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
-        """Default host/domain to append to address that do not specify
-           one.""")
+        """アドレスにホスト名/ドメインが指定されていなかったときに、付与する
+        文字列を設定します。""")
         
     ignore_domains = Option('notification', 'ignore_domains', '',
-        """Comma-separated list of domains that should not be considered
-           part of email addresses (for usernames with Kerberos domains).""")
+        """メールアドレスの一部として有効としないドメインをカンマ区切りで設定します。
+        (ユーザ名に Kerberos ドメインが付いている場合などの対策)""")
            
     admit_domains = Option('notification', 'admit_domains', '',
-        """Comma-separated list of domains that should be considered as
-        valid for email addresses (such as localdomain).""")
+        """メールアドレスとして有効とするドメインをカンマ区切りで設定します。
+        (localdomain など)""")
            
     mime_encoding = Option('notification', 'mime_encoding', 'none',
-        """Specifies the MIME encoding scheme for emails.
-        
-        Valid options are 'base64' for Base64 encoding, 'qp' for
-        Quoted-Printable, and 'none' for no encoding, in which case mails will
-        be sent as 7bit if the content is all ASCII, or 8bit otherwise.
-        (''since 0.10'')""")
+        """メールのエンコード方法を設定します。
+ 
+        有効なオプションとして、Base64 エンコーディングの 'base64',
+        Quoted-Printable の 'qp', すべての文字が ASCII の場合は 7bit で、
+        そうでない場合には適切な 8bit で送信する 'none' があります。
+        (0.10 以降)。""")       
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
-        """Recipients can see email addresses of other CC'ed recipients.
+        """通知メールの受信者が、 CC された他の受信者のメールアドレスを見ることができるかを設定します。
         
-        If this option is disabled (the default), recipients are put on BCC.
-        (''since 0.10'')""")
+        このオプションが無効になっている場合 (デフォルト)、受信者のメールアドレスは BCC フィールドに設定されます
+        (''0.10 以降'')。""") 
 
     use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
-        """Permit email address without a host/domain (i.e. username only).
+        """ホスト名やドメインがないメールアドレスを許容するかを設定します (ユーザ名のみの場合など)。
         
-        The SMTP server should accept those addresses, and either append
-        a FQDN or use local delivery. (''since 0.10'')""")
+        SMTP サーバはホスト名やドメインがないメールアドレスも受け入れるべきで、
+        FQDN を追加するか、ローカル配送を使うべきです (0.10 以降)。""") 
         
     smtp_subject_prefix = Option('notification', 'smtp_subject_prefix',
                                  '__default__', 
-        """Text to prepend to subject line of notification emails. 
+        """通知メールの件名の頭に追加するプレフィックスを設定します。 
         
-        If the setting is not defined, then the [$project_name] prefix.
-        If no prefix is desired, then specifying an empty option 
-        will disable it. (''since 0.10.1'').""")
+        オプションが定義されていない場合、[$project_name] (訳注: trac.ini の project セクションの name) が設定されます。
+        プレフィックスが必要ない場合は、オプションに空の値を設定することで、
+        無効化できます (0.10.1 以降)。""") 
 
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
@@ -126,19 +126,19 @@ class SmtpEmailSender(Component):
     implements(IEmailSender)
     
     smtp_server = Option('notification', 'smtp_server', 'localhost',
-        """SMTP server hostname to use for email notifications.""")
+        """メール通知で使用する SMTP サーバのホスト名を設定します。""")
 
     smtp_port = IntOption('notification', 'smtp_port', 25,
-        """SMTP server port to use for email notification.""")
+        """メール通知で使用する SMTP サーバのポート番号を設定します。""")
 
     smtp_user = Option('notification', 'smtp_user', '',
-        """Username for SMTP server. (''since 0.9'')""")
+        """SMTP サーバの認証ユーザ名を設定します (''0.9 以降'')。""")
 
     smtp_password = Option('notification', 'smtp_password', '',
-        """Password for SMTP server. (''since 0.9'')""")
+        """SMTP サーバの認証パスワードを設定します (''0.9 以降'')。""")
 
     use_tls = BoolOption('notification', 'use_tls', 'false',
-        """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
+        """メール通知に SSL/TLS を使用するかどうかを設定します (''0.10 以降'')。""")
     
     def send(self, from_addr, recipients, message):
         # Ensure the message complies with RFC2822: use CRLF line endings
@@ -182,10 +182,10 @@ class SendmailEmailSender(Component):
     implements(IEmailSender)
     
     sendmail_path = Option('notification', 'sendmail_path', 'sendmail',
-        """Path to the sendmail executable.
+        """sendmail 実行可能ファイルへのパスを設定します。
         
-        The sendmail program must accept the `-i` and `-f` options.
-         (''since 0.12'')""")
+        sendmail プログラムは `-i` および `-f` オプションを解釈できる必要が
+        あります。 (''0.12 以降'')""")
 
     def send(self, from_addr, recipients, message):
         # Use native line endings in message

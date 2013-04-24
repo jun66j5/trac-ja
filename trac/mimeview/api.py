@@ -623,27 +623,27 @@ class Mimeview(Component):
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
     converters = ExtensionPoint(IContentConverter)
 
-    default_charset = Option('trac', 'default_charset', 'iso-8859-15',
-        """Charset to be used when in doubt.""")
+    default_charset = Option('trac', 'default_charset', 'cp932',
+        """文字コードが設定されていないときのデフォルト値を設定します。""")
 
     tab_width = IntOption('mimeviewer', 'tab_width', 8,
-        """Displayed tab width in file preview. (''since 0.9'')""")
+        """ファイルをプレビューするときのタブの表示幅を設定します。 (''0.9 以降'')""")
 
     max_preview_size = IntOption('mimeviewer', 'max_preview_size', 262144,
-        """Maximum file size for HTML preview. (''since 0.9'')""")
+        """HTML プレビューでのファイルの最大サイズを設定します。 (''0.9 以降'')""")
 
     mime_map = ListOption('mimeviewer', 'mime_map',
         'text/x-dylan:dylan,text/x-idl:ice,text/x-ada:ads:adb',
-        doc="""List of additional MIME types and keyword mappings.
-        Mappings are comma-separated, and for each MIME type,
-        there's a colon (":") separated list of associated keywords
-        or file extensions. (''since 0.10'')""")
+        doc="""追加の MIME タイプとキーワードのマッピングのリストを設定します。
+        マッピングリストはそれぞれの MIME タイプごとにカンマ区切りで指定します。
+        MIME タイプと関連するキーワードもしくはファイルの拡張子をコロン (":")
+        区切りで記述します。 (''0.10 以降'')""")
 
     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
         'application/octet-stream,application/pdf,application/postscript,'
         'application/msword,application/rtf,',
-        doc="""Comma-separated list of MIME types that should be treated as
-        binary data. (''since 0.11.5'')""")
+        doc="""バイナリデータとして取り扱う MIME タイプをカンマ区切りのリストで
+        設定します。 (''0.11.5 以降'')""")
 
     def __init__(self):
         self._mime_map = None

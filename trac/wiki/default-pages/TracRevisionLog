@@ -1,102 +1,102 @@
-= Viewing Revision Logs =
+= リビジョンログを見る = #ViewingRevisionLogs
 [[TracGuideToc]]
 
-When you browse the repository, it's always possible to query the 
-''Revision Log'' view corresponding to the path you're currently seeing.
-This will display a list of the most recent changesets in which the 
-current path or any other path below it has been modified.
+リポジトリをブラウズするとき、今見ているパスに対応する ''更新履歴'' (英語版では ''Revision Log'')
+ビューを問い合わせることが可能です。
+これは、現在見ているパスやその配下で更新されたパスの最新のチェンジセットの
+リストを表示します。
 
-== The Revision Log Form ==
+== リビジョンログのフォーム == #TheRevisionLogForm
 
-It's possible to set the revision at which the revision log should
-start, using the ''View log starting at'' field. An empty value
-or a value of ''head'' is taken to be the newest changeset. 
+''リビジョン X から'' (英語版では ''View log starting at'') フィールドを使用してどこの
+リビジョンログから表示するかを設定することができます。値が空の場合
+もしくは ''head'' となっているときは、最新のチェンジセットから表示します。
 
-It's also possible to specify the revision at which the log should
-stop, using the ''back to'' field. By default, it's left empty, 
-which means the revision log will stop as soon as 100 revisions have 
-been listed.
+''X までのログを表示'' (英語版では ''back to'') フィールドを使用してどこの
+リビジョンまでログを表示するかを設定することができます。デフォルトで、
+空欄のままになっていますが、これはリビジョンログを 100 リビジョン分リストして
+終了することを意味します。
 
-Also, there are three modes of operation of the revision log.
+また、リビジョンログの操作のモードが 3 種類あります。
 
-By default, the revision log ''stops on copy'', which means that 
-whenever an ''Add'', ''Copy'' or ''Rename'' operation is detected, 
-no older revision will be shown. That's very convenient when working
-with branches, as one only sees the history corresponding to what
-has been done on the branch.
+デフォルトで、リビジョンログの操作モードは ''コピーされた時点まで'' (英語版では ''stops on copy'') になっています。
+これは、 ''追加'', ''コピー'', ''名前の変更'' の操作を行ったときに、
+それより古いリビジョンは表示しません。これは、ブランチを切ったときに
+とても便利です。というのもブランチで行ったことに対応する履歴
+のみを見ることができるからです。
 
-It's also possible to indicate that one wants to see what happened
-before a ''Copy'' or ''Rename'' change, by selecting the 
-''Follow copies'' mode. This will cross all copies or renames changes.
-Each time the name of the path changes, there will be an additional
-indentation level. That way, the changes on the different paths
-are easily grouped together visually.
+''コピー元をたどる'' (英語版では ''Follow copies'') モードを選択することによって、
+''コピー'' や ''名前の変更'' のチェンジセットより前に、行ったチェンジセットを表示することが可能です。
+このモードはすべてのコピーや名前の変更を表示します。
+パスが変更される毎に、インデントをつけて表示されます。
+この方法で、異なったパスにおける変更を簡単にグループ化して
+視覚的に見ることができます。
 
-It's even possible to go past an ''Add'' change, in order to see 
-if there has been a ''Delete'' change on that path, before 
-that ''Add''. This mode corresponds to the mode called 
-''Show only adds, moves and deletes''. 
-While quite useful at times, be aware that this operation is quite 
-resource intensive.
+あるパスを ''追加'' する前に、そのパスで
+''削除'' を行ったかどうかを見るために、
+''追加'' イベントより前をすることが可能です。 このモードは
+''追加と削除だけ'' (英語版では ''Show only adds, moves and deletes'') モードと呼ばれています。
+とても便利ではありますが、この操作はマシンリソースをたくさん消費することに
+注意して下さい。
 
-Finally, there's also a checkbox ''Show full log messages'',
-which controls whether the full content of the commit log message
-should be displayed for each change, or only a shortened version of it.
+最後に、 ''ログメッセージ全体を表示'' (英語版では ''Show full log messages'') というチェックボックスもあります。
+これは、コミットログメッセージのすべてを省略せずに表示するか、
+コミットログメッセージの省略バージョンを表示するかどうかを制御します。
 
-== The Revision Log Information ==
+== リビジョンログ情報 == #TheRevisionLogInformation
 
-For each revision log entry, there are 7 columns:
- 1. The first column contains a pair of radio buttons and should be used 
-    for selecting the ''old'' and the ''new'' revisions that will be 
-    used for [wiki:TracRevisionLog#viewingtheactualchanges viewing the actual changes].
- 1. A color code (similar to the one used for the
-    [wiki:TracChangeset#ChangesetHeader changesets]) indicating kind of change.
-    Clicking on this column refreshes the revision log so that it restarts
-    with this change.
- 1. The '''Revision''' number, displayed as `@xyz`.
-    This is a link to the TracBrowser, using the displayed revision as the base line.
- Next to it, you can see a little "wheel" icon [[Image(htdocs:../common/changeset.png)]],  which is clickable and leads to the TracChangeset view for that revision.
- 1. The '''Date''' at which the change was made.
-    The date is displayed as the time elapsed from the date of the revision. The time
-    elapsed is displayed as the number of hours, days, weeks, months, or years.
- 1. The '''Author''' of the change.
- 1. The '''Log Message''', which contains either the truncated or full commit 
-    log message, depending on the value of the ''Show full log messages'' 
-    checkbox in the form above.
+各リビジョンログのエントリでは、 7 つのカラムがあります:
+ 1. 1 番目のカラムは 2 つのラジオボタンを含んでいます。そしてラジオボタンは、
+    ''旧リビジョン'' と ''新リビジョン'' を選択し、
+    [wiki:TracRevisionLog#リビジョン間の変更を見る リビジョン間の変更を見る] で使用します。
+ 1. カラーコード (同じようなのが 
+    [wiki:TracChangeset#チェンジセットヘッダ チェンジセット] で使用されています) が変更の種類を示しています。
+    このカラムをクリックすると、リビジョンログがリフレッシュされ、
+    このリビジョンログのリストがクリックしたチェンジセットから表示されるようになります。
+ 1. '''Rev''' 番号が `@xyz` という形式で表示されます。
+    これは、 TracBrowser へのリンクで、そのリビジョンがベースとして使用されます。
+その隣に、小さく"歯車"のアイコン [[Image(htdocs:../common/changeset.png)]] があります。これはクリックすることができ、そのリビジョンに対応したチェンジセットの画面を表示させます。
+ 1. チェックインされた '''日付''' (英語版では '''Date''') を表示します。
+    日付はチェックインされた日時からの経過時間が表示されます。
+    経過時間は、時間、日、週、月、年数で表示されます。
+ 1. 変更を行った '''更新者''' (英語版では '''Author''') です。
+ 1. '''ログメッセージ''' (英語版では '''Log Message''') は、コミットログメッセージの概要またはすべてのどちらかを表示します。
+    表示は、上部にあるフォームの 
+    ''チェンジセット全体を表示する'' (英語版では ''Show full log messages'') チェックボックスで設定します。
     
 
-== Inspecting Changes Between Revisions ==
+== リビジョン間の変更を見る == #InspectingChangesBetweenRevisions
 
-The ''View changes...'' buttons (placed above and below the list
-of changes, on the left side) will show the set of differences
-corresponding to the aggregated changes starting from the ''old''
-revision (first radio-button) to the ''new'' revision (second
-radio-button), in the TracChangeset view.
+''差分を表示'' (英語版では ''View changes...'') ボタン (リストの上下の左側に置かれています) を
+クリックすると ''旧'' リビジョン (1番目のラジオボタン) と
+''新'' リビジョン (2番目のラジオボタン) における変更に
+対応する diff を
+TracChangeset ビューで表示します。
 
-Note that the ''old'' revision doesn't need to be actually 
-''older'' than the ''new'' revision: it simply gives a base
-for the diff. It's therefore entirely possible to easily 
-generate a ''reverse diff'', for reverting what has been done
-in the given range of revisions.
+''旧'' リビジョンは実際に ''新'' リビジョン ''より古い''
+ものである必要はありません: これは diff のためのベースを指定
+するに過ぎません。したがって、
+指定されたリビジョン間でされたことを元に戻すことができるように
+簡単に ''変更内容を反転'' (英語版では ''reverse diff'') して表示できるようになっています。
 
-Finally, if the two revisions are identical, the corresponding
-changeset will be shown (same effect as clicking on the !ChangeSet number).
+そして、もし二つのリビジョンが同じものであったら、対応する
+チェンジセットが表示されます。 ( これは !ChangeSet 番号をクリックするのと同じ効果です,,[#Note 訳注],, )
 
-== Alternative Formats ==
+== 他のフォーマット == #AlternativeFormats
 
-=== The !ChangeLog Text ===
+=== !ChangeLog テキスト === #TheChangeLogText
 
-At the bottom of the page, there's a ''!ChangeLog'' link
-that will show the range of revisions as currently shown,
-but as a simple text, matching the usual conventions for
-!ChangeLog files.
+ページの下にある ''変更内容(!ChangeLog)'' (英語版では !ChangeLog) リンクは
+現在表示されているリビジョンの範囲をテキスト形式で
+表示します。よって !ChangeLog ファイルを作成するときに
+便利です。
 
-=== RSS Support ===
+=== RSS 対応 === #RSSSupport
 
-The revision log also provides a RSS feed to monitor the changes.
-To subscribe to a RSS feed for a file or directory, open its
-revision log in the browser and click the orange 'XML' icon at the bottom
-of the page. For more information on RSS support in Trac, see TracRss.
+リビジョンログは 変更を監視するための RSS フィードを提供しています。
+あるファイルやディレクトリの RSS フィードを購読するには、 リポジトリブラウザ上で、
+監視したいファイルやディレクトリのリビジョンログを開き、ページの下部にあるオレンジ色の 'XML' アイコンをクリックします。 
+Trac における RSS 対応に関するその他の情報は、TracRss を参照して下さい。
 
 ----
 See also: TracBrowser, TracChangeset, TracGuide

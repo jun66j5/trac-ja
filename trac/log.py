@@ -44,7 +44,7 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
             format = '%(asctime)s ' + format
     datefmt = ''
     if logtype == 'stderr':
-        datefmt = '%X'
+        datefmt = '%H:%M:%S'        
     level = level.upper()
     if level in ('DEBUG', 'ALL'):
         logger.setLevel(logging.DEBUG)

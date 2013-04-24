@@ -1,156 +1,156 @@
-= The Trac Environment =
+= Trac Environment = #TracEnvironment
 
-Trac uses a directory structure and a database for storing project data. The directory is referred to as the “environment”.
+Trac はプロジェクトのデータを保存するために、ディレクトリ構造とデータベースを使用します。このディレクトリを "Environment" と呼びます。
 
-== Creating an Environment ==
+== Environment の作成 == #CreatinganEnvironment
 
-A new Trac environment is created using  [TracAdmin#initenv trac-admin's initenv]:
+新しい Trac Environment を作成するには、 [TracAdmin#initenv trac-admin の initenv] を使用します:
 {{{
 $ trac-admin /path/to/myproject initenv
 }}}
 
-`trac-admin` will ask you for the name of the project and the
-database connection string (explained below).
+`trac-admin` はプロジェクトの名前とデータベースに接続するための文字列
+(後で説明します) を尋ねてきます。
 
-=== Some Useful Tips
- - The user under which the web server runs will require file system write permission to 
- the environment directory and all the files inside. Please remember to set
- the appropriate permissions. The same applies to the source code repository, 
- although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
- 
- - `initenv`, when using an svn repository, does not imply that trac-admin will perform `svnadmin create` for the specified repository path. You need to perform the `svnadmin create` prior to `trac-admin initenv` if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.
+=== Tips === #SomeUsefulTips
+ - Environment のディレクトリ配下は、 Web サーバの実行ユーザが書き込み可能でなければなりません。
+ 適切なパーミッションの付与を忘れないようにしてください。
+ 同じことがソースコードリポジトリにも当てはまりますが、
+ Subversion リポジトリの場合は、ファイルシステムに Barkley DB を使用していない場合は、 Trac は読み取りパーミッションしか必要としません; Subversion以外のリポジトリについては、各々のプラグインを確認してください。
 
- - Non-ascii environment paths are not supported
- 
- - Also, it seems that project names with spaces can be problematic for authentication (see [trac:#7163]).
+ - `initenv` で Subversion リポジトリを使用するように指定されても、 trac-admin コマンドは指定されたリポジトリのパスに対して `svnadmin create` を実行したりしません。新しい Trac enviroment を作るときに、 Subversion リポジトリも新規で作る場合は、 `svnadmin create` は `trac-admin initenv` よりも前に実行しておいてください。 Environment の初期化中にリポジトリが見つからない場合、 "Warning: couldn't index the repository" というメッセージが表示されてしまいます
 
- - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are currently not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment] before being able to use it.
+ - 非 ASCII 文字を含むパスはサポートされていません
 
-== Database Connection Strings ==
+ - プロジェクト名に空白文字が混じっていると認証で問題が生じることがありますので注意してください  (See [http://trac.edgewall.org/ticket/7163 #7163])
 
-Since version 0.9, Trac supports both [http://sqlite.org/ SQLite] and
-[http://www.postgresql.org/ PostgreSQL] database backends.  Preliminary
-support for [http://mysql.com/ MySQL] was added in 0.10.  The default is
-to use SQLite, which is probably sufficient for most projects. The database
-file is then stored in the environment directory, and can easily be 
-[wiki:TracBackup backed up] together with the rest of the environment.
+ - [TracIni#GlobalConfiguration グローバル設定ファイル] に定義した [TracIni#inherit-section 共有するプラグインのディレクトリ] に配置した TracPlugins は Environment の作成時はロードされないようになりました。そのため、データベースのテーブルなどを追加で作成する必要がある場合は [TracUpgrade#UpgradetheTracEnvironment Environment をアップグレード] せねばなりません
 
-=== SQLite Connection String ===
-The connection string for an SQLite database is:
+== データベースに接続するための文字列 == #DatabaseConnectionStrings
+
+バージョン 0.9 以降、 Trac は [http://sqlite.org/ SQLite] と
+[http://www.postgresql.org/ PostgreSQL] データベースバックエンドの両方をサポートします。
+[http://mysql.com/ MySQL] のサポートは 0.10 で加えられました。 デフォルトでは
+SQLiLte を使用します。 (ほとんどのプロジェクトは SQLite で十分です)。データベース
+ファイルは Environment ディレクトリに保存されますので、 Environment の残りと共に容易に
+[wiki:TracBackup バックアップ] することができます。
+
+=== SQLite の接続文字列 === #SQLiteConnectionString
+SQLite データベースに接続するための文字列は以下の通りです:
 {{{
 sqlite:db/trac.db
 }}}
-where `db/trac.db` is the path to the database file within the Trac environment.
+`db/trac.db` の箇所は Trac Environment のデータベースファイルへのパスを指します。
 
-=== PostgreSQL Connection String ===
-If you want to use PostgreSQL or MySQL instead, you'll have to use a
-different connection string. For example, to connect to a PostgreSQL
-database on the same machine called `trac`, that allows access to the
-user `johndoe` with the password `letmein`, use:
+=== PostgreSQL の接続文字列 === #PostgreSQLConnectionString
+PostgreSQL や MySQL を代わりに使用する場合、異なる接続用文字列を
+使用しなければなりません。 例えば PostgreSQL に接続するとき、
+ユーザ名 `johndoe` でパスワード `letmein` で
+同じマシンの `trac` と呼ばれるデータベースに接続するには以下のように指定します:
 {{{
 postgres://johndoe:letmein@localhost/trac
 }}}
-''Note that due to the way the above string is parsed, the "/" and "@" characters cannot be part of the password.''
+''"/" 及び "@" はパスワードの一部として使用出来ないので注意してください。''
 
-If PostgreSQL is running on a non-standard port (for example 9342), use:
+PostgreSQL がデフォルト以外のポート番号 (例えば、 9432) で起動しているときはこのようにします:
 {{{
 postgres://johndoe:letmein@localhost:9342/trac
 }}}
 
-On UNIX, you might want to select a UNIX socket for the transport,
-either the default socket as defined by the PGHOST environment variable:
+UNIX ホストでは、 UNIX ソケットで接続するように設定できます。
+この場合、環境変数 PGHOST に定義されたデフォルトソケットを使用します:
 {{{
 postgres://user:password@/database
 }}}
-or a specific one:
+ソケットを特定する場合はこうです:
 {{{
 postgres://user:password@/database?host=/path/to/socket/dir
 }}}
 
-Note that with PostgreSQL you will have to create the database before running
-`trac-admin initenv`.
+PostgreSQL を使用するとき、 `trac-admin initenv` を実行する前に
+データベースを作成しなければいけません。
 
-See the [http://www.postgresql.org/docs/ PostgreSQL documentation] for detailed instructions on how to administer [http://postgresql.org PostgreSQL].
-Generally, the following is sufficient to create a database user named `tracuser`, and a database named `trac`.
+[http://postgresql.org PostgreSQL] の詳細設定の方法については　[http://www.postgresql.org/docs/ PostgreSQL ドキュメント] を参照してください。
+下記は `tracuser` という名のデータベースユーザ及び `trac` という名のデータベースを作成します。
 {{{
 createuser -U postgres -E -P tracuser
 createdb -U postgres -O tracuser -E UTF8 trac
 }}}
-When running `createuser` you will be prompted for the password for the user 'tracuser'. This new user will not be a superuser, will not be allowed to create other databases and will not be allowed to create other roles. These privileges are not needed to run a trac instance. If no password is desired for the user, simply remove the `-P` and `-E` options from the `createuser` command.  Also note that the database should be created as UTF8. LATIN1 encoding causes errors trac's use of unicode in trac.  SQL_ASCII also seems to work.
+`createuser` を実行する時、'tracuser' のパスワードの入力を促されます。この新しいユーザはスーパーユーザではないので、他のデータベースを作ったり、他の role (訳注: PostgreSQL でのユーザ) を作る権限を与えられていません。これらの権限は trac のインスタンスを実行する為には必要ではありません。ユーザにパスワードを付与したくない場合、 `createuser` コマンドから `-P` と `-E` オプションを取り除いてください。また、データベースが UTF8 で作成する必要があることに注意してください。 LATIN1 のエンコードが原因のエラーを引き起こします。 SQL_ASCII でも同様です。
 
-Under some default configurations (debian) one will have run the `createuser` and `createdb` scripts as the `postgres` user.  For example:
+デフォルト設定 (debian) の下では、 `postgres` ユーザとして `createuser` と `createdb` スクリプトを実行してください。 例えば:
 {{{
 sudo su - postgres -c 'createuser -U postgres -S -D -R -E -P tracuser'
 sudo su - postgres -c 'createdb -U postgres -O tracuser -E UTF8 trac'
 }}}
 
-Trac uses the `public` schema by default but you can specify a different schema in the connection string:
+Trac はデフォルトで `public` スキーマを使用しますが、明示的に違うスキーマを指定することができます:
 {{{
 postgres://user:pass@server/database?schema=yourschemaname
 }}}
 
-=== MySQL Connection String ===
+=== MySQL の接続文字列 === #MySQLConnectionString
 
-If you want to use MySQL instead, you'll have to use a
-different connection string. For example, to connect to a MySQL
-database on the same machine called `trac`, that allows access to the
-user `johndoe` with the password `letmein`, the mysql connection string is:
+MySQL を代わりに使用したい場合、違う接続文字列を使用します。
+例えば、同じマシンにある `trac` という MySQL データベースに、
+`johndoe` というユーザでパスワード `letmein` で接続する場合の
+MySQL の接続文字列は次の通りです:
 {{{
 mysql://johndoe:letmein@localhost:3306/trac
 }}}
 
-== Source Code Repository ==
+== ソースコードリポジトリ == #SourceCodeRepository
 
-Since version 0.12, a single Trac environment can be connected to more than one repository. There are many different ways to connect repositories to an environment, see TracRepositoryAdmin. This page also details the various attributes that can be set for a repository (like `type`, `url`, `description`).
+0.12 以降のバージョンでは、一つの Environment から複数のリポジトリに接続できるようになりました。 Environment からリポジトリに接続する方法は沢山あるので、詳細は TracRepositoryAdmin を参照してください。左記のページではリポジトリごとに設定する項目 (`type`, `url`, `description` など) について詳しく解説されています。
 
-In Trac 0.12 `trac-admin` no longer asks questions related to repositories. Therefore, by default Trac is not connected to any source code repository, and the ''Browse Source'' toolbar item will not be displayed.
-You can also explicitly disable the `trac.versioncontrol.*` components (which are otherwise still loaded)
+Trac 0.12 の `trac-admin` コマンドでは、接続するリポジトリの指定が必須ではなくなりました。デフォルトでは Trac はソースコードリポジトリへの接続を作成せず、メインナビゲーションの ''リポジトリブラウザ'' (英語版では ''Browse Source'') も表示されなくなります。
+ロードされている `trac.versioncontrol.*` コンポーネントを完全に無効化するには下記設定を行ってください。
 {{{
 [components]
 trac.versioncontrol.* = disabled
 }}}
 
-For some version control systems, it is possible to specify not only the path to the repository,
-but also a ''scope'' within the repository. Trac will then only show information
-related to the files and changesets below that scope. The Subversion backend for
-Trac supports this; for other types, check the corresponding plugin's documentation.
+バージョン管理システムによっては、リポジトリへのパスだけではなく、リポジトリ内の ''scope'' を設定することもできます。
+Trac はそのスコープ以下に限定したファイルとチェンジセットに関連する情報を表示します。
+Trac のバックエンドに Subversion を 使う場合は、この機能を利用できます;
+他のリポジトリシステムについては、対応するプラグインのドキュメントで確認して下さい。
 
-Example of a configuration for a Subversion repository used as the default repository:
+デフォルトリポジトリのみで構成される Subversion リポジトリの設定の一例です:
 {{{
 [trac]
 repository_type = svn
 repository_dir = /path/to/your/repository
 }}}
 
-The configuration for a scoped Subversion repository would be:
+スコープを絞った Subversion リポジトリの設定の一例です:
 {{{
 [trac]
 repository_type = svn
 repository_dir = /path/to/your/repository/scope/within/repos
 }}}
 
-== Directory Structure ==
+== ディレクトリ構造 == #DirectoryStructure
 
-An environment directory will usually consist of the following files and directories:
+プロジェクト Environment のディレクトリは通常、以下に示すファイルとディレクトリから成り立ちます。
 
- * `README` - Brief description of the environment.
- * `VERSION` - Contains the environment version identifier.
- * `attachments` - Attachments to wiki pages and tickets are stored here.
+ * `README` - Environment について記述したドキュメント
+ * `VERSION` - Environment のバージョン識別情報
+ * `attachments` - 全ての添付ファイルはここに保存されます
  * `conf`
-   * `trac.ini` - Main configuration file. See TracIni.
+   * `trac.ini` - メインとなる設定ファイル。詳細は TracIni に記述しています
  * `db`
-   * `trac.db` - The SQLite database (if you're using SQLite).
- * `htdocs` - directory containing web resources, which can be referenced in Genshi templates using `/htdocs/site/...` URLs. ''(since 0.11)''
- * `log` - default directory for log files, if logging is turned on and a relative path is given.
- * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs or single file plugins, since [trac:milestone:0.10 0.10])
- * `templates` - Custom Genshi environment-specific templates. ''(since 0.11)''
-   * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
+   * `trac.db` - SQLite データベース (SQLite を使用している場合)
+ * `htdocs` - Web のリソースを格納するディレクトリ。URL `/htdocs/site/...` を使用した Genshi テンプレートから参照する ''(0.11 以降)''
+ * `log` - ログファイルのデフォルトディレクトリ。ログ機能が有効に設定され相対パスが与えられた場合に使用する
+ * `plugins` - Environment に固有の [wiki:TracPlugins プラグイン] (Python egg または単独のファイル、 [http://trac.edgewall.org/milestone/0.10 0.10] 以降)
+ * `templates` - カスタム (プロジェクトに固有の) Genshi テンプレート ''(0.11 以降)''
+   * `site.html` - カスタムヘッダ, フッタ, スタイルシート。 TracInterfaceCustomization#SiteAppearance に記載
 
-=== Caveat: don't confuse a ''Trac environment directory'' with the ''source code repository directory'' #Caveat
+=== 要注意: ''Trac Environment のディレクトリ'' と ''ソースコードリポジトリのディレクトリ'' を一緒にしないで下さい。 #Caveat
 
-This is a common beginners' mistake.
-It happens that the structure for a Trac environment is loosely modelled after the Subversion repository directory 
-structure, but those are two disjoint entities and they are not and ''must not'' be located at the same place.
+初心者がよくやる誤りです。
+上記のディレクトリ構造は Subversion リポジトリのディレクトリ構造をざっくりと真似ているだけです。
+全く関連はありませんので、2つは同じ場所においては ''いけません''。
 
 ----
 See also: TracAdmin, TracBackup, TracIni, TracGuide

@@ -69,7 +69,7 @@ class MySQLConnector(Component):
     implements(IDatabaseConnector)
 
     mysqldump_path = Option('trac', 'mysqldump_path', 'mysqldump',
-        """Location of mysqldump for MySQL database backups""")
+        """MySQL データベースバックエンドをバックアップするために使用する mysqldump のパスを設定します""")
 
     def __init__(self):
         self._version = None
