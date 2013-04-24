@@ -141,8 +141,8 @@ class SQLiteConnector(Component):
     implements(IDatabaseConnector)
 
     extensions = ListOption('sqlite', 'extensions', 
-        doc="""Paths to sqlite extensions, relative to Trac environment's
-        directory or absolute. (''since 0.12'')""")
+        doc="""SQLite 拡張へのパスを Trac Environment からの相対パスか、
+        絶対パスで設定します。 (''0.12 以降'')""")
 
     def __init__(self):
         self._version = None

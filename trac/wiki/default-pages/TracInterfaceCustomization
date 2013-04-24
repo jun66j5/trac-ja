@@ -1,20 +1,20 @@
-= Customizing the Trac Interface =
+= Trac のインタフェースをカスタマイズする = #CustomizingtheTracInterface
 [[TracGuideToc]]
 
-== Introduction ==
-This page is meant to give users suggestions on how they can customize the look of Trac.  Topics on this page cover editing the HTML templates and CSS files, but not the program code itself.  The topics are intended to show users how they can modify the look of Trac to meet their specific needs.  Suggestions for changes to Trac's interface applicable to all users should be filed as tickets, not listed on this page.
+== イントロダクション == #Introduction
+このページは Trac の外観をカスタマイズする方法をユーザに提案するために書きました。主要な話題は HTML テンプレートと CSS ファイルであり、プログラムコードではありません。ユーザ自身の特定のニーズを満たすために Trac の外観を変更する方法を、ユーザに示すことを意図しています。 Trac の全てのユーザにとって有益な、インタフェース変更の提案は、このページに書くのではなくチケットを使用してください。 [[BR]] '''(訳注: 本家サイトのチケットの話です)'''
 
-== Project Logo and Icon ==
-The easiest parts of the Trac interface to customize are the logo and the site icon.  Both of these can be configured with settings in [wiki:TracIni trac.ini].
+== プロジェクトのロゴとアイコン == #ProjectLogoandIcon
+Trac のインタフェースをカスタマイズする中で、最も簡単なのは、ロゴとサイトアイコンです。両方とも [wiki:TracIni trac.ini] に設定するだけで構成できます。
 
-The logo or icon image should be put in a folder named "htdocs" in your project's environment folder.  (''Note: in projects created with a Trac version prior to 0.9 you will need to create this folder'')
+ロゴやアイコンのイメージは、 Trac Environment フォルダの中の "htdocs" というフォルダに置かなければいけません。 (''Note: バージョン 0.9 以前の Trac で作成したプロジェクトでは、このフォルダを自分で作成する必要があります'')
 
- ''Note: you can actually put the logo and icon anywhere on your server (as long as it's accessible through the web server), and use their absolute or server-relative URLs in the configuration.''
+ ''Note: 実際は、ロゴとアイコンはサーバのどこのパスにおいてもかまいません(Web サーバがアクセスできるところならですが)。設定の中でそれらの絶対またはサーバの相対 URL を使用します。''
 
-Now configure the appropriate section of your [wiki:TracIni trac.ini]:
+[wiki:TracIni trac.ini] の適切なセクションの構成は以下の通りです:
 
-=== Logo ===
-Change the `src` setting to `site/` followed by the name of your image file.  The `width` and `height` settings should be modified to match your image's dimensions (the Trac chrome handler uses "`site/`" for files within the project directory `htdocs` and "`common/`" for the common ones). Note that 'site/' is not a placeholder for your project name, it is the actual prefix that should be used (literally). For example, if your project is named 'sandbox', and the image file is 'red_logo.gif' then the 'src' setting would be 'site/red_logo.gif', not 'sandbox/red_logo.gif'.
+=== ロゴ === #Logo
+`src` の設定を `site/` に続く画像ファイルの名前に変更してください。 `width` と `height` は画像ファイルにあわせて設定を変更してください。(Trac の chrome ハンドラはプロジェクトのディレクトリ `htdocs` と "`common/`" の中のファイル用に "`site/`" を使用します。) Note: 'site/' はプロジェクト名の代わりに使っているのではなく、文字通り使用されるべき実際のプレフィクスです。例えば、プロジェクトに 'sandbox' という名前を付け、イメージファイルが 'red_logo.gif' である場合、 'src' には 'sandbox/red_logo.gif' ではなく、 'site/red_logo.gif' を設定します。:
 
 {{{
 [header_logo]
@@ -24,32 +24,32 @@ width = 300
 height = 100
 }}}
 
-=== Icon ===
-Icons should be a 16x16 image in `.gif` or `.ico` format.  Change the `icon` setting to `site/` followed by the name of your icon file.  Icons will typically be displayed by your web browser next to the site's URL and in the `Bookmarks` menu.
+=== アイコン === #Icon
+アイコンは `.gif` か `.ico` 形式の 16x16 の画像である必要があります。 `icon` の設定を `site/` に続くアイコンファイルの名前に変更してください。アイコンは通常、サイトの URL の横や、 `ブックマーク` メニューに表示されます。
 
 {{{
 [project]
 icon = site/my_icon.ico
 }}}
 
-Note though that this icon is ignored by Internet Explorer, which only accepts a file named ``favicon.ico`` at the root of the host. To make the project icon work in both IE and other browsers, you can store the icon in the document root of the host, and reference it from ``trac.ini`` as follows:
+Note: Internet Explorer では、ホストのルートディレクトリにある ``favicon.ico`` という名前のファイルしか許容しないため、このアイコンは無視されます。プロジェクトアイコンを IE と他のブラウザで共用したい場合、アイコンをホストのドキュメントルートに配置し、 ``trac.ini`` から以下のように参照します:
 
 {{{
 [project]
 icon = /favicon.ico
 }}}
 
-Should your browser have issues with your favicon showing up in the address bar, you may put a "?" (less the quotation marks) after your favicon file extension. 
+ブラウザのアドレスバーでのアイコン表示に問題がある場合、アイコンのファイル拡張子の後に "?" (クエスチョンマーク) を置くと回避できることがあります。
 
 {{{
 [project]
 icon = /favicon.ico?
 }}}
 
-== Custom Navigation Entries ==
-The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them (but not for adding new ones).
+== ナビゲーション項目のカスタマイズ == #CustomNavigationEntries
+[mainnav] と [metanav] を使用すると、ナビゲーション項目に使用されるテキストとリンクをカスタマイズしたり、無効化することができます (新規項目を追加することはできません)。
 
-In the following example, we rename the link to the Wiki start "Home", and hide the "Help/Guide". We also make the "View Tickets" entry link to a specific report .
+以下の例では、 Wiki のスタートページへのリンク名を "Home" に変更して、 "Help/Guide" を非表示にします。さらに、 "View Tickets" エントリを特定のレポートにリンクさせます。
 {{{
 [mainnav]
 wiki.label = Home
@@ -59,14 +59,14 @@ tickets.href = /report/24
 help = disabled
 }}}
 
-See also TracNavigation for a more detailed explanation of the mainnav and metanav terms.
+mainnav と metanav についての、より詳細な記述は TracNavigation を参照してください。
 
-== Site Appearance == #SiteAppearance
+== サイトの外観 == #SiteAppearance
 
-Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Documentation is yet to be written, in the meantime the following tip should work.
+Trac はテンプレートエンジンに [http://genshi.edgewall.org Genshi] を使用しています。ドキュメントはまだ書かれていませんが、次の tip は動くはずです。
 
-Say you want to add a link to a custom stylesheet, and then your own
-header and footer. Save the following content as 'site.html' inside your projects templates directory (each Trac project can have their own site.html), e.g. {{{/path/to/env/templates/site.html}}}:
+カスタムスタイルシートへのリンクや、独自のヘッダやフッタを追加したい場合、
+以下のようなの内容ファイルを、プロジェクトの templates ディレクトリに 'site.html' という名前で作成してください (各 Trac プロジェクトは独自の内容の site.html を持つことができます)。{{{/path/to/env/templates/site.html}}} の例:
 
 {{{
 #!xml
@@ -97,15 +97,15 @@ header and footer. Save the following content as 'site.html' inside your project
 </html>
 }}}
 
-Those who are familiar with XSLT may notice that Genshi templates bear some similarities. However, there are some Trac specific features - for example '''${href.chrome('site/style.css')}''' attribute references template placed into environment's ''htdocs/''  In a similar fashion '''${chrome.htdocs_location}''' is used to specify common ''htdocs/'' directory from Trac installation.
+XSLT に慣れ親しんだ人であれば、 Genshi テンプレートには類似点があるのに気付くかもしれません。しかしながら Trac 固有の機能もあります。例えば '''${href.chrome('site/style.css')}''' は Environment に含まれる ''htdocs/'' にあるファイルへの参照の属性に置き換えられます。 '''${chrome.htdocs_location}''' は似ていますが、 Trac インストール時に作成された共通の ''htdocs/'' ディレクトリを指定するために使用します。
 
-`site.html` is one file to contain all your modifications. It usually works by the py:match (element or attribute), and it allows you to modify the page as it renders - the matches hook onto specific sections depending on what it tries to find
-and modify them.
-See [http://groups.google.com/group/trac-users/browse_thread/thread/70487fb2c406c937/ this thread] for a detailed explanation of the above example `site.html`.
-A site.html can contain any number of such py:match sections for whatever you need to modify. This is all [http://genshi.edgewall.org/ Genshi], so the docs on the exact syntax can be found there.
+`site.html` はサイト固有のすべての変更を含んでいる一つのファイルです。通常は、特定のセクション上で py:match を要素 (element) または属性 (attribute) として使用することで、カスタマイズしようとしているページを
+思い通りにレンダリングすることができます。
+[http://groups.google.com/group/trac-users/browse_thread/thread/70487fb2c406c937/ メーリングリスト] には上記の例の `site.html` について解説されていますので、参照してください。
+`site.html` には変更を行うための py:match セクションをいくつでも記載することができます。これらはすべて [http://genshi.edgewall.org/ Genshi] の文法に沿って行います。ドキュメントや詳細なシンタックスは前述のリンクを参考にしてください。
 
 
-Example snippet of adding introduction text to the new ticket form (hide when preview):
+チケット登録のフォームに導入テキストを表示する (プレビューが非表示のとき) 場合は、次の例を追加してください:
 
 {{{
 #!xml
@@ -117,13 +117,13 @@ Example snippet of adding introduction text to the new ticket form (hide when pr
 </form>
 }}}
 
-This example illustrates a technique of using '''`req.environ['PATH_INFO']`''' to limit scope of changes to one view only. For instance, to make changes in site.html only for timeline and avoid modifying other sections - use  ''`req.environ['PATH_INFO'] == '/timeline'`'' condition in <py:if> test.
+この例では '''`req.environ['PATH_INFO']`''' を使用して、特定のビューだけで変更が行われるようにスコープを限定しています。例えば site.html でタイムラインだけで変更を行い、他のセクションには影響を及ぼしたくない場合は、 ''`req.environ['PATH_INFO'] == '/timelime'`'' を <py:if> の test 属性に記載します。
 
-More examples snippets for `site.html` can be found at [trac:wiki:CookBook/SiteHtml CookBook/SiteHtml].
+より多くの `site.html` の例が [http://trac.edgewall.org/wiki/CookBook/SiteHtml CookBook/SiteHtml] で見ることができます。
 
-Example snippets for `style.css` can be found at [trac:wiki:CookBook/SiteStyleCss CookBook/SiteStyleCss].
+`style.css` の例は [http://trac.edgewall.org/wiki/CookBook/SiteStyleCss CookBook/SiteStyleCss] で見ることができます。
 
-If the environment is upgraded from 0.10 and a `site_newticket.cs` file already exists, it can actually be loaded by using a workaround - providing it contains no ClearSilver processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a `<div>` block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
+0.10 からアップグレードされた Environment で、かつ `site_newticket.cs` ファイルが既に存在している場合は、ワークアラウンドすることによってテンプレートをロードすることができます - !ClearSilver の処理が含まれていない場合に限ります (訳注: `<?cs?>` が含まれていない場合) 。また、この場合はただ一つの要素 (element) だけがインポートされるので、コンテンツはある種のラッパー (`<div>` ブロックやそれに似た親コンテナ) を必要とします。インクルードするためには XInclude の名前空間を指定しなければなりませんが、ドキュメントルート以外にも置くことができます:
 {{{
 #!xml
 <form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')"
@@ -135,13 +135,13 @@ If the environment is upgraded from 0.10 and a `site_newticket.cs` file already 
 </form>
 }}}
 
-Also note that the `site.html` (despite its name) can be put in a common templates directory - see the `[inherit] templates_dir` option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
+また、共通のテンプレートディレクトリに、 `site.html` (その名前にも関わらず) を置くことができます - `[inherit] templates_dir` オプションを参照してください。新しく、一個のグローバルな `site.html` ファイルに、ヘッダ, フッタ, チケット作成時の tips を組み込むことで、簡単なメンテナンス (および、大きなインストールを行った 0.10 からのバージョンアップのための移行パス) を提供しています。
 
-== Project List == #ProjectList
+== プロジェクトリスト == #ProjectList
 
-You can use a custom Genshi template to display the list of projects if you are using Trac with multiple projects.  
+複数の Trac プロジェクトを動かしているときに、カスタマイズした Genshi テンプレートを使用して、プロジェクトの一覧を表示することができます。
 
-The following is the basic template used by Trac to display a list of links to the projects.  For projects that could not be loaded it displays an error message. You can use this as a starting point for your own index template.
+以下に示すのは Trac が使用している、ホストするプロジェクトへのリンクのリストを表示するための基本のテンプレートです。ロードできないプロジェクトについては、エラーメッセージを表示します。これをあなた自身のインデックステンプレートのスタートポイントとして使用することができます。
 
 {{{
 #!text/html
@@ -152,16 +152,16 @@ The following is the basic template used by Trac to display a list of links to t
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <head>
-    <title>Available Projects</title>
+    <title>プロジェクト一覧</title>
   </head>
   <body>
-    <h1>Available Projects</h1>
+    <h1>プロジェクト一覧</h1>
     <ul>
       <li py:for="project in projects" py:choose="">
         <a py:when="project.href" href="$project.href"
            title="$project.description">$project.name</a>
         <py:otherwise>
-          <small>$project.name: <em>Error</em> <br /> ($project.description)</small>
+          <small>$project.name: <em>エラー</em> <br /> ($project.description)</small>
         </py:otherwise>
       </li>
     </ul>
@@ -169,31 +169,31 @@ The following is the basic template used by Trac to display a list of links to t
 </html>
 }}}
 
-Once you've created your custom template you will need to configure the webserver to tell Trac where the template is located (pls verify ... not yet changed to 0.11):
+カスタムテンプレートを使用する場合、 Web サーバにテンプレートのロケーションの設定を読み込ませる必要があります (確かめてみてください ... まだ 0.11 向けに変更していません):
 
-For [wiki:TracModWSGI mod_wsgi]:
+[wiki:TracModWSGI mod_wsgi] 用:
 {{{
 os.environ['TRAC_ENV_INDEX_TEMPLATE'] = '/path/to/template'
 }}}
 
-For [wiki:TracFastCgi FastCGI]:
+[wiki:TracFastCgi FastCGI] 用:
 {{{
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects \
               -initial-env TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 }}}
 
-For [wiki:TracModPython mod_python]:
+[wiki:TracModPython mod_python] 用:
 {{{
 PythonOption TracEnvParentDir /parent/dir/of/projects
 PythonOption TracEnvIndexTemplate /path/to/template
 }}}
 
-For [wiki:TracCgi CGI]:
+[wiki:TracCgi CGI] 用:
 {{{
 SetEnv TRAC_ENV_INDEX_TEMPLATE /path/to/template
 }}}
 
-For [wiki:TracStandalone], you'll need to set up the `TRAC_ENV_INDEX_TEMPLATE` environment variable in the shell used to launch tracd:
+[wiki:TracStandalone] の tracd を動かすのに使用するシェルの中で `TRAC_ENV_INDEX_TEMPLATE` の環境変数を設定する必要があるでしょう:
  - Unix
    {{{
 #!sh
@@ -205,19 +205,19 @@ $ export TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 $ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
    }}}
 
-== Project Templates ==
+== プロジェクトテンプレート == # ProjectTemplates
 
-The appearance of each individual Trac environment (that is, instance of a project) can be customized independently of other projects, even those hosted by the same server. The recommended way is to use a `site.html` template (see [#SiteAppearance]) whenever possible. Using `site.html` means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of `theme.html` or any other Trac template, you need to migrate your modifiations to the newer version - if not, new Trac features or bug fixes may not work as expected.
+個々の Trac Environment (プロジェクトのインスタンス) の外観は、同じサーバにホストされている他のプロジェクトとは独立してカスタマイズできます。推奨するのは `site.html` テンプレート ([#SiteAppearance サイトの外観] 参照) を使う方法です。どのような場合でも可能な限り、この方法にしてください。 `site.html` を使う場合、変更はオリジナルのテンプレートがレンダリングした結果に対して適用されるので、 Trac を今後アップグレードした後も、通常はカスタマイズをそのまま使い続けることができます。 `theme.html` や他の Trac のテンプレートのコピーを作成する方法の場合、新しい Trac の機能追加や不具合修正の結果、動かなくなってしまったカスタマイズを新しいバージョンに移行する必要があるかもしれません。
 
-With that word of caution, any Trac template may be copied and customized. The default Trac templates are located inside the installed Trac egg (`/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, .../trac/ticket/templates, .../trac/wiki/templates, ++`). The [#ProjectList] template file is called `index.html`, while the template responsible for main layout is called `theme.html`. Page assets such as images and CSS style sheets are located in the egg's `trac/htdocs` directory.
+リスクを許容して扱う必要はありますが、 Trac テンプレートはコピーしてカスタマイズすることもできます。デフォルトの Trac テンプレートはインストールされた Trac egg (`/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, .../trac/ticket/templates, .../trac/wiki/templates, ++`) 内に配置されています。 [#ProjectList プロジェクトリスト] のテンプレートファイルは `index.html` が使用されており、各ページに共通する主要なレイアウトを提供するテンプレートは `theme.html` が使用されます。画像や CSS スタイルシートなどのページの部品は、 egg の `trac/htdocs` ディレクトリに配置されています。
 
-However, do not edit templates or site resources inside the Trac egg - installing Trac again can completely delete your modifications. Instead use one of two alternatives:
- * For a modification to one project only, copy the template to project `templates` directory.
- * For a modification shared by several projects, copy the template to a shared location and have each project point to this location using the `[inherit] templates_dir =` trac.ini option.
+しかし、 Trac egg 内部のテンプレートやサイトのリソースは編集しないでください。 Trac を再インストールしたときに、カスタマイズの内容が完全に失われてしまいます。代わりに、以下に挙げる方法のいずれかを使ってください:
+ * カスタマイズが単独のプロジェクトに閉じているのであれば、テンプレートをプロジェクトの `templates` ディレクトリにコピーしてください。
+ * カスタマイズが複数のプロジェクトに渡るものであるなら、テンプレートを共有のロケーションにコピーし、各プロジェクトからは trac.ini の `[inherit] templates_dir =` オプションで、その位置を指定してください。
 
-Trac resolves requests for a template by first looking inside the project, then in any inherited templates location, and finally inside the Trac egg.
+Trac は以下の順序で、テンプレートファイルを探します。まず、プロジェクトの内部を探し、存在しなければ inherit で指定された場所、最後に Trac egg の内部を探します。
 
-Trac caches templates in memory by default to improve performance. To apply a template you need to restart the server.
+Trac は通常、パフォーマンスを向上させるために、テンプレートをメモリ上にキャッシュします。変更したテンプレートを適用するためには、 サーバプロセスの再起動が必要です。
 
 ----
 See also TracGuide, TracIni

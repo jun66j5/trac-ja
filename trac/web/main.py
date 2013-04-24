@@ -133,23 +133,23 @@ class RequestDispatcher(Component):
 
     filters = OrderedExtensionsOption('trac', 'request_filters',
                                       IRequestFilter,
-        doc="""Ordered list of filters to apply to all requests
-            (''since 0.10'').""")
+        doc="""すべてのリクエストに適用するフィルタの適用順を設定します
+            (''0.10 以降'')。""")
 
     default_handler = ExtensionOption('trac', 'default_handler',
                                       IRequestHandler, 'WikiModule',
-        """Name of the component that handles requests to the base URL.
+        """ベース URL へのリクエストを処理するコンポーネント名を設定します。
         
-        Options include `TimelineModule`, `RoadmapModule`, `BrowserModule`,
-        `QueryModule`, `ReportModule`, `TicketModule` and `WikiModule`. The
-        default is `WikiModule`. (''since 0.9'')""")
+        オプションには `TimelineModule`, `RoadmapModule`, `BrowserModule`,
+        `QueryModule`, `ReportModule`, `TicketModule`, `WikiModule` などが
+        使用できます。デフォルトは `WikiModule` です。 (''0.9 以降'')""")
 
     default_timezone = Option('trac', 'default_timezone', '',
-        """The default timezone to use""")
+        """デフォルトのタイムゾーンを指定します。""")
 
     default_language = Option('trac', 'default_language', '',
-        """The preferred language to use if no user preference has been set.
-        (''since 0.12.1'')
+        """ユーザ設定がない場合に使用するデフォルトの言語を指定します。
+        (''0.12.1 以降'')
         """)
 
     # Public API

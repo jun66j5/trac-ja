@@ -48,19 +48,19 @@ class PygmentsRenderer(Component):
                IPreferencePanelProvider, IRequestHandler)
 
     default_style = Option('mimeviewer', 'pygments_default_style', 'trac',
-        """The default style to use for Pygments syntax highlighting.""")
+        """Pygments でのシンタックスハイライトでデフォルトで使われるスタイルを設定します。""")
 
     pygments_modes = ListOption('mimeviewer', 'pygments_modes',
         '', doc=
-        """List of additional MIME types known by Pygments.
+        """Pygments が処理できるMIME タイプを追加します。
 
-        For each, a tuple `mimetype:mode:quality` has to be
-        specified, where `mimetype` is the MIME type,
-        `mode` is the corresponding Pygments mode to be used
-        for the conversion and `quality` is the quality ratio
-        associated to this conversion. That can also be used
-        to override the default quality ratio used by the
-        Pygments render.""")
+        それぞれのエントリは `mimetype:mode:quality` というタプルで
+        設定しなければなりません。 `mimetype` には MIME タイプを、
+        `mode` には変換に使用する Pygments のモードを、
+        `quality` には変換に関連する quality ratio を
+        設定します。 `quality` で設定した値で、
+        Pygments のデフォルトの quality ratio
+        を上書きします。""")
 
     expand_tabs = True
     returns_source = True

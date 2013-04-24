@@ -1,105 +1,105 @@
-= Trac Reports =
+= レポート = #TracReports
 [[TracGuideToc]]
 
-The Trac reports module provides a simple, yet powerful reporting facility
-to present information about tickets in the Trac database.
+レポートモジュールは、簡単かつ強力なレポーティング機能を提供します。
+この機能によって、 Trac データベースのチケット情報を取得することができます。
 
-Rather than have its own report definition format, TracReports relies on standard SQL
-`SELECT` statements for custom report definition. 
+TracReports ではレポートの形式を定義するための方法として、独自フォーマットではなく、 
+SQL の `SELECT` 文を使用することにしました。
 
-  '''Note:''' ''The report module is being phased out in its current form because it seriously limits the ability of the Trac team to make adjustments to the underlying database schema. We believe that the [wiki:TracQuery query module] is a good replacement that provides more flexibility and better usability. While there are certain reports that cannot yet be handled by the query module, we intend to further enhance it so that at some point the reports module can be completely removed. This also means that there will be no major enhancements to the report module anymore.''
+  '''Note:''' ''現在の形式のレポートモジュールは、 Trac 開発チームでデータベースのスキーマにあわせる作業が必要になるという深刻な制限事項があるため、段階的に廃止します。より柔軟性に富みユーザビリティに優れた [wiki:TracQuery クエリモジュール] が代替手段として提供されます。どこかの時点でレポートモジュールを完全に削除することが出来るように、クエリモジュールで実現できないレポートがある間は、私たちはクエリモジュールを強化していくつもりです。また、これはレポートモジュールへの重要な機能追加は行わないことを意味します。''
 
-  ''You can already completely replace the reports module by the query module simply by disabling the former in [wiki:TracIni trac.ini]:''
+  ''以下の [wiki:TracIni trac.ini] のように無効化するだけで、レポートモジュールをクエリモジュールで完全に置き換えることができます:''
   {{{
   [components]
   trac.ticket.report.* = disabled
   }}}
-  ''This will make the query module the default handler for the “View Tickets” navigation item. We encourage you to try this configuration and report back what kind of features of reports you are missing, if any.''
+  ''これによって、ナビゲーションバーの "チケットを見る" (英語版では "View Tickets") でのデフォルトのハンドラがクエリモジュールになります。もし可能ならば、この設定を有効にして、レポート機能がなくなることによって生じる不都合を報告してください。''
 
 
-A report consists of these basic parts:
- * '''ID''' — Unique (sequential) identifier 
- * '''Title''' — Descriptive title
- * '''Description''' — A brief description of the report, in WikiFormatting text.
- * '''Report Body''' — List of results from report query, formatted according to the methods described below.
- * '''Footer''' — Links to alternative download formats for this report.
+レポートは以下の基本的なパーツから構成されます:
+ * '''ID''' — ユニークな (連番の) 識別子
+ * '''レポート名 (Title)''' — レポートのタイトル
+ * '''説明 (Description)''' — WikiFormatting で記述された、レポートの説明。
+ * '''レポート本体 (Report Body)''' — 後に述べるフォーマットで規定された、レポートクエリの結果。
+ * '''フッタ (Footer)''' — レポート本体を異なる形式でダウンロードするためのリンク。
 
-== Changing Sort Order ==
-Simple reports - ungrouped reports to be specific - can be changed to be sorted by any column simply by clicking the column header. 
+== ソートの並び順変更 == #ChangingSortOrder
+単純なレポート (特にグループ化されていないもの) では、カラムのヘッダをクリックすれば、そのカラムでソートすることが出来ます。
 
-If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
+カラムのヘッダがハイパーリンク (赤) になっていれば、クリックすることでそのカラムでのソートができます。並び順を逆にするには、もう一度クリックします。
 
-== Changing Report Numbering ==
-There may be instances where you need to change the ID of the report, perhaps to organize the reports better. At present this requires changes to the trac database. The ''report'' table has the following schema ''(since 0.10)'':
+== レポートの番号を変更する == #ChangingReportNumbering
+レポートの ID を変更する必要がある場合があるかもしれませんが、おそらくレポート自体を編集する方がベターです。というのも Trac のデータベースを変更する必要があるからです。 ''report'' 表は以下のようなスキーマとなっています ''(0.10 以降)'':
  * id integer PRIMARY KEY
  * author text
  * title text
  * query text
  * description text
-Changing the ID changes the shown order and number in the ''Available Reports'' list and the report's perma-link. This is done by running something like:
+ID を変更すると ''レポート一覧 (Available Reports)'' での表示順と番号、レポートのパーマリンクが変更されます。以下のような SQL を実行すると ID が変更されます:
 {{{
 update report set id=5 where id=3;
 }}}
-Keep in mind that the integrity has to be maintained (i.e., ID has to be unique, and you don't want to exceed the max, since that's managed by SQLite someplace).
+メンテナンス結果、データベースの一貫性を保つ必要があることに留意してください (例えば ID はユニークでなければなりませんし、 SQLite などデータベースの上限値を超えることはできません)。
 
-You may also need to update or remove the report number stored in the report or query.
+保存されたレポートやクエリのレポート番号も更新したり削除したりする必要があるでしょう。
 
-== Navigating Tickets ==
-Clicking on one of the report results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Report'' link to return to the report page.
+== チケットをナビゲート == #NavigatingTickets
+レポートクエリ結果の 1 チケットをクリックするとそのチケットが表示されるでしょう。表示されたチケットのメインメニューバーのすぐ下にある ''次のチケット'' (英語版では ''Next Ticket'') または ''前のチケット'' (英語版では ''Previous Ticket'') リンクをクリックすることによって他のチケットに移動するか、''レポートに戻る'' (英語版では ''Back to Report'') リンクをクリックしてレポートページに戻ることができます。
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Report'' links after saving your results, but when you return to the report, there will be no hint about what has changed, as would happen if you were navigating a list of tickets obtained from a query (see TracQuery#NavigatingTickets). ''(since 0.11)''
+あなたは安全にチケットを編集することができます。またチケットの編集結果を保存した後で、 ''次のチケット/前のチケット/レポートに戻る'' (英語版では ''!Next/Previous/Back to Report'') のリンクを使用して結果を行き来することが可能です。しかし、あなたがチケットへの操作を終えてレポートに戻るときに、どのチケットが変更されたかのヒントは表示されません。この動作はカスタムクエリの動作とは異なります。 (カスタムクエリについては TracQuery#NavigatingTickets を参照して下さい) 。 ''(0.11 以降 )''
 
-== Alternative Download Formats ==
-Aside from the default HTML view, reports can also be exported in a number of alternative formats.
-At the bottom of the report page, you will find a list of available data formats. Click the desired link to 
-download the alternative report format.
+== ダウンロードできるフォーマット == #AlternativeDownloadFormats
+通常表示される HTML でのビューの加え、レポートはいろいろな形式で使用することができます。
+レポートページの一番下に、利用可能なデータ形式の一覧があります。望む形式のリンクをクリックすれば、
+その形式でのレポートをダウンロードすることができます。
 
-=== Comma-delimited - CSV (Comma Separated Values) ===
-Export the report as plain text, each row on its own line, columns separated by a single comma (',').
-'''Note:''' The output is fully escaped so carriage returns, line feeds, and commas will be preserved in the output.
+=== カンマ区切りテキスト - CSV (Comma Separated Values) === #Comma-delimited-CSVCommaSeparatedValues
+1 レコードを 1 行として、各カラムをカンマ (',') で区切ったプレーンテキストとしてダウンロードできます。
+'''Note:''' 各カラムのデータに改行文字やカンマがある場合、エスケープされて出力されます。
 
-=== Tab-delimited ===
-Like above, but uses tabs (\t) instead of comma.
+=== タブ区切り === #Tab-delimited
+CSV と似ていますが、水平タブ文字 (\t) で区切られる点が違います。
 
-=== RSS - XML Content Syndication ===
-All reports support syndication using XML/RSS 2.0. To subscribe to an RSS feed, click the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
+=== RSS - XML コンテンツ配信 === #RSS-XMLContentSyndication
+全てのレポートは、 XML/RSS 2.0 での配信が可能です。 RSS フィードを購読するにはページ下部にある、オレンジ色の 'XML' アイコンをクリックしてください。 Trac での RSS 対応についての一般的な情報は、 TracRss に記述しています。
 
 ----
 
-== Creating Custom Reports ==
+== カスタムレポートを作成する == #CreatingCustomReports
 
-''Creating a custom report requires a comfortable knowledge of SQL.''
+''カスタムレポートを作成するためには、 SQL を楽に書ける程度の知識が必要です。''
 
-A report is basically a single named SQL query, executed and presented by
-Trac.  Reports can be viewed and created from a custom SQL expression directly
-in the web interface.
+レポートは基本的に、 Trac が実行できる形式の、名前がついた特定 SQL です。
+レポートに指定された SQL は、直接 Web インタフェースから閲覧したり、
+作成したりできます。
 
-Typically, a report consists of a SELECT-expression from the 'ticket' table,
-using the available columns and sorting the way you want it.
+通常のレポートは、 'ticket' 表に対する、カラムの選択や、ソート指定を伴った 
+SELECT 文となります。
 
-== Ticket columns ==
-The ''ticket'' table has the following columns:
- * id
- * type
- * time
- * changetime
- * component
- * severity  
- * priority 
- * owner
- * reporter
- * cc
- * version
- * milestone
- * status
- * resolution
- * summary
- * description
- * keywords
+== Ticket 表のカラム == #Ticketcolumns
+''ticket'' 表は、以下のカラムを持ちます:
+ * id           -- チケットID
+ * type         -- チケット分類
+ * time         -- 登録日時
+ * changetime   -- 最終更新日時
+ * component    -- コンポーネント
+ * severity     -- 重要度
+ * priority     -- 優先度
+ * owner        -- 担当者
+ * reporter     -- 報告者
+ * cc           -- 関係者
+ * version      -- バージョン
+ * milestone    -- マイルストーン
+ * status       -- ステータス
+ * resolution   -- 解決方法
+ * summary      -- チケットの概要
+ * description  -- チケットについての完全な説明
+ * keywords     -- キーワード
 
-See TracTickets for a detailed description of the column fields.
+各カラムに対応する属性の詳細な説明は、 TracTickets に記述しています。
 
-Example: '''All active tickets, sorted by priority and time'''
+例: '''優先度順、登録日時順の全未解決チケット'''
 {{{
 SELECT id AS ticket, status, severity, priority, owner, 
        time AS created, summary FROM ticket 
@@ -109,39 +109,39 @@ SELECT id AS ticket, status, severity, priority, owner,
 
 ---
 
-== Advanced Reports: Dynamic Variables ==
-For more flexible reports, Trac supports the use of ''dynamic variables'' in report SQL statements. 
-In short, dynamic variables are ''special'' strings that are replaced by custom data before query execution.
+== 上級トピック: 動的変数の使用 == #AdvancedReports:DynamicVariables
+レポートに汎用性を持たせる手段として、 ''動的変数'' をレポート SQL で使用する方法があります。
+簡単に言うと、動的変数とは、クエリを実行する前に置き換えられる ''特別な'' 文字列のことです。
 
-=== Using Variables in a Query ===
-The syntax for dynamic variables is simple, any upper case word beginning with '$' is considered a variable.
+=== クエリで動的変数を使う方法 === #UsingVariablesinaQuery
+動的変数を使うためのシンタックスは単純です。 '$' に続いて、大文字で変数名となる語を挿入してください。
 
-Example:
+例:
 {{{
 SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
 }}}
 
-To assign a value to $PRIORITY when viewing the report, you must define it as an argument in the report URL, leaving out the leading '$'.
+レポート閲覧時、 $PRIORITY に値を当てはめるためには、レポートの URL に引数として変数を与えてください。この変数名に '$' を入れてはいけません。
 
-Example:
+例:
 {{{
  http://trac.edgewall.org/reports/14?PRIORITY=high
 }}}
 
-To use multiple variables, separate them with an '&'.
+複数の値を使用する場合、各値を '&' で区切ります。
 
-Example:
+例:
 {{{
  http://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
 }}}
 
 
-=== !Special/Constant Variables ===
-There is one dynamic variable whose value is set automatically (the URL does not have to be changed) to allow practical reports. 
+=== 特殊な定数 === #SpecialConstantVariables
+実用的なレポートにするために、自動的に値が設定される動的変数が用意されています。(URL で指定されると上書かれます)
 
- * $USER — Username of logged in user.
+ * $USER -- ログインに使用したユーザ名。
 
-Example (''List all tickets assigned to me''):
+例 (''私が担当になっているチケット一覧''):
 {{{
 SELECT id AS ticket,summary FROM ticket WHERE owner=$USER
 }}}
@@ -150,42 +150,44 @@ SELECT id AS ticket,summary FROM ticket WHERE owner=$USER
 ----
 
 
-== Advanced Reports: Custom Formatting ==
-Trac is also capable of more advanced reports, including custom layouts,
-result grouping and user-defined CSS styles. To create such reports, we'll use
-specialized SQL statements to control the output of the Trac report engine.
+== 上級トピック: 表示形式のカスタマイズ == #AdvancedReports:CustomFormatting
+Trac には、レイアウトのカスタマイズや、グルーピング、ユーザ定義の CSS 利用などによる
+もっと複雑なレポートの作成も可能です。このようなレポートを作成するには、 
+Trac のレポートエンジンが出力を制御するためのステートメントを含む、特別な SQL を使用します。
 
-== Special Columns ==
-To format reports, TracReports looks for 'magic' column names in the query
-result. These 'magic' names are processed and affect the layout and style of the 
-final report.
+== 特別なカラム == #SpecialColumns
+レポートを整形するため、 TracReports はクエリの結果から '特定の' カラム名を
+探します。このような '特定の' 名前で、最終的なレポートのレイアウトやスタイルが
+処理され、変更されます。
 
-=== Automatically formatted columns ===
- * '''ticket''' — Ticket ID number. Becomes a hyperlink to that ticket. 
- * '''id''' — same as '''ticket''' above when '''realm''' is not set
- * '''realm''' — together with '''id''', can be used to create links to other resources than tickets (e.g. a realm of ''wiki'' and an ''id'' to a page name will create a link to that wiki page)
- * '''created, modified, date, time''' — Format cell as a date and/or time.
- * '''description''' — Ticket description field, parsed through the wiki engine.
+=== 自動的に整形されるカラム名 === #Automaticallyformattedcolumns
+ * '''ticket''' — チケットの ID が入っているカラムで使用します。該当する ID のカラムにハイパーリンクされます。 (訳注: `summary` というカラム名もチケットにハイパーリンクされます。日本語版では `概要` でもリンクします。)
+ * '''id''' — '''realm''' が指定されない場合は、 '''ticket''' と同じです。
+ * '''realm''' — '''id''' と同時に使用します。チケット以外のリソースにリンクを行う場合に使用します。 (e.g. ''wiki'' のレルムに ''id'' としてページ名を組み合わせると、 Wiki ページへのリンクを生成します)
+ * '''created, modified, date, time''' — 日付や時刻に整形されます。 (訳注: `datetime` という列名にすると日時で整形されます。日本語版では `時刻` で終わるカラムは `time` に、 `日付` で終わるカラムは `date` に、 `日時` で終わるカラムは `datetime` に、それぞれ整形されます。)
+ * '''description''' — チケットの説明が入っているカラムで使用します。 Wiki エンジンで処理されます。 (訳注: 日本語版では `説明` でも整形されます。)
 
-'''Example:'''
+'''例:'''
 {{{
 SELECT id AS ticket, created, status, summary FROM ticket 
 }}}
 
-Those columns can also be defined but marked as hidden, see [#column-syntax below].
+これらのカラムは定義しても非表示にすることができます。方法は [#column-syntax 下記] を参照してください。
 
-See trac:wiki/CookBook/Configuration/Reports for some example of creating reports for realms other than ''ticket''.
+''ticket'' 以外のレルムに対するレポートの作成方法については [http://trac.edgewall.org/wiki/CookBook/Configuration/Reports CookBook/Configuration/Reports] を参照してください。
 
-=== Custom formatting columns ===
-Columns whose names begin and end with 2 underscores (Example: '''`__color__`''') are
-assumed to be ''formatting hints'', affecting the appearance of the row.
+'''訳注''': Trac-0.11.1.ja1 以降のバージョンで作成した Environment では、デフォルトのレポートに日本語での整形ルールが適用されています。このような Environment を本家版 Trac で使用したい場合は各レポートの SQL を編集し、上記の日本語のカラム別名を英語に変更してください。
+
+=== 整形されるカラムのカスタマイズ === #Customformattingcolumns
+カラム名の前後に 2 つのアンダースコアがついている場合 (例: '''`__color__`''') は、 
+''整形用のヒント'' として扱われ、レコードの整形が行われます。
  
- * '''`__group__`''' — Group results based on values in this column. Each group will have its own header and table.
- * '''`__grouplink__`''' — Make the header of each group a link to the specified URL. The URL is taken from the first row of each group.
- * '''`__color__`''' — Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+ * '''`__group__`''' — 指定されたカラムで、表示がグループ化されます。各グループは、それぞれセクションヘッダとクエリ結果の表を持ちます。
+ * '''`__grouplink__`''' — グループ化した場合の各グループのヘッダで生成するリンク先の URL を指定します。この URL は各グループの最初の行にだけ付与されます。
+ * '''`__color__`''' — 1 から 5 の数値である必要があります。値によって、あらかじめ定義された色付けが行われます。一般的な使用法は、優先度別の色付けです。
 {{{
 #!html
-<div style="margin-left:7.5em">Defaults: 
+<div style="margin-left:7.5em">デフォルトの色付け: 
 <span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #fdc; border-color: #e88; color: #a22">Color 1</span>
 <span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #ffb; border-color: #eea; color: #880">Color 2</span>
 <span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #fbfbfb; border-color: #ddd; color: #444">Color 3</span>
@@ -193,9 +195,9 @@ assumed to be ''formatting hints'', affecting the appearance of the row.
 <span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #e7eeff; border-color: #cde; color: #469">Color 5</span>
 </div>
 }}}
- * '''`__style__`''' — A custom CSS style expression to use for the current row. 
+ * '''`__style__`''' — CSS 形式でレコードを整形できます。
 
-'''Example:''' ''List active tickets, grouped by milestone, group header linked to milestone page, colored by priority''
+'''例:''' ''マイルストーン別未解決チケット (優先度別色付け, グループのヘッダでマイルストーンにリンク)''
 {{{
 SELECT p.value AS __color__,
      t.milestone AS __group__,
@@ -208,22 +210,22 @@ SELECT p.value AS __color__,
   ORDER BY t.milestone, p.value, t.severity, t.time
 }}}
 
-'''Note:''' A table join is used to match ''ticket'' priorities with their
-numeric representation from the ''enum'' table.
+'''Note:''' ''ticket'' 表の優先度に対応する数値は、 ''enum'' 表を結合することで
+取り出しています。
 
-=== Changing layout of report rows === #column-syntax
-By default, all columns on each row are display on a single row in the HTML
-report, possibly formatted according to the descriptions above. However, it's
-also possible to create multi-line report entries.
+=== 行単位のレイアウト変更 === #column-syntax
+デフォルトでは、全てのカラムで1行を使い、上記の指定がされていれば、
+フォーマットされた形式で HTML に表示されます。それだけでなく、
+これから挙げる指定によって、複数行にわたってのレイアウトを行うことができます。
 
- * '''`column_`''' — ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be continued on a second line.
+ * '''`column_`''' — ''改行''。 カラム名の語尾にアンダースコア ('_') を付与した場合、以降のカラムは次の行で表示されます。
 
- * '''`_column_`''' — ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
+ * '''`_column_`''' — ''全行表示''。 カラム名の前後にアンダースコア ('_') を付与した場合、そのカラムは続く行で全てのカラム幅を使って表示されます。
 
- * '''`_column`''' — ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
-   This can be used to hide any kind of column, even important ones required for identifying the resource, e.g. `id as _id` will hide the '''Id''' column but the link to the ticket will be present.
+ * '''`_column`'''  —  ''データを非表示にする''。 カラム名の語頭にアンダースコア ('_') を付与した場合、 HTML 出力では非表示になります。これは (CSV や RSS のような) 別フォーマットでのダウンロード時にだけ見たい情報であるときに使います。
+   この機能ではあらゆるカラムを非表示にできます。リソースの特定などで他のカラムが異存しているような場合に有用です。たとえば `id as _id` とすることで、 '''Id''' カラムは非表示となりますが、チケットへのリンクは正しく生成されます。
 
-'''Example:''' ''List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout''
+'''例:''' ''アクティブなチケットを、マイルストーンでグループ化し、優先度で色付け、チケットの説明を multi-line レイアウトでリスト表示する''
 
 {{{
 SELECT p.value AS __color__,
@@ -231,24 +233,24 @@ SELECT p.value AS __color__,
        (CASE owner 
           WHEN 'daniel' THEN 'font-weight: bold; background: red;' 
           ELSE '' END) AS __style__,
-       t.id AS ticket, summary AS summary_,             -- ## Break line here
+       t.id AS ticket, summary AS summary_,             -- ## ここで改行する
        component,version, severity, milestone, status, owner,
-       time AS created, changetime AS modified,         -- ## Dates are formatted
-       description AS _description_,                    -- ## Uses a full row
-       changetime AS _changetime, reporter AS _reporter -- ## Hidden from HTML output
+       time AS created, changetime AS modified,         -- ## 日付形式で整形
+       description AS _description_,                    -- ## 全行を使用して表示
+       changetime AS _changetime, reporter AS _reporter -- ## HTML 出力では表示しない
   FROM ticket t,enum p
   WHERE t.status IN ('new', 'assigned', 'reopened') 
     AND p.name=t.priority AND p.type='priority'
   ORDER BY t.milestone, p.value, t.severity, t.time
 }}}
 
-=== Reporting on custom fields ===
+=== カスタムフィールドをレポートで使用する === #Reportingoncustomfields
 
-If you have added custom fields to your tickets (a feature since v0.8, see TracTicketsCustomFields), you can write a SQL query to cover them. You'll need to make a join on the ticket_custom table, but this isn't especially easy.
+チケットにカスタムフィールドを追加した場合(バージョン 0.8 以降の機能。 TracTicketsCustomFields 参照)、カスタムフィールドを含む SQL クエリを書くことができます。 ticket_custom テーブルを join をする必要がありますが、これは取り立てて簡単というわけではありません。
 
-If you have tickets in the database ''before'' you declare the extra fields in trac.ini, there will be no associated data in the ticket_custom table. To get around this, use SQL's "LEFT OUTER JOIN" clauses. See [trac:TracIniReportCustomFieldSample TracIniReportCustomFieldSample] for some examples.
+追加のフィールドを trac.ini に宣言する ''前に'' 、チケットがデータベースに存在する場合、 ticket_custom テーブルには関連するデータを持たないことになります。これに起因する問題を回避するためには SQL の "LEFT OUTER JOIN" 節を使用してください。
 
-'''Note that you need to set up permissions in order to see the buttons for adding or editing reports.'''
+'''Note レポートの追加、編集をするボタンを表示するためには権限を設定する必要があります。'''
 
 ----
 See also: TracTickets, TracQuery, TracGuide, [http://www.sqlite.org/lang_expr.html Query Language Understood by SQLite]

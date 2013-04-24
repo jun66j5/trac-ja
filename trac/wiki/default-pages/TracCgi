@@ -1,71 +1,71 @@
-= Installing Trac as CGI =
+= CGI として Trac をインストールする = #InstallingTracasCGI
 
 {{{
 #!div class=important
-  ''Please note that using Trac via CGI is the slowest deployment method available. It is slower than [TracModPython mod_python], [TracFastCgi FastCGI] and even [trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''
+  ''Trac を CGI 経由で使用するのは、他の方法である [TracModPython mod_python], [TracFastCgi FastCGI] や Windows 上の [trac:TracOnWindowsIisAjp IIS/AJP] よりも極めて遅いことに注意して下さい。''
 }}}
 
-CGI script is the entrypoint that web-server calls when a web-request to an application is made. To generate the `trac.cgi` script run:
+CGI スクリプトは、 Web サーバがリクエストを受信した時にアプリケーションを起動するためのエントリポイントになります。下記のスクリプトで `trac.cgi` を生成できます:
 {{{
 trac-admin /path/to/env deploy /path/to/www/trac
 }}}
-`trac.cgi` will be in the `cgi-bin` folder inside the given path. Make sure it is executable by your web server. This command also copies `static resource` files to a `htdocs` directory of a given destination.
+`trac.cgi` は、 Web ブラウザから実行可能なパスの通った `cgi-bin` フォルダに置きます。このコマンドは与えられたパスの `htdocs` に `静的リソース` ファイルをコピーします。
 
-== Apache web-server configuration ==
+== Apache web-server 設定 == #Apacheweb-serverconfiguration
 
-In [http://httpd.apache.org/ Apache] there are two ways to run Trac as CGI:
+[http://httpd.apache.org/ Apache HTTPD] を使用している場合、 Trac で CGI を動作させる設定方法は 2 通りあります:
 
- 1. Use a `ScriptAlias` directive that maps an URL to the `trac.cgi` script (recommended)
- 2. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
+ 1. `ScriptAlias` を使用し、 `trac.cgi` スクリプトを URL にマップする。(推奨)
+ 2. CGI プログラムが実行可能な、 Web サーバ上のディレクトリ (通常は `cgi-bin` が使用される) に `trac.cgi` ファイルをコピーする。シンボリックリンクでも代用できますが、その場合 `cgi-bin` ディレクトリでは `FollowSymLinks` オプションを有効にして下さい。
 
-To make Trac available at `http://yourhost.example.org/trac` add `ScriptAlias` directive to Apache configuration file, changing `trac.cgi` path to match your installation:
+`http://yourhost.example.org/trac` で Trac を実行するには、インストールしたマシンのApache の設定ファイルに、 `trac.cgi` パスに変更した上で、`ScriptAlias` ディレクティブを追加します。
 {{{
 ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.cgi
 }}}
 
- ''Note that this directive requires enabled `mod_alias` module.''
+ ''このディレクティブを使用するには `mod_alias` モジュールを有効にしておく必要があります。''
 
-If you're using Trac with a single project you need to set its location using the `TRAC_ENV` environment variable:
+Trac のプロジェクトが 1 つの場合、 `TRAC_ENV` 環境変数を使用してプロジェクトへのパスを指定する必要があります:
 {{{
 <Location "/trac">
   SetEnv TRAC_ENV "/path/to/projectenv"
 </Location>
 }}}
 
-Or to use multiple projects you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` variable:
+もしくは、複数のプロジェクトを扱うために、それらの親ディレクトリを `TRAC_ENV_PARENT_DIR` を使用して設定することができます。
 {{{
 <Location "/trac">
   SetEnv TRAC_ENV_PARENT_DIR "/path/to/project/parent/dir"
 </Location>
 }}}
 
- ''Note that the `SetEnv` directive requires enabled `mod_env` module. It is also possible to set TRAC_ENV in trac.cgi. Just add the following code between "try:" and "from trac.web ...":''
+ ''Note: `SetEnv` ディレクティブを使用するには `mod_env` モジュールをインストールし有効にしておく必要があります。 trac.cgi に TRAC_ENV を設定することで代用できます。 "try" と "from trac.web ..." の間に以下のコードを加えてください:''
 
 {{{
     import os
     os.environ['TRAC_ENV'] = "/path/to/projectenv"
 }}}
 
- '' Or for TRAC_ENV_PARENT_DIR: ''
+ ''もしくは、 TRAC_ENV_PARENT_DIR を設定します:''
 
 {{{
     import os
     os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
 }}}
 
-If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature please see [http://trac.edgewall.org/wiki/ApacheSuexec].
+[http://httpd.apache.org/docs/suexec.html Apache suEXEC] 機能を使用している場合、 [http://trac.edgewall.org/wiki/ApacheSuexec ApacheSuexec] を参照して下さい。
 
-On some systems, you ''may'' need to edit the shebang line in the `trac.cgi` file to point to your real Python installation path. On a Windows system you may need to configure Windows to know how to execute a .cgi file (Explorer -> Tools -> Folder Options -> File Types -> CGI).
+システムによっては、`trac.cgi` ファイルの shebang 行を編集して、実際に Python がインストールされているパスを指すように修正する必要がある ''かもしれません''。 Windows システム上では、 Windowsが .cgi ファイルを実行できるように設定する必要があるでしょう。 (エクスプローラ -> ツール -> フォルダオプション -> ファイルの種類 -> CGI を Python と関連付ける)
 
-== Mapping Static Resources ==
+== 静的なリソースをマッピングする == #MappingStaticResources
 
-Out of the box, Trac will pass static resources such as style sheets or images through itself. For a CGI setup this is '''highly undesirable''', because this way CGI script is invoked for documents that could be much more efficiently served directly by web server.
+このままでも Trac はスタイルシートや画像ファイルなどの静的なリソースを扱えますが、 CGI のセットアップとしては '''妥当な設定とは言えません'''。 Web サーバ自身がはるかに効率良くに直接扱うことができるドキュメントまで、 CGI スクリプトとして呼び出してしまうという結果になるからです。
 
-Web servers such as [http://httpd.apache.org/ Apache] allow you to create “Aliases” to resources, giving them a virtual URL that doesn't necessarily reflect the layout of the servers file system. We already used this capability by defining a `ScriptAlias` for the CGI script. We also can map requests for static resources directly to the directory on the file system, avoiding processing these requests by CGI script.
+[http://httpd.apache.org/ Apache] のような Web サーバはリソースに対して "Alias" を設定することで仮想の URL を与え、サーバのファイルシステムのレイアウトとは異なる位置にマップすることができます。すでに CGI スクリプトに対して `ScriptAlias` を定義していますので、ファイルシステム上の静的リソースを含んだコンテンツをマッピングすることで CGI スクリプトの要求を回避します。
 
-There are two primary URL paths for static resources - `/chrome/common` and `/chrome/site`. Plugins can add their own resources usually accessible by `/chrome/plugin` path, so its important to override only known paths and not try to make universal `/chrome` alias for everything.
+静的なリソースに対する主要な URL パスとして `/chrome/common` と `/chrome/site` があります。プラグインを使用している場合、各々の静的リソースとして `/chrome/plugin` のようなパスが追加されていることがありますが、主要なパスに対して追加を行えるだけなので、 `/chrome` に対して `Alias` を設定しても、プラグインが提供する静的リソースに対してアクセスできる訳ではありません。(訳注: このような場合 `trac-admin` の `deploy` で作成された `htdocs` ディレクトリに対して `Alias` を使用してください)
 
-Add the following snippet to Apache configuration '''before''' the `ScriptAlias` for the CGI script, changing paths to match your deployment:
+CGI スクリプトの `ScriptAlias` を追記したブロックより '''上に''' 以下のブロックを追記します。ファイル名とロケーションは適宜変更してください:
 {{{
 Alias /trac/chrome/common /path/to/trac/htdocs/common
 Alias /trac/chrome/site /path/to/trac/htdocs/site
@@ -75,18 +75,18 @@ Alias /trac/chrome/site /path/to/trac/htdocs/site
 </Directory>
 }}}
 
-If using mod_python, you might want to add this too (otherwise, the alias will be ignored):
+もし、 mod_python を使用しているならば、この設定も追加したいかもしれません ( mod_python を使用していないなら、このエイリアスは無視されます):
 {{{
 <Location "/trac/chrome/common/">
   SetHandler None
 </Location>
 }}}
 
-Note that we mapped `/trac` part of the URL to the `trac.cgi` script, and the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 
+Note: `trac.cgi` スクリプトを `/trac` にマップしている場合、その一部である `/chrome/common` を加えたパスに対するリクエストは、静的リソースで処理するように割り込みを加えます。
 
-For example, if Trac is mapped to `/cgi-bin/trac.cgi` on your server, the URL of the Alias should be `/cgi-bin/trac.cgi/chrome/common`.
+例えば、Trac が `/cgi-bin/trac.cgi` にマッピングされているとしたら、 Alias の URL は `cgi-bin/trac.cgi/chrome/common` となります。
 
-Similarly, if you have static resources in a project's htdocs directory (which is referenced by /chrome/site URL in themes), you can configure Apache to serve those resources (again, put this '''before''' the `ScriptAlias` for the CGI script, and adjust names and locations to match your installation):
+同様に、静的なリソースを project の htdocs ディレクトリで使用している場合 (テーマの中で /chrome/site を参照しているなど)、 プロジェクトディレクトリの htdocs に Apache の設定を行うことが出来ます (再度、 CGI スクリプトの `ScriptAlias` を追記したブロックより '''上に'''、以下のブロックを追記します。ファイル名とロケーションは適宜変更してください):
 
 {{{
 Alias /trac/chrome/site /path/to/projectenv/htdocs
@@ -96,24 +96,24 @@ Alias /trac/chrome/site /path/to/projectenv/htdocs
 </Directory>
 }}}
 
-Alternatively to hacking `/trac/chrome/site`, you can directly specify path to static resources using `htdocs_location` configuration option in [wiki:TracIni trac.ini]:
+あるいは `/trac/chrome/site` をハックする場合は、 [wiki:TracIni trac.ini] に `htdocs_location` のオプションを設定することができます。
 {{{
 [trac]
 htdocs_location = http://yourhost.example.org/trac-htdocs
 }}}
 
-Trac will then use this URL when embedding static resources into HTML pages. Of course, you still need to make the Trac `htdocs` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server:
+Trac は HTML ページに静的リソースを組み込むときに、この URL を使用するようになります。もちろん、それでも、特定の URL が指定されたときに 例えば、 Web サーバーのドキュメントルートにディレクトリをコピーするなり、シンボリックリンクを張るなりして、Web サーバ経由で、 Trac が `htdocs` ディレクトリを利用できるようにしておく必要があります:
 {{{
 $ ln -s /path/to/www/trac/htdocs /var/www/yourhost.example.org/trac-htdocs
 }}}
 
-Note that in order to get this `htdocs` directory, you need first to extract the relevant Trac resources using the `deploy` command of TracAdmin:
+Note: `htdocs` ディレクトリの内容を取得するには、最初に TracAdmin の `deploy` コマンドを使用して、対応する Trac リソースを展開する必要があります。
 [[TracAdminHelp(deploy)]]
 
 
-== Adding Authentication ==
+== 認証を追加する == #AddingAuthentication
 
-The simplest way to enable authentication with Apache is to create a password file. Use the `htpasswd` program to create the password file:
+Apache で認証を追加する最も単純な方法はパスワードファイルを作ることです。 `htpasswd` プログラムを使用してパスワードファイルを作成します:
 {{{
 $ htpasswd -c /somewhere/trac.htpasswd admin
 New password: <type password>
@@ -121,7 +121,7 @@ Re-type new password: <type password again>
 Adding password for user admin
 }}}
 
-After the first user, you dont need the "-c" option anymore:
+一番最初のユーザ以外は "-c" オプションは必要ありません:
 {{{
 $ htpasswd /somewhere/trac.htpasswd john
 New password: <type password>
@@ -129,11 +129,11 @@ Re-type new password: <type password again>
 Adding password for user john
 }}}
 
-  ''See the man page for `htpasswd` for full documentation.''
+  ''`htpasswd` についての詳細は man を見てください。''
 
-After you've created the users, you can set their permissions using TracPermissions.
+ユーザを作成した後、 TracPermissions の記述通りユーザに権限を設定することができます。
 
-Now, you'll need to enable authentication against the password file in the Apache configuration:
+Apache の設定ファイルの中にパスワードファイル名を記述し、認証を有効にする必要があります:
 {{{
 <Location "/trac/login">
   AuthType Basic
@@ -143,7 +143,7 @@ Now, you'll need to enable authentication against the password file in the Apach
 </Location>
 }}}
 
-If you're hosting multiple projects you can use the same password file for all of them:
+複数のプロジェクトを持っている場合でも、パスワードファイルはプロジェクトで共通なものを使用することができます:
 {{{
 <LocationMatch "/trac/[^/]+/login">
   AuthType Basic
@@ -153,7 +153,7 @@ If you're hosting multiple projects you can use the same password file for all o
 </LocationMatch>
 }}}
 
-For better security, it is recommended that you either enable SSL or at least use the “digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more. For example, on a Debian 4.0r1 (etch) system the relevant section  in apache configuration can look like this:
+より堅固なセキュリティのために、 SSL を有効にするか、少なくとも "基本認証" の代わりに "ダイジェスト認証" を使用することを推奨します。より詳しい情報については [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] を参照して下さい。例えば、Dian 4.0r1 (etch) システムの上では、Apache 構成における関連セクションは下記のように記述できます。
 {{{
 <Location "/trac/login">
     LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
@@ -164,11 +164,11 @@ For better security, it is recommended that you either enable SSL or at least us
     Require valid-user
 </Location>
 }}}
-and you'll have to create your .htpasswd file with htdigest instead of htpasswd as follows:
+.htpasswd ファイルは htpasswd の代わりに htdigest を使って、以下の通りに作成する必要があります:
 {{{
 # htdigest /somewhere/trac.htpasswd trac admin
 }}}
-where the "trac" parameter above is the same as !AuthName above  ("Realm" in apache-docs). 
+上記の "trac" パラメータは 上の !AuthName と同じ値にします (apache-docs の "Realm")。
 
 ----
 See also:  TracGuide, TracInstall, [wiki:TracModWSGI], TracFastCgi, TracModPython

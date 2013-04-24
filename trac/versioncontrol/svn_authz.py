@@ -123,15 +123,15 @@ class AuthzSourcePolicy(Component):
     implements(IPermissionPolicy)
     
     authz_file = PathOption('trac', 'authz_file', '',
-        """The path to the Subversion
-        [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html authorization (authz) file].
-        To enable authz permission checking, the `AuthzSourcePolicy` permission
-        policy must be added to `[trac] permission_policies`.
+        """Subversion の
+        [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html 認証 (authz) ファイル]
+        へのパスを設定します。 authz ファイルによるパーミッションチェックを
+        有効にするには、 `[trac] permission_policies` に `AuthzSourcePolicy` を追加する必要があります。
         """)
 
     authz_module_name = Option('trac', 'authz_module_name', '',
-        """The module prefix used in the `authz_file` for the default
-        repository. If left empty, the global section is used.
+        """デフォルトリポジトリの `authz_file` で使用しているモジュールの
+        プレフィックスを設定します。空の場合、グローバルセクションが使用されます。
         """)
 
     _mtime = 0

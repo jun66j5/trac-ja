@@ -1,64 +1,64 @@
-= The Trac Configuration File =
+= Trac 設定ファイル = #TheTracConfigurationFile
 
 [[TracGuideToc]]
 
-Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
+Trac の設定は `<projectenv>/conf/` にある '''`trac.ini`''' というファイルを編集して行います。変更した内容は通常、即座に反映されますが、 `[components]` セクションや `[logging]` セクションへの変更では Web サーバを再起動する必要があります。また、グローバルな設定ファイルを新しく作成した直後も Web サーバを再起動しなければなりません。
 
-The `trac.ini` configuration file should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
+`trac.ini` 設定ファイルは Web サーバから書き込み可能でなければなりません。 Trac は現在のところ、キャッシュを破棄するために完全に Environment を再読み込みするトリガーとして利用しています。
 
-== Global Configuration ==
+== グローバルな設定 == #GlobalConfiguration
 
-In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or /etc/trac/trac.ini, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
+0.11 より前のバージョンでは、グローバルな設定ファイルは `$prefix/share/trac/conf/trac.ini` や `/etc/trac/trac.ini` などディストリビューションに依存した特定の位置に配置されていました。アップグレードする場合は、設定を継承するファイルを明示しなければなりません。以前のバージョンから 0.11 にアップグレードした場合、プロジェクトの `trac.ini` ファイルに `[inherit]` セクションを追加しなければなりません。カスタマイズしたテンプレートや画像のファイルは `$prefix/share/trac/...` から他の場所に移動することもできます。
 
-Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
+グローバルな設定は Environment 固有の設定とマージされます。ローカルの設定はグローバルの設定を上書きます。グローバルな設定ファイルは以下のように指定します:
 {{{
 [inherit]
 file = /path/to/global/trac.ini
 }}}
-Multiple files can be specified using a comma-separated list.
+カンマ区切りにすることで、複数のファイルを指定することができます。
 
-Note that you can also specify a global option file when creating a new project,  by adding the option `--inherit=/path/to/global/trac.ini` to [TracAdmin#initenv trac-admin]'s `initenv` command.  If you do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated `conf/trac.ini` file and delete the entries that will otherwise override those set in the global file.
+Note: 新しいプロジェクトを作る時に [TracAdmin#initenv trac-admin] の `initenv` コマンドに `--inherit=/path/to/global/trac.ini` オプションを追加することで、グローバル設定ファイルを指定することができます。オプションを追加せずにプロジェクトを作成した場合でも、新しく作成された `conf/trac.ini` ファイルを編集して、グローバルファイルの設定で上書きしたいエントリを削除すれば、新しい Environment でグローバル設定ファイルを使用することができます。
 
-There are two more entries in the [[#inherit-section| [inherit] ]] section, `templates_dir` for sharing global templates and `plugins_dir`, for sharing plugins. Those entries can themselves be specified in the shared configuration file, and in fact, configuration files can even be chained if you specify another `[inherit] file` there.
+[[#inherit-section| [inherit] ]] セクションには、共有するテンプレートの配置先を指す `templates_dir` と、共有するプラグインを指す `plugins_dir` という二つのエントリもあります。これらがグローバル設定ファイルに指定することができます。この場合、他の `[inherit] file` が指定されていれば、設定ファイルは順次読み込まれます。
 
-Note that the templates found in the `templates/` directory of the TracEnvironment have precedence over those found in `[inherit] templates_dir`. In turn, the latter have precedence over the installed templates, so be careful about what you put there, notably if you override a default template be sure to refresh your modifications when you upgrade to a new version of Trac (the preferred way to perform TracInterfaceCustomization being still to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation).
+Note: TracEnvironment の `templates/` ディレクトリ内のテンプレートは、 `[inherit] templates_dir` で見つかるテンプレートより優先されます。次に、`[inherit] templates_dir` のテンプレートはインストールされているテンプレートより優先されます。これらを設定するには注意が必要です。特に、デフォルトのテンプレートをオーバーライドする場合、 Trac を新しいバージョンにアップデートする際には必ず変更点を再読み込みして下さい。 ( TracInterfaceCustomization を行うために推奨する方法は、適切に `ITemplateStreamFilter` の変更が行えるカスタムプラグインを作成することです。)
 
-== Reference for settings
+== リファレンス == #Referenceforsettings
 
-This is a brief reference of available configuration options, and their default settings.
+現在利用できる設定項目のリファレンスとデフォルトの設定です。(訳注: 0.12 ではデフォルトの値は表示されません。)
 
 [[TracIni]]
 
-== Reference for special sections
+== 特殊なセクションのリファレンス == #Referenceforspecialsections
 [[PageOutline(3,,inline)]]
 
 === [components] === #components-section
-This section is used to enable or disable components provided by plugins, as well as by Trac itself. The component to enable/disable is specified via the name of the option. Whether its enabled is determined by the option value; setting the value to `enabled` or `on` will enable the component, any other value (typically `disabled` or `off`) will disable the component.
+このセクションは Trac 本体も含めて、プラグインによって提供されるコンポーネントの有効/無効を設定するために使います。有効/無効を設定するコンポーネントは、オプションの名前 (`name`) を使って特定します。コンポーネントが有効かどうかはオプションの値 (`value`) によって決定されます; コンポーネントを有効にするには、値を `enabled` または `on` に設定します。他の値 (一般的には `disabled` または `off`) の場合、コンポーネントは無効になります。
 
-The option name is either the fully qualified name of the components or the module/package prefix of the component. The former enables/disables a specific component, while the latter enables/disables any component in the specified package/module.
+オプションの名前はコンポーネントの完全修飾名、もしくは、コンポーネントのモジュール/パッケージ プレフィックスとなっています。前者は 特定のコンポーネントの有効/無効を設定し、後者は特定のパッケージ/モジュール内のコンポーネントの有効/無効を設定します。
 
-Consider the following configuration snippet:
+以下の設定ファイルの抜粋を見てください:
 {{{
 [components]
 trac.ticket.report.ReportModule = disabled
 webadmin.* = enabled
 }}}
 
-The first option tells Trac to disable the [wiki:TracReports report module]. The second option instructs Trac to enable all components in the `webadmin` package. Note that the trailing wildcard is required for module/package matching.
+最初のオプションは [wiki:TracReports レポートモジュール] を使用しないように Trac を設定しています。二つ目のオプションは `webadmin` パッケージのすべてのコンポーネントを使用できるように設定しています。末尾のワイルドカードはモジュール/パッケージのマッチを行う場合、必須です。
 
-See the ''Plugins'' page on ''About Trac'' to get the list of active components (requires `CONFIG_VIEW` [wiki:TracPermissions permissions].)
+アクティブなコンポーネントの一覧を取得するには、 ''Trac について'' (訳注: 英語版では ''About Trac'') の ''Plugins'' ページを参照してください。 (`CONFIG_VIEW` [wiki:TracPermissions パーミッション] が必要となります。)
 
 See also: TracPlugins
 
 === [milestone-groups] === #milestone-groups-section
-''(since 0.11)''
+''(0.11 以降)''
 
-As the workflow for tickets is now configurable, there can be many ticket states,
-and simply displaying closed tickets vs. all the others is maybe not appropriate 
-in all cases. This section enables one to easily create ''groups'' of states 
-that will be shown in different colors in the milestone progress bar.
+今やチケットのワークフローは変更可能です。チケットステータスを数多く持つことができます。
+単に解決した (closed) チケットと、その他のチケットを対比して表示することが、すべてのケースで
+適切とは言えなくなりました。このセクションでは、簡単にステータスの ''グループ'' を作成ができます。
+グループはマイルストーンのプログレスバーで異なった色で表示させることができます。
 
-Example configuration (the default only has closed and active):
+設定の例 (closed と active しか持たない場合):
 {{{
 closed = closed
 # sequence number in the progress bar
@@ -82,35 +82,35 @@ active.css_class = open
 active.label = in progress
 }}}
 
-The definition consists in a comma-separated list of accepted status.
-Also, '*' means any status and could be used to associate all remaining
-states to one catch-all group.
+グループの定義は、含めるステータスをカンマ区切りのリストにして構成します。
+また、 '*' はあらゆるステータスを意味し、残りのすべてのステータスをキャッチオールグループに
+関連付けます。
 
-The CSS class can be one of: new (yellow), open (no color) or
-closed (green). New styles can easily be added using the following
-selector:  `table.progress td.<class>`
+CSS クラスは次のいずれかを設定します: new (黄色), open (無色), closed (緑色)。
+新しくスタイルを追加するには、以下のセレクタを使用します:
+`table.progress td.<class>`
 
 === [repositories] === #repositories-section
 
-(''since 0.12'' multirepos)
+(''0.12 以降'' のマルチリポジトリ)
 
-One of the alternatives for registering new repositories is to populate the `[repositories]` section of the trac.ini.
+trac.ini の `[repositories]` セクションに設定できることは、新しいリポジトリを登録すること以外にもあります。
 
-This is especially suited for setting up convenience aliases, short-lived repositories, or during the initial phases of an installation.
+使い勝手を増すエイリアスや、一時的なリポジトリ、インストール時の初期状態などを設定することができます。
 
-See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details about the format adopted for this section and the rest of that page for the other alternatives.
+このセクションとその他諸々の書き方についての詳細は [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] を参照してください。
 
 === [svn:externals] === #svn:externals-section
-''(since 0.11)''
+''(0.11 以降)''
 
-The TracBrowser for Subversion can interpret the `svn:externals` property of folders.
-By default, it only turns the URLs into links as Trac can't browse remote repositories.
+Subversion 向けの TracBrowser は、フォルダの `svn:externals` 属性を解釈できます。
+デフォルトでは URL をリンクとして処理できるだけであり、 Trac 自身はリモートとなるリポジトリをブラウズすることはできません。
 
-However, if you have another Trac instance (or an other repository browser like [http://www.viewvc.org/ ViewVC]) configured to browse the target repository, then you can instruct Trac which other repository browser to use for which external URL.
+しかしながら、別の Trac インスタンス (または [http://www.viewvc.org/ ViewVC] のような別のリポジトリブラウザ) がリンク先のリポジトリにをブラウズできるように設定されていれば、別のリポジトリブラウザを指す外部の URL を Trac に設定しておくことができます。
 
-This mapping is done in the `[svn:externals]` section of the TracIni
+このマッピングは TracIni の `[svn:externals]` セクションで設定します。
 
-Example:
+例:
 {{{
 [svn:externals]
 1 = svn://server/repos1                       http://trac/proj1/browser/$path?rev=$rev
@@ -118,23 +118,23 @@ Example:
 3 = http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
 4 = svn://anotherserver.com/tools_repository  http://ourserver/tracs/tools/browser/$path?rev=$rev
 }}}
-With the above, the `svn://anotherserver.com/tools_repository/tags/1.1/tools` external will be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=` (and `rev` will be set to the appropriate revision number if the external additionally specifies a revision, see the [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals] for more details).
+上記では、 `svn://anotherserver.com/tools_repository/tags/1.1/tools` という external は `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=` にマップされます (`rev` は external にリビジョンが指定された場合、適切なリビジョン番号に設定されます。詳細は [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book の externals] を参照してください)。
 
-Note that the number used as a key in the above section is purely used as a place holder, as the URLs themselves can't be used as a key due to various limitations in the configuration file parser.
+Note: 番号はセクション内でのキー項目としてだけ使用されます。 URL 自身はキー項目として扱うことが出来ないという、設定ファイルのパーサの制限事項を回避するためです。
 
-Finally, the relative URLs introduced in [http://subversion.tigris.org/svn_1.5_releasenotes.html#externals Subversion 1.5] are not yet supported.
+最後に [http://subversion.tigris.org/svn_1.5_releasenotes.html#externals Subversion 1.5] で導入された相対 URL は、現在のところサポートしていません。
 
 === [ticket-custom] === #ticket-custom-section
 
-In this section, you can define additional fields for tickets. See TracTicketsCustomFields for more details.
+このセクションでは、チケットに追加フィールドを定義することができます。詳しくは TracTicketsCustomFields を参照してください。
 
 === [ticket-workflow] === #ticket-workflow-section
-''(since 0.11)''
+''(0.11 以降)''
 
-The workflow for tickets is controlled by plugins. 
-By default, there's only a `ConfigurableTicketWorkflow` component in charge. 
-That component allows the workflow to be configured via this section in the trac.ini file.
-See TracWorkflow for more details.
+チケットのワークフローはプラグインで制御します。
+デフォルトでは `ConfigurableTicketWorkflow` コンポーネントが制御を行います。
+このコンポーネントでは、 trac.ini ファイルのこのセクションでワークフローを設定することが可能です。
+詳細は TracWorkflow を参照してください。
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

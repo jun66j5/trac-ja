@@ -1,36 +1,36 @@
-= Trac and mod_python =
+= Trac と mod_python = #Tracandmod_python
 [[TracGuideToc]]
 
-Trac supports [http://www.modpython.org/ mod_python], which speeds up Trac's response times considerably, especially compared to [TracCgi CGI], and permits use of many Apache features not possible with [wiki:TracStandalone tracd]/mod_proxy.
+Trac では [http://www.modpython.org/ mod_python] を利用可能です。 [http://www.modpython.org/ mod_python] は Trac のレスポンスタイムを飛躍的に向上し、特に [TracCgi CGI] と比べて、 [wiki:TracStandalone tracd]/mod_proxy では使用できない多くの Apache 機能を使えるようにします。
 
-These instructions are for Apache 2; if you are still using Apache 1.3, you may have some luck with [trac:wiki:TracModPython2.7 TracModPython2.7].
+以下の説明は Apache2 のためのものです; まだ Apache1.3 を使用しているなら、 [http://trac.edgewall.org/wiki/TracModPython2.7 TracModPython2.7] にいくつか情報があります。
 
-== A Word of Warning ==
+== 警告 == #AWordofWarning
 
-As of 16^th^ June 2010, the mod_python project is officially dead.  If you are considering using mod_python for a new installation, '''please don't'''!  There are known issues which will not be fixed and there are now better alternatives.  Check out the main TracInstall pages for your target version for more information.
+2010 年 6 月 16 日に、 mod_python プロジェクトが正式に終了しました。もし mod_python を新しいインストールで使用することを考えているならば、 '''お願いだからしないで下さい'''! 解決されない既知の課題がありますし、今ではより良い代替手段もあります。詳細については、インストールしようとしているバージョンの TracInstall ページをチェックして下さい。
 
-== Simple configuration ==
+== シンプルなコンフィグレーション == #Simpleconfiguration
 
-If you just installed mod_python, you may have to add a line to load the module in the Apache configuration:
+mod_python をインストールしたら、 Apache の設定ファイルに以下の一行を追加してモジュールをロードしなければなりません:
 {{{
 LoadModule python_module modules/mod_python.so
 }}}
 
-''Note: The exact path to the module depends on how the HTTPD installation is laid out.''
+''Note: モジュールがインストールされている正しいパスは HTTPD をどこにインストールしたかによって変わります。''
 
-On Debian using apt-get
+Debian で apt-get を使用する場合
 {{{
 apt-get install libapache2-mod-python libapache2-mod-python-doc
 }}}
-(Still on Debian) after you have installed mod_python, you must enable the modules in apache2 (equivalent of the above Load Module directive):
+(Debian の続き) mod_python をインストールした後に、apache2 (上の Load Module に相当するもの) のモジュールを有効にしなければなりません :
 {{{
 a2enmod python
 }}}
-On Fedora use, using yum:
+Fedora で yum を使用する場合:
 {{{
 yum install mod_python
 }}}
-You can test your mod_python installation by adding the following to your httpd.conf.  You should remove this when you are done testing for security reasons. Note: mod_python.testhandler is only available in mod_python 3.2+.
+httpd.conf に以下を加えることで、 mod_python がインストールされたかテストすることができます。セキュリティ上の理由から、テストが終わった時点で以下のコンフィグは削除するべきです。 Note: mod_python.testhandler は mod_python 3.2+ で利用可能です。
 {{{
 #!xml
 <Location /mpinfo>
@@ -42,7 +42,7 @@ You can test your mod_python installation by adding the following to your httpd.
 </Location>
 }}}
 
-A simple setup of Trac on mod_python looks like this:
+mod_python を使用した簡単な Trac のセットアップ方法は以下のようになります:
 {{{
 #!xml
 <Location /projects/myproject>
@@ -56,9 +56,9 @@ A simple setup of Trac on mod_python looks like this:
 </Location>
 }}}
 
-The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration without it; if the URLs produced by Trac look wrong, if Trac does not seem to recognize URLs correctly, or you get an odd "No handler matched request to..." error, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.
+'''`TracUriRoot`''' オプションは不要な場合もあります。 `TracUriRoot` オプションを付けずに試し、 Trac が正しく URL を生成できないか、 "No handler matched request to..." というエラーが出るようであれば '''`TracUriRoot`''' を追加して下さい。 `Location` と '''`TracUriRoot`''' が同じパスになるようにしてください。
 
-The options available are
+!PythonOption の一覧は以下の通りです。
 {{{
     # For a single project
     PythonOption TracEnv /var/trac/myproject
@@ -74,17 +74,17 @@ The options available are
     PythonOption TracUriRoot /projects/myproject
 }}}
 
-=== Python Egg Cache ===
+=== Python Egg Cache === #PythonEggCache
 
-Compressed python eggs like Genshi are normally extracted into a directory named `.python-eggs` in the users home directory. Since apache's home usually is not writable an alternate egg cache directory can be specified like this:
+Genshi のように圧縮された Python egg は通常、実行するユーザのホームディレクトリ配下の `.python-eggs` ディレクトリに展開されます。  Apache のホームディレクトリは多くの場合、書き込みできないようになっているので、他のディレクトリを egg cache として指定しなければなりません:
 {{{
 PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
 }}}
 
-or you can uncompress the Genshi egg to resolve problems extracting from it.
-=== Configuring Authentication ===
+または Genshi の egg を解凍して展開することで、この問題を回避できます。
+=== 認証設定 === #ConfiguringAuthentication
 
-Creating password files and configuring authentication works similar to the process for [wiki:TracCgi#AddingAuthentication CGI]:
+パスワードファイルを作成して、認証を構成するには [wiki:TracCgi#AddingAuthentication CGI] と同じように行います。
 {{{
 #!xml
 <Location /projects/myproject/login>
@@ -95,15 +95,15 @@ Creating password files and configuring authentication works similar to the proc
 </Location>
 }}}
 
-Configuration for mod_ldap authentication in Apache is a bit tricky (httpd 2.2.x and OpenLDAP: slapd 2.3.19)
+Apache の mod_ldap 認証のコンフィグは少し扱いにくいです。(httpd 2.2.x と OpenLDAP: slapd 2.3.19)
 
-1. You need to load the following modules in Apache httpd.conf
+1. Apache の httpd.conf に以下のモジュールをロードする必要があります
 {{{
 LoadModule ldap_module modules/mod_ldap.so
 LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
 }}}
 
-2. Your httpd.conf also needs to look something like:
+2. httpd.conf は以下のような感じになります:
 
 {{{
 #!xml
@@ -125,7 +125,7 @@ LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
 </Location>
 }}}
 
-Or the LDAP interface to a Microsoft Active Directory:
+Microsoft Active Directory の LDAP インタフェースを使用する場合:
 
 {{{
 #!xml
@@ -150,16 +150,16 @@ Or the LDAP interface to a Microsoft Active Directory:
 </Location>
 }}}
 
-Note 1: This is the case where the LDAP search will get around the multiple OUs, conecting to Global Catalog Server portion of AD (Notice the port is 3268, not the normal LDAP 389). The GCS is basically a "flattened" tree which allows searching for a user without knowing to which OU they belong.
+Note 1: このケースでは LDAP 検索で複数の OU をまとめて取得するために、 AD のグローバルカタログサーバ (Global Catalog Server) に接続しています (ポート番号が通常 LDAP で使用される 389 ではなく 3268 であることに注意してください) 。 GCS は基本的に "平らな" ツリーであり、ユーザが、どの OU に属するか不明な場合でも検索することができます。
 
-Note 2: Active Directory requires an authenticating user/password to access records (AuthLDAPBindDN and AuthLDAPBindPassword).
+Note 2: Active Directory は、レコードにアクセスするために user/password (AuthLDAPBindDN と AuthLDAPBindPassword) による認証を必要とします。 (訳注: GC ではなく、通常の LDAP であれば Active Directory の ACL に認証なしユーザからの読み取り許可を設定すれば不要です)
 
-Note 3: The directive "require ldap-group ..."  specifies an AD group whose members are allowed access.
+Note 3: "require ldap-group ..." ディレクティブはメンバのアクセスが許可されている AD のグループを指定します。
 
 
-=== Setting the Python Egg Cache ===
+=== Python Egg Cache を設定する === #SettingthePythonEggCache
 
-If the Egg Cache isn't writeable by your Web server, you'll either have to change the permissions, or point Python to a location where Apache can write. This can manifest itself as a ''500 internal server error'' and/or a complaint in the syslog. 
+Web サーバが Egg Cache に書き込みできない場合、パーミッションを変更するか、 Apache が書き込み可能な場所を指定する必要があります。設定しないと ''500 Internal Server Error'' や syslog へのエラー出力が発生します。
 
 {{{
 #!xml
@@ -171,9 +171,9 @@ If the Egg Cache isn't writeable by your Web server, you'll either have to chang
 }}}
 
 
-=== Setting the !PythonPath ===
+=== !PythonPath を設定する === #SettingthePythonPath
 
-If the Trac installation isn't installed in your Python path, you'll have to tell Apache where to find the Trac mod_python handler  using the `PythonPath` directive:
+もし Trac のインストールが、通常の Python ライブラリのパスの中に無い場合、 Apache が Trac の mod_python ハンドラを見つけられるように `PythonPath` ディレクティブで指定しなければなりません:
 {{{
 #!xml
 <Location /projects/myproject>
@@ -183,11 +183,11 @@ If the Trac installation isn't installed in your Python path, you'll have to tel
 </Location>
 }}}
 
-Be careful about using the !PythonPath directive, and ''not'' `SetEnv PYTHONPATH`, as the latter won't work.
+!PythonPath ディレクティブを使用するときは気をつけてください。そして、 `SetEnv PYTHONPATH` は動かないので ''使用しない'' で下さい。
 
-== Setting up multiple projects ==
+== マルチプロジェクトのセットアップ == #Settingupmultipleprojects
 
-The Trac mod_python handler supports a configuration option similar to Subversion's `SvnParentPath`, called `TracEnvParentDir`:
+Trac の mod_python ハンドラには Subversion の `SvnParentPath` とよく似た `TracEnvParentDir` というコンフィグレーションオプションがあります。
 {{{
 #!xml
 <Location /projects>
@@ -199,17 +199,17 @@ The Trac mod_python handler supports a configuration option similar to Subversio
 </Location>
 }}}
 
-When you request the `/projects` URL, you will get a listing of all subdirectories of the directory you set as `TracEnvParentDir` that look like Trac environment directories. Selecting any project in the list will bring you to the corresponding Trac environment.
+`/projects` の URL をリクエストすると、 TracEnvironment の親ディレクトリ `TracEnvParentDir` として設定したディレクトリ配下のサブディレクトリ一覧が表示されます。その一覧から何かプロジェクトを選択するとそれに該当する TracEnvironment を開くことができます。
 
-If you don't want to have the subdirectory listing as your projects home page you can use a
+あなたのプロジェクトのホームページとして、サブディレクトリのリストが必要ないならば、以下のようにすることができます
 {{{
 #!xml
 <LocationMatch "/.+/">
 }}}
 
-This will instruct Apache to use mod_python for all locations different from root while having the possibility of placing a custom home page for root in your !DocumentRoot folder.
+これは !DocumentRoot フォルダの直下にカスタムホームページとして配置されていない場合には、すべてのロケーションで代わりに mod_python を使用することを Apache に教えます。
 
-You can also use the same authentication realm for all of the projects using a `<LocationMatch>` directive:
+すべてのプロジェクトに対して、 `<LocationMatch>` ディレクティブを使用することによって同じ認証の仕組みを使用することができます。
 {{{
 #!xml
 <LocationMatch "/projects/[^/]+/login">
@@ -220,10 +220,10 @@ You can also use the same authentication realm for all of the projects using a `
 </LocationMatch>
 }}}
 
-== Virtual Host Configuration ==
+== 仮想ホストの設定 == #VirtualHostConfiguration
 
-Below is the sample configuration required to set up your trac as a virtual server (i.e. when you access it at the URLs like
-!http://trac.mycompany.com):
+以下に示す例は Trac を仮想サーバーとしてセットアップするときに必要な設定です。 (例えば、!http://trac.mycompany.com といった
+URL でアクセスすることができます):
 
 {{{
 #!xml
@@ -246,18 +246,18 @@ Below is the sample configuration required to set up your trac as a virtual serv
 </VirtualHost>
 }}}
 
-This does not seem to work in all cases. What you can do if it does not:
- * Try using `<LocationMatch>` instead of `<Location>`
- * <Location /> may, in your server setup, refer to the complete host instead of simple the root of the server. This means that everything (including the login directory referenced below) will be sent to python and authentication does not work (i.e. you get the infamous Authentication information missing error). If this applies to you, try using a sub-directory for trac instead of the root (i.e. /web/ and /web/login instead of / and /login).
- * Depending on apache's `NameVirtualHost` configuration, you may need to use `<VirtualHost *:80>` instead of `<VirtualHost *>`.
+この設定は全てのケースでうまく動くわけではありません。動かない場合は以下を試してください:
+ * `<Location>` の代わりに `<LocationMatch>` を使用する。
+ * <Location />  はサーバの設定によっては、単にサーバのルートではなく完全なホスト名を参照していることがあります。このような場合、 (上記の例では下段にあたるログイン用ディレクトリを含む) 全てのリクエストが Python に送信され、認証が動かなくなります (認証を行おうとすると、認証が設定されていないというエラー画面が表示されます)。 URL を変更できるのであれば (/, /login の代わりに /web/, /web/login などのように) ルートではなくサブディレクトリを使ってみてください。
+ * Apache の `NameVirtualHost` を設定している場合、 `<VirtualHost *>` ではなく `<VirtualHost *:80>` を使用せねばならないかもしれません。
 
-For a virtual host that supports multiple projects replace "`TracEnv`" /var/trac/myproject with "`TracEnvParentDir`" /var/trac/
+複数のプロジェクトをサポートする仮想ホストの設定では、 "`TracEnv`" /var/trac/myproject を "`TracEnvParentDir`" /var/trac/ に置き換えて下さい。
 
-Note: !DocumentRoot should not point to your Trac project env. As Asmodai wrote on #trac: "suppose there's a webserver bug that allows disclosure of !DocumentRoot they could then leech the entire Trac environment".
+Note: !DocumentRoot は TracEnvironment と同じディレクトリにしないでください。 何かのバグがあった場合に TracEnvironment の内容が外部からアクセス可能になってしまうおそれがあります。
 
-== Troubleshooting ==
+== トラブルシューティング == #Troubleshooting
 
-In general, if you get server error pages, you can either check the Apache error log, or enable the `PythonDebug` option:
+サーバエラーのページがでたときには、 まずは Apache のエラーログを確認するか、 `PythonDebug` オプションを有効にして下さい:
 {{{
 #!xml
 <Location /projects/myproject>
@@ -266,43 +266,41 @@ In general, if you get server error pages, you can either check the Apache error
 </Location>
 }}}
 
-For multiple projects, try restarting the server as well.
+複数プロジェクトの場合は、全てのプロジェクトでサーバを再起動してみてください。
 
-=== Expat-related segmentation faults === #expat
+=== Expat-related のセグメンテーションフォルト === #expat
 
-This problem will most certainly hit you on Unix when using Python 2.4.
-In Python 2.4, some version of Expat (an XML parser library written in C) is used, 
-and if Apache is using another version, this results in segmentation faults.
-As Trac 0.11 is using Genshi, which will indirectly use Expat, that problem
-can now hit you even if everything was working fine before with Trac 0.10.
+この問題は Unix 上で Python 2.4 を使用するとき、ほぼ確実に発生します。
+Python 2.4 の使用する Expat (C で書かれた XML パーザライブラリ) と Apache の使用する Expat のバージョンが異なる場合に、セグメンテーションフォルトが発生します。
+Trac 0.11 は Genshi (間接的に Expat が使用される) を使用しているため、以前 Trac 0.10 で正常に動いていたとしても、現在のあなたの環境で問題が起こり得ます。
 
-See Graham Dumpleton's detailed [http://www.dscpl.com.au/wiki/ModPython/Articles/ExpatCausingApacheCrash explanation and workarounds] for the issue.
+Graham Dumpleton が、この問題について詳しく書いています。問題の [http://www.dscpl.com.au/wiki/ModPython/Articles/ExpatCausingApacheCrash 説明と回避方法] を確認してください。
 
-=== Form submission problems ===
+=== フォームを送信するときの問題 === #Formsubmissionproblems
 
-If you're experiencing problems submitting some of the forms in Trac (a common problem is that you get redirected to the start page after submission), check whether your {{{DocumentRoot}}} contains a folder or file with the same path that you mapped the mod_python handler to. For some reason, mod_python gets confused when it is mapped to a location that also matches a static resource.
+もし、 Trac で何かしらのフォームを送信したときに、トラブルに見舞われたら (送信後にスタートページにリダイレクトされてしまう、などがよくある問題です)  {{{DocumentRoot}}} の中に mod_python をマッピングしたパスと同じフォルダやファイルが存在しないか確認してください。どういうわけか、 mod_python は静的リソースと同じところにマッピングされると混乱してしまいます。
 
-=== Problem with virtual host configuration ===
+=== 仮想ホストの設定においての問題 === #Problemwithvirtualhostconfiguration
 
-If the <Location /> directive is used, setting the `DocumentRoot` may result in a ''403 (Forbidden)'' error. Either remove the `DocumentRoot` directive, or make sure that accessing the directory it points is allowed (in a corresponding `<Directory>` block).
+<Location /> ディレクティブが使用されている場合に `DocumentRoot` を設定すると ''403 (Forbidden)'' エラーになることがあります。 `DocumentRoot` ディレクティブを削除するか、アクセスが許されているディレクトリに設定されているかどうかを確認して下さい (対応する `<Directory>` ブロックにて)
 
-Using <Location /> together with `SetHandler` resulted in having everything handled by mod_python, which leads to not being able download any CSS or images/icons. I used <Location /trac> `SetHandler None` </Location> to circumvent the problem, though I do not know if this is the most elegant solution.
+<Location /> で `SetHandler` を使用すると、すべてを mod_python でハンドルすることになりますが、いかなる CSS も image/icons もダウンロードできなくなります。この問題を回避するために、われわれは <Location /trac> で `SetHandler None` を使用しています。しかし、この方法がエレガントな解決方法だとは思っていません。
 
-=== Problem with zipped egg ===
+=== Zip された egg での問題 === #Problemwithzippedegg
 
-It's possible that your version of mod_python will not import modules from zipped eggs. If you encounter an `ImportError: No module named trac` in your Apache logs but you think everything is where it should be, this might be your problem. Look in your site-packages directory; if the Trac module appears as a ''file'' rather than a ''directory'', then this might be your problem. To rectify, try installing Trac using the `--always-unzip` option, like this:
+mod_python のバージョンによっては Zip された egg ファイルからモジュールを import できないことがあります。 Apache のログに `ImportError: No module named trac` が出力される場合、問題が発生している原因であると考えられます。 Python の site-packages ディレクトリを見てみてください; Trac のモジュールが ''ディレクトリ'' ではなく ''ファイル'' として配置されている場合、問題の原因と考えられます。解決するためには、下記の上に `--always-unzip` オプションと伴に Trac をインストールしてみてください。
 
 {{{
-easy_install --always-unzip Trac-0.12b1.zip
+easy_install --always-unzip Trac-0.12.zip
 }}}
 
-=== Using .htaccess ===
+=== .htaccess ファイルを使用する === #Using.htaccess
 
-Although it may seem trivial to rewrite the above configuration as a directory in your document root with a `.htaccess` file, this does not work. Apache will append a "/" to any Trac URLs, which interferes with its correct operation.
+ディレクトリの設定をほんのちょっと修正するには `.htaccess` ファイルを使用すればいいかもしれませんが、これは動作しません。 Apache が Trac の URL に "/" (スラッシュ) を追加すると、正しい動作を妨げてしまいます。
 
-It may be possible to work around this with mod_rewrite, but I failed to get this working. In all, it is more hassle than it is worth. Stick to the provided instructions. :)
+それでは、 mod_rewrite を使用すればいいように見えますが、これも動作しません。とにかく、百害あって一利なしです。指示に従ってください。 :)
 
-A success story: For me it worked out-of-box, with following trivial config:
+成功した事例:  以下の設定値で成功した事例があります:
 {{{
 SetHandler mod_python
 PythonInterpreter main_interpreter
@@ -316,11 +314,11 @@ AuthUserFile /path/to/.htpasswd
 Require valid-user
 }}}
 
-The `TracUriRoot` is obviously the path you need to enter to the browser to get to the trac (e.g. domain.tld/projects/trac)
+`TracUriRoot` は Web ブラウザが取得する Trac のパスを明示的に設定するのに使用します。 (例: domain.tld/projects/trac)
 
-=== Additional .htaccess help ===
+=== .htaccess 使用時の特記事項 === #Additional.htaccesshelp
 
-If you are using the .htaccess method you may have additional problems if your trac directory is inheriting .htaccess directives from another.  This may also help to add to your .htaccess file:
+.htaccess を使用している場合、 Trac のディレクトリが他のディレクトリで設定されたた .htaccess ディレクティブを継承し、問題を生じることがあります。このような場合、以下のように .htaccess ファイルに設定してみて下さい:
 
 {{{
 <IfModule mod_rewrite.c>
@@ -329,50 +327,50 @@ If you are using the .htaccess method you may have additional problems if your t
 }}}
 
 
-=== Win32 Issues ===
-If you run trac with mod_python < 3.2 on Windows, uploading attachments will '''not''' work. This problem is resolved in mod_python 3.1.4 or later, so please upgrade mod_python to fix this.
+=== Win32 での特記 === #Win32Issues
+Windows 上で mod_python 3.2 より前のバージョンで Trac を動かしている場合、添付ファイルのアップロードが '''動かない''' でしょう。この問題は 3.1.4 以降で解決されました。 mod_python をアップグレードしてこの問題を解決してください。
 
 
-=== OS X issues ===
+=== OS X での特記 === #OSXissues
 
-When using mod_python on OS X you will not be able to restart Apache using `apachectl restart`. This is apparently fixed in mod_python 3.2, but there's also a patch available for earlier versions [http://www.dscpl.com.au/projects/vampire/patches.html here].
+OS X で mod_python を使用するとき、 `apachectl restart` コマンドで Apache の再起動ができないでしょう。これは、 mod_python 3.2 でおそらく修正されるでしょう。しかし、 [http://www.dscpl.com.au/projects/vampire/patches.html ここ] にあるパッチを適用すれば、 3.2 以前のバージョンでもこの問題を回避できます。
 
-=== SELinux issues ===
+=== SELinux での特記 === #SELinuxissues
 
-If Trac reports something like: ''Cannot get shared lock on db.lock''
-The security context on the repository may need to be set:
+もし、 Trac が ''Cannot get shared lock on db.lock'' というようなメッセージが出力したら、
+リポジトリに セキュリティコンテキストを設定する必要があるでしょう:
 
 {{{
 chcon -R -h -t httpd_sys_content_t PATH_TO_REPOSITORY
 }}}
 
-See also [http://subversion.tigris.org/faq.html#reposperms]
+[http://subversion.tigris.org/faq.html#reposperms] も参考にして下さい
 
-=== FreeBSD issues ===
-Pay attention to the version of the installed mod_python and sqlite packages. Ports have both the new and old ones, but earlier versions of pysqlite and mod_python won't integrate as the former requires threaded support in python, and the latter requires a threadless install.
+=== FreeBSD での特記 === #FreeBSDissues
+mod_python と sqlite パッケージのインストールバージョンに注意して下さい。 Ports には両パッケージともいろいろなバージョンがありますが、初期の pysqlite と mod_python は組み合わせることができません。前者は python のスレッド機能サポートが必要ですし、 後者 は python のスレッド機能なしのインストールが必要です。
 
-If you compiled and installed apache2, apache wouldn´t support threads (cause it doesn´t work very well on FreeBSD). You could force thread support when running ./configure for apache, using --enable-threads, but this isn´t recommendable.
-The best option [http://modpython.org/pipermail/mod_python/2006-September/021983.html seems to be] adding to /usr/local/apache2/bin/ennvars the line 
+apache2 を普通にコンパイルしてインストールした場合、 apache はスレッドのサポートなしになります (これが FreeBSD 上であまりよく動かない原因)。 --enable-threads を使用して ./configure を実行することで apache にスレッドのサポートありにすることができますが、これはお勧めできません。
+最良のオプションは /usr/local/apache2/bin/ennvars に下記の一行を追加することだと [http://modpython.org/pipermail/mod_python/2006-September/021983.html 考えられます。]
 
 {{{
 export LD_PRELOAD=/usr/lib/libc_r.so
 }}}
 
-=== Subversion issues ===
+=== Subversion での特記 === #Subversionissues
 
-If you get the following Trac Error `Unsupported version control system "svn"` only under mod_python, though it works well on the command-line and even with TracStandalone, chances are that you forgot to add the path to the Python bindings with the [TracModPython#ConfiguringPythonPath PythonPath] directive. (The better way is to add a link to the bindings in the Python `site-packages` directory, or create a `.pth` file in that directory.)
+コマンドラインや TracStandalone で使用しているときは動くのに、 mod_python を使用しているときのみ、 `Unsupported version control system "svn"` というエラーが出力される場合、 [wiki:"TracModPython#SettingthePythonPath" PythonPath] ディレクティブに Python bindings へのパスを追加するのを忘れている可能性があります。 (Python の `site-packages` ディレクトリに Python binding へのリンクを追加するか、 `.pth` ファイルを作っておくのがベターです。)
 
-If this is not the case, it's possible that you're using Subversion libraries that are binary incompatible with the apache ones (an incompatibility of the `apr` libraries is usually the cause). In that case, you also won't be able to use the svn modules for Apache (`mod_dav_svn`).
+これに当てはまらない場合、使用している Subversion のライブラリが Apache が使用しているバージョンと適合性がないかもしれません。 (たいてい `apr` ライブラリの不適合性が原因になります。) その場合、 Apache の svn モジュール (`mod_dav_svn`) も使用できないでしょう。
 
-You also need a recent version of `mod_python` in order to avoid a runtime error ({{{argument number 2: a 'apr_pool_t *' is expected}}}) due to the default usage of multiple sub-interpreters. 3.2.8 ''should'' work, though it's probably better to use the workaround described in [trac:#3371 #3371], in order to force the use of the main interpreter:
+また、ランタイムエラー ({{{argument number 2: a 'apr_pool_t *' is expected}}}) を抑止するためにも、複数のサブインタプリタを使用できる最近のバージョンの `mod_python` が必要になります。 3.2.8 では ''たぶん'' 動きますが、 [http://trac.edgewall.org/ticket/3371 #3371] に記述されている通り、メインインタプリタを使用するように強制するワークアラウンドを使用する方がおそらく良いでしょう:
 {{{
 PythonInterpreter main_interpreter
 }}}
-This is anyway the recommended workaround for other well-known issues seen when using the Python bindings for Subversion within mod_python ([trac:#2611 #2611], [trac:#3455 #3455]). See in particular Graham Dumpleton's comment in [trac:comment:9:ticket:3455 #3455] explaining the issue.
+これは、よく知られている mod_python と Subversion の Python バインディングの他の問題 ([http://trac.edgewall.org/ticket/2611 #2611], [http://trac.edgewall.org/ticket/3455 #3455]) について推奨しているワークアラウンドです。 [http://trac.edgewall.org/ticket/3455#comment:9 #3455] Graham Dumpleton のコメントに問題点が指摘されています。
 
-=== Page layout issues ===
+=== ページレイアウトの問題 === #Pagelayoutissues
 
-If the formatting of the Trac pages look weird chances are that the style sheets governing the page layout are not handled properly by the web server. Try adding the following lines to your apache configuration:
+Trac のページフォーマットが奇妙に見えるなら、ページレイアウトを管理するスタイルシートが Web サーバによって適切に扱われていない可能性が考えられます。 Apache のコンフィグに以下を追加してみてください:
 {{{
 #!xml
 Alias /myproject/css "/usr/share/trac/htdocs/css"
@@ -381,13 +379,13 @@ Alias /myproject/css "/usr/share/trac/htdocs/css"
 </Location>
 }}}
 
-Note: For the above configuration to have any effect it must be put after the configuration of your project root location, i.e. {{{<Location /myproject />}}}.
+Note: 上記のコンフィグが効果を発揮するためには、プロジェクトの root 位置のコンフィグ後に追加しなければなりません。つまり {{{<Location /myproject />}}} 以降です。
 
-Also, setting `PythonOptimize On` seems to mess up the page headers and footers, in addition to hiding the documentation for macros and plugins (see #Trac8956). Considering how little effect the option has, it is probably a good idea to leave it `Off`.
+また `PythonOptimize On` が設定されている場合、ページのヘッダとフッタの表示が乱れたり、マクロやプラグインのドキュメンテーションが表示されないことがあります ([http://trac.edgewall.org/ticket/8956 #8956] 参照)。オプションの設定によって影響を受ける箇所について充分考慮できない場合は `Off` に設定する方がよいでしょう。
 
-=== HTTPS issues ===
+=== HTTPS の問題 === #HTTPSissues
 
-If you want to run Trac fully under https you might find that it tries to redirect to plain http. In this case just add the following line to your apache configuration:
+Trac を完全に https で実行したいにも関わらず、プレーンな http にリダイレクトされる場合、 Apache のコンフィグに以下を追加してください:
 {{{
 #!xml
 <VirtualHost * >
@@ -398,14 +396,14 @@ If you want to run Trac fully under https you might find that it tries to redire
 </VirtualHost>
 }}}
 
-=== Fedora 7 Issues ===
-Make sure you install the 'python-sqlite2' package as it seems to be required for TracModPython but not for tracd
+=== Fedora 7 の問題 === #Fedora7Issues
+必ず 'python-sqlite2' をインストールしてください。 TracModPython では必須です (tracd では必須ではありません)。
 
 
-=== Segmentation fault with php5-mhash or other php5 modules ===
-You may encounter segfaults (reported on debian etch) if php5-mhash module is installed. Try to remove it to see if this solves the problem. See debian bug report [http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487]
+=== php5-mhash または その他の php5 モジュールのセグメンテーションフォルト === #Segmentationfaultwithphp5-mhashorotherphp5modules
+php5-mhash モジュールがインストールされている場合、 (debian etch について報告された) セグメンテーションフォルトに遭遇するでしょう。 php-mhash を削除して、問題が解決するかを確かめてみてください。 debian のバグレポート [http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487] を参考にして下さい。
 
-Some people also have troubles when using php5 compiled with its own 3rd party libraries instead of system libraries. Check here [http://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault]
+システムライブラリの代わりに、サードパーティのライブラリでコンパイルされた php5 を使用する一部の人々にもトラブルが発生します。ここを確認してください [http://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault]
 
 ----
-See also:  TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracFastCgi FastCGI],  [trac:TracNginxRecipe TracNginxRecipe]
+See also:  TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracFastCgi FastCGI],  [http://trac.edgewall.org/wiki/TracNginxRecipe TracNginxRecipe]

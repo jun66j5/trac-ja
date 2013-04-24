@@ -1,118 +1,118 @@
-= Trac Plugins =
+= Trac プラグイン = #TracPlugins
 [[TracGuideToc]]
 
-Trac is extensible with [trac:PluginList plugins] since version 0.9. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture] with peculiarities described at [TracDev/PluginDevelopment plugin development] page.
+Trac はバージョン 0.9 以降で [http://trac.edgewall.org/wiki/PluginList プラグイン機能] による機能拡張が可能です。プラグイン機能は、 [http://trac.edgewall.org/wiki/TracDev/ComponentArchitecture コンポーネント設計] に基づき、 [http://trac.edgewall.org/wiki/TracDev/PluginDevelopment プラグインの開発] ページに記載されているような特性を持っています。
 
-== Plugin discovery ==
+== プラグインを見つける == #Plugindiscovery
 
-From the user point of view a Plugin is either standalone .py file or an .egg package. Trac looks for Plugins in a global shared plugins directory (see [TracIni#GlobalConfiguration Global Configuration]) and in `plugins` directory of local TracEnvironment. Components defined in globally installed plugins should be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the trac.ini file.
+ユーザの視点からいうと、プラグインはスタンドアロンの .py ファイルか .egg パッケージのどちらかです。 Trac は グローバルで共有するプラグインのディレクトリ ([TracIni#GlobalConfiguration グローバルな設定] 参照) とローカルの TracEnviroment の `plugins` ディレクトリに対して、プラグインを探します。グローバルにインストールされているプラグインを定義するコンポーネントは trac.ini ファイルの [[TracIni#components-section| [components] ]] セクションで明確に有効にするべきです。
 
-== Requirements for Trac eggs  ==
+== Trac eggs ファイルにおける必要条件 == #RequirementsforTraceggs
 
-To use egg based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.6) installed.
+Trac で Python-egg ベースのプラグインを使用するためには、 [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (バージョン 0.6) をインストールしなければなりません。
 
-To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
+`setuptools` をインストールするために、ブートストラップモジュールである [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] をダウンロードし、以下に示すように実行して下さい:
 {{{
 $ python ez_setup.py
 }}}
 
-If the `ez_setup.py` script fails to install the setuptools release, you can download it from [http://www.python.org/pypi/setuptools PyPI] and install it manually.
+もし `ez_setup.py` スクリプトが setuptools のインストールに失敗したら、 [http://www.python.org/pypi/setuptools PyPI] をダウンロードして手動でインストールしてください。
 
-Plugins can also consist of a single `.py` file dropped directly into the root of environment's or into shared `plugins` directory.
+また、単一の `.py` ファイルで成り立つプラグインは、各 TracEnvironment のルートディレクトリかグローバルの `plugins` ディレクトリに配置します。
 
-== Installing a Trac Plugin ==
+== Trac プラグインのインストール == #InstallingaTracPlugin
 
-=== For a Single Project ===
+=== 単一のプロジェクト === #ForaSingleProject
 
-Plugins are packaged as [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs]. That means they are ZIP archives with the file extension `.egg`. 
+プラグインは [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs] としてパッケージ化されています。つまり、拡張子が `.egg` となっている ZIP アーカイブのファイルです。
 
-If you have downloaded a source distribution of a plugin, and want to build the `.egg` file, follow this instruction:
- * Unpack the source. It should provide a setup.py. 
- * Run:
+plugin のディストリビューションをダウンロードして `.egg` ファイルをビルドしたいのであれば、以下の通りにして下さい:
+ * ソースをアンパックして下さい。それにより setup.py が提供されるでしょう。 
+ * 以下のようにして実行してください:
 {{{
 $ python setup.py bdist_egg
 }}}
 
-Then you will have a *.egg file. Examine the output of running python to find where this was created.
+*.egg ファイルが出力されているでしょう。実行した python の出力を調べて .egg ファイルがどこに作成されたか見つけてください。
 
-Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg. Then, restart the web server (this requirement was not previously mentioned in this document, but in my tests it began working only after I did so).
+一度、プラグインアーカイブを作成したら、 [wiki:TracEnvironment TracEnvironment] の `plugins` ディレクトリにコピーする必要があります。また、 Web サーバーが egg プラグインを読み取るのに必要なパーミッションをつけてください。必要に応じて Web サーバを再起動してください。
 
-To uninstall a plugin installed this way, remove the egg from `plugins` directory and restart web server.
+この方法でインストールしたプラグインをアンインストールする場合、 `plugins` ディレクトリから egg を削除し、 Web サーバを再起動してください。
 
-Note that the Python version that the egg is built with must
-match the Python version with which Trac is run.  If for
-instance you are running Trac under Python 2.5, but have
-upgraded your standalone Python to 2.6, the eggs won't be
-recognized.
+Python egg をビルドするための Python のバージョンと 
+Trac を動かしている Python のバージョンが一致しなければなりません。
+例えば、 Trac を Python のバージョン 2.5 以前で動かしていて、
+2.6 にアップグレードしたときに、 
+Python egg は認識されなくなるでしょう。
 
-Note also that in a multi-project setup, a pool of Python interpreter instances will be dynamically allocated to projects based on need, and since plugins occupy a place in Python's module system, the first version of any given plugin to be loaded will be used for all the projects. In other words, you cannot use different versions of a single plugin in two projects of a multi-project setup. It may be safer to install plugins for all projects (see below) and then enable them selectively on a project-by-project basis.
+マルチプロジェクトを設定している場合、 Python インタプリタインスタンスのプールはプロジェクトの必要に応じて動的にアロケートされ、プラグインは Pyhton のモジュールシステムの一定の位置を占有しますので、最初にロードされたバージョンのプラグインが、他のすべてのプロジェクトでも使用されます。言い換えれば、マルチプロジェクトセットアップされたプロジェクト間では、あるプラグインの異なるバージョンを使用することはできません。プラグインは (下記の方法で) すべてのプロジェクト向けにインストールし、個々のプロジェクトで有効/無効を設定する方が安全でしょう。
 
-=== For All Projects ===
+=== すべてのプロジェクト === #ForAllProjects
 
-==== With an .egg file ====
+==== 単一の .egg ファイル ==== #Withan.eggfile
 
-Some plugins (such as [trac:SpamFilter SpamFilter]) are downloadable as a `.egg` file which can be installed with the `easy_install` program:
+いくつかのプラグイン (例えば [http://trac.edgewall.org/wiki/SpamFilter SpamFilter]) は `.egg` ファイルとしてダウンロードし、 `easy_install` プログラムでインストールすることができます:
 {{{
 easy_install TracSpamFilter
 }}}
 
-If `easy_install` is not on your system see the Requirements section above to install it.  Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python24\Scripts`) to their `PATH` environment variable (see [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information).
+もし、システムに `easy_install` がなくてプラグインをインストールするには上記の必要条件のセクションを見て下さい。 Windows ユーザは `Scripts` ディレクトリを Python をインストールしたディレクトリ (例えば、 `C:\Python24\Scripts`) を環境変数 `PATH` に加えなければなりません。 (より詳しい情報は、 [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install の Windows Notes] を参照して下さい。)
 
-If Trac reports permission errors after installing a zipped egg and you would rather not bother providing a egg cache directory writable by the web server, you can get around it by simply unzipping the egg. Just pass `--always-unzip` to `easy_install`:
+Zip で固められた Python egg をインストールし、 Web サーバに Python egg のキャッシュディレクトリに書き込み権限をつけているのにも関わらず、 Trac がパーミッションエラーを出したら、解凍した Python egg を単に置き直すことによって回避できます。 `easy_install` に `--always-unzip` オプションを付けるだけです:
 {{{
 easy_install --always-unzip TracSpamFilter-0.4.1_r10106-py2.6.egg
 }}}
-You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
+zip で固められた Python egg ファイルと同じ名前のディレクトリ (拡張子が `.egg` で終わっているもの) ができ、そのなかに解凍した中身が入っているでしょう。
 
-Trac also searches for plugins installed in the shared plugins directory ''(since 0.10)'', see TracIni#GlobalConfiguration. This is a convenient way to share the installation of plugins across several but not all environments.
+Trac はまた、 Environment 共通の plugins ディレクトリにインストールされたプラグインを検索します ''(0.10 以降)''。 TracIni#GlobalConfiguration を参照してください。この方法は複数の (しかし全てではない) Environment にまたがってプラグインをインストールする最も簡単な方法になります。
 
-==== From source ====
+==== ソースから ==== #Fromsource
 
-`easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
+`easy_install` をソースからインストールする方法を以下に示します。Subversion のリポジトリか、 tarball/zip のソースを引数に与えてください。
 {{{
 easy_install http://svn.edgewall.com/repos/trac/plugins/0.12/spam-filter-captcha
 }}}
 
-==== Enabling the plugin ====
-Unlike plugins installed per-environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This also applies to plugins installed in shared plugins directory, i.e. the path specified in the `[inherit] plugins_dir` configuration option. 
+==== プラグインを有効にする ==== #Enablingtheplugin
+個別の TracEnvironment にプラグインをインストールする場合と異なり、システム全体にインストールしたプラグインを有効にするためには、 [wiki:TracIni trac.ini] ファイルで明示的に指定しなければいけません。設定ファイルの `[inherit] plugins_dir` オプションに指定した Environment 共通の plugins ディレクトリにプラグインをインストールする場合も同じく、明示的に指定する必要があります。
 
-This is done in the `[components]` section of the configuration file, for example:
+設定ファイルの `[components]` セクションに次のような記載を行えば完了です:
 {{{
 [components]
 tracspamfilter.* = enabled
 }}}
 
-The name of the option is the Python package of the plugin. This should be specified in the documentation of the plugin, but can also be easily discovered by looking at the source (look for a top-level directory that contains a file named `__init__.py`.)
+オプションの名前はプラグインの Python パッケージ名です。これはプラグインのドキュメンテーションに指定されていなければいけませんが、ソースを見れば簡単に見つけることが出来ます。 (最上位のディレクトリにあるファイル `__init__.py` を探してください。)
 
-Note: After installing the plugin, you need to restart your web server.
+Note: プラグインのインストール後、 Web サーバを再起動する必要があります。
 
-==== Uninstalling ====
+==== アンインストール ==== #Uninstalling
 
-`easy_install` or `python setup.py` does not have an uninstall feature. Hower, it is usually quite trivial to remove a globally installed egg and reference:
- 1. Do `easy_install -m [plugin name]` to remove references from `$PYTHONLIB/site-packages/easy-install.pth` when the plugin installed by setuptools.
- 1. Delete executables from `/usr/bin`, `/usr/local/bin` or `C:\\Python*\Scripts`. For search what executables are there, you may refer to `[console-script]` section of `setup.py`.
- 1. Delete the .egg file or folder from where it is installed, usually inside `$PYTHONLIB/site-packages/`.
- 1. Restart web server.
+`easy_install` や `python setup.py` ではアンインストール機能は提供されていません。しかし、グローバルにインストールされた egg や参照を削除するための簡単な方法があります:
+ 1. setuptools でインストールした場合、 `easy_install -m [plugin name]` を実行し、 `$PYTHONLIB/site-packages/easy-install.pth`　から参照を削除します。
+ 1. 実行可能ファイルを `/usr/bin`, `/usr/local/bin`, `C:\\Python*\\Scripts` などから削除します。実行可能ファイルが分からない場合、 `setup.py` の `[console-script]` を参照します。
+ 1. インストールされた場所 (通常 `$PYTHONLIB/site-packages/` 配下) の .egg ファイルやディレクトリを削除します。
+ 1. Web サーバを再起動する。
 
-If you are uncertain about the location of the egg, here is a small tip to help locate an egg (or any package) - replace `myplugin` with whatever namespace the plugin uses (as used when enabling the plugin):
+egg の場所が分らない場合、探すためには以下の方法を使います (この方法は、どのようなパッケージでも使えます) - `myplugin` の箇所は、プラグインのネームスペースで置き換えてください。ネームスペースはプラグインの有効化の時に使用した名前と同じになります。
 {{{
 >>> import myplugin
 >>> print myplugin.__file__
 /opt/local/python24/lib/site-packages/myplugin-0.4.2-py2.4.egg/myplugin/__init__.pyc
 }}}
 
-== Setting up the Plugin Cache ==
+== プラグインのキャッシュの設定 == #SettingupthePluginCache
 
-Some plugins will need to be extracted by the Python eggs runtime (`pkg_resources`), so that their contents are actual files on the file system. The directory in which they are extracted defaults to '.python-eggs' in the home directory of the current user, which may or may not be a problem. You can however override the default location using the `PYTHON_EGG_CACHE` environment variable.
+プラグインは Python eggs のランタイム (`pkg_resources`) によって解凍される必要があります。それらの内容がファイルシステム上に実際に存在する必要があるからです。通常は現在のユーザのホームディレクトリの '.python-eggs' に解凍されますが、それにより問題が発生するかもしれません。その場合、環境変数 `PYTHON_EGG_CACHE` を設定してデフォルトのロケーションを上書きすることができます。
 
-To do this from the Apache configuration, use the `SetEnv` directive as follows:
+`PYTHON_EGG_CACHE` を `SetEnv` ディレクティブを使用して Apache に設定するには以下のようにします:
 {{{
 SetEnv PYTHON_EGG_CACHE /path/to/dir
 }}}
 
-This works whether you are using the [wiki:TracCgi CGI] or the [wiki:TracModPython mod_python] front-end. Put this directive next to where you set the path to the [wiki:TracEnvironment Trac environment], i.e. in the same `<Location>` block.
+これは [wiki:TracCgi CGI] と [wiki:TracModPython mod_python] のどちらをフロントエンドにしようと動作します。このディレクティブに [wiki:TracEnvironment Trac Environment] へのパスに設定し、例えば同じ `<Location>` ブロックにおいてください。
 
-For example (for CGI):
+例 (CGI用):
 {{{
  <Location /trac>
    SetEnv TRAC_ENV /path/to/projenv
@@ -120,7 +120,7 @@ For example (for CGI):
  </Location>
 }}}
 
-or (for mod_python):
+例 (mod_python用):
 {{{
  <Location /trac>
    SetHandler mod_python
@@ -129,68 +129,68 @@ or (for mod_python):
  </Location>
 }}}
 
- ''Note: !SetEnv requires the `mod_env` module which needs to be activated for Apache. In this case the !SetEnv directive can also be used in the `mod_python` Location block.''
+ ''Note: !SetEnv を使用するためには、 Apache で `mod_env` モジュールが有効になっている必要があります。 `mod_python` が設定される Location ブロックでは !SetEnv ディレクティブも使用できます。''
 
-For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables. 
+[wiki:TracFastCgi FastCGI] で、 Web サーバに設定するためには、 `-initial-env` オプションやサーバーが指定している方法で、環境変数を設定する必要があります。
 
- ''Note: that if you already use -initial-env to set the project directory for either a single project or parent you will need to add an additional -initial-env directive to the !FastCgiConfig directive. I.e.
+ ''Note: プロジェクトディレクトリを設定するために、既に -initial-env を使用している場合は、 [wiki:TracFastCgi TracFastCgi] に例示されるように、必要に応じて -initial-env ディレクティブを !FastCgiConfig ディレクティブに加えてください。''
 
 {{{
 FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
 }}}
 
-=== About hook scripts ===
+=== Subversion の フックスクリプトについて === #Abouthookscripts
 
-If you have set up some subversion hook scripts that call the Trac engine - such as the post-commit hook script provided in the `/contrib` directory - make sure you define the `PYTHON_EGG_CACHE` environment variable within these scripts as well.
+もし、 Trac エンジンを呼び出すような Subversion の フックスクリプト - Trac の配布物の `/contrib` ディレクトリで提供されている post-commit フックスクリプトなど - を設定していたら、プラグインと同様にスクリプトの中で環境変数 `PYTHON_EGG_CACHE` を定義して下さい。
 
-== Troubleshooting ==
+== トラブルシューティング == #Troubleshooting
 
-=== Is setuptools properly installed? ===
+=== setuptools は正しくインストールされていますか？ === #Issetuptoolsproperlyinstalled
 
-Try this from the command line:
+以下のコマンドを実行してみてください:
 {{{
 $ python -c "import pkg_resources"
 }}}
 
-If you get '''no output''', setuptools '''is''' installed. Otherwise, you'll need to install it before plugins will work in Trac.
+もし、コマンドラインから '''何も''' かえって来なければ、 setuptools はインストール '''されています'''。そうでなければ、 Trac を動かす前に setuptools をインストールする必要があります。
 
-=== Did you get the correct version of the Python egg? ===
+=== Python egg は正しいバージョンですか？ === #DidyougetthecorrectversionofthePythonegg
 
-Python eggs have the Python version encoded in their filename. For example, `MyPlugin-1.0-py2.5.egg` is an egg for Python 2.5, and will '''not''' be loaded if you're running a different Python version (such as 2.4 or 2.6).
+Python egg はファイル名の中で Python のバージョンをエンコードします。例えば、 `MyPlugin-1.0-py2.5.egg` は Python 2.5 用の Python egg であり、異なる Python のバージョン (2.4 や 2.6) で動かそうとしても '''動かない''' でしょう。
 
-Also, verify that the egg file you downloaded is indeed a ZIP archive. If you downloaded it from a Trac site, chances are you downloaded the HTML preview page instead.
+また、ダウンロードした Python egg ファイル が本当に ZIP アーカイブであるかどうかを確認して下さい。もし Trac サイトからダウンロードしたとしたら、 HTML プレビューページを代わりにダウンロードしているかもしれません。
 
-=== Is the plugin enabled? ===
+=== プラグインは有効になっていますか？ === #Isthepluginenabled
 
 
-If you install a plugin globally (i.e. ''not'' inside the `plugins` directory of the Trac project environment) you will have to explicitly enable it in [TracIni trac.ini]. Make sure that:
- * you actually added the necessary line(s) to the `[components]` section
- * the package/module names are correct
- * the value is “enabled", not e.g. “enable”
+グローバル領域にプラグインをインストールした場合 (TracEnvironment の `plugin` ディレクトリ内 ''ではなく'') 、 [TracIni trac.ini] に明確に有効にする設定をしなければなりません。以下の事項を確認して下さい:
+ * `[components]` セクションに必要な行数を追加したか。
+ * パッケージ / モジュール名は正しいか
+ * 正しい値、 "enabled" になっているかどうか。例えば、 "enable" ではなく。
 
-=== Check the permissions on the egg file ===
+=== Python egg ファイルのパーミッションのチェック === #Checkthepermissionsontheeggfile
 
-Trac must be able to read the file. 
+Trac は Python egg ファイルを読めなければなりません。
 
-=== Check the log files ===
+=== ログファイルのチェック === #Checkthelogfiles
 
-Enable [wiki:TracLogging logging] and set the log level to `DEBUG`, then watch the log file for messages about loading plugins.
+Trac で [wiki:TracLogging logging] を有効にし、ログレベルを `DEBUG` に設定し、プラグインがロードされるときのログメッセージを見て下さい。
 
-=== Verify you have proper permissions ===
+=== 必要な権限を持っていることを確認してください === #Verifyyouhaveproperpermissions
 
-Some plugins require you have special permissions in order to use them. [trac:WebAdmin WebAdmin], for example, requires the user to have TRAC_ADMIN permissions for it to show up on the navigation bar.
+いくつかのプラグインでは、その機能を使用するために特別な権限を要求します。たとえば [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] では、ナビゲーションバーに表示するためには TRAC_ADMIN 権限が必要になります。
 
-=== Is the wrong version of the plugin loading? ===
+=== 読み込むプラグインのバージョンを間違えていませんか ? === #Isthewrongversionofthepluginloading
 
-If you put your plugins inside plugins directories, and certainly if you have more than one project, you need to make sure that the correct version of the plugin is loading. Here are some basic rules:
- * Only one version of the plugin can be loaded for each running Trac server (ie. each Python process). The Python namespaces and module list will be shared, and it cannot handle duplicates. Whether a plugin is `enabled` or `disabled` makes no difference.
- * A globally installed plugin (typically `setup.py install`) will override any version in global or project plugins directories. A plugin from the global plugins directory will be located before any project plugins directory.
- * If your Trac server hosts more than one project (as with `TRAC_ENV_PARENT_DIR` setups), then having two versions of a plugin in two different projects will give uncertain results. Only one of them will load, and the one loaded will be shared by both projects. Trac will load the first found - basically from the project that receives the first request.
- * Having more than one version listed inside Python site-packages is fine (ie. installed with `setup.py install`) - setuptools will make sure you get the version installed most recently. However, don't store more than one version inside a global or project plugins directory - neither version number nor installed date will matter at all. There is no way to determine which one will be located first when Trac searches the directory for plugins.
+複数のプロジェクトがある場合に plugins ディレクトリにプラグインを置くなら確実に正しいバージョンのプラグインがロードされていることを確認する必要があります。ここにいくつかの基本的なルールがあります:
+ * 実行中の Trac サーバ (すなわち各々の Python プロセス) にはプラグインの 1 バージョンだけがロードできます。 Python の名前空間とモジュールリストは (プラグインが`有効 (enabled)` になっているか `無効 (disabled)` になっているかに関わらず) 全プロジェクトで共有されるでしょう。そしてそれは複製をハンドルすることができません。
+ * グローバルにインストールされたプラグイン (通常は `setup.py install`) はグローバルな plugins ディレクトリあるいはプロジェクト毎の plugins ディレクトリ内のどんなバージョンも無視するでしょう。グローバルにインストールされたプラグインは、他のどのプラグインよりも前に動作するでしょう。
+ * Trac サーバが (`TRAC_ENV_PARENT_DIR` セットアップのように) 複数のプロジェクトをホスティングした場合、異なったプロジェクトで異なるバージョンのプラグインを使用していると、どのバージョンのプラグインが使用されるかは不明です。異なるバージョンのプラグインのうちいずれか一つがロードされるでしょう。そしてロードされたプラグインは全てのプロジェクトで共有されます。 Trac は基本的に一番最初にリクエストを受けたプロジェクトからプラグインをロードします。
+ * Python の site-packages 内に複数のバージョンをリストしておく (すなわち `setup.py install` を使用してインストールする) のは素晴らしいことです。 - setuptools は最も新しいバージョンを確実にインストールします。しかし、複数バージョンのプラグインをグローバルな plugins ディレクトリや、プロジェクト毎の plugins ディレクトリに格納しないでください。 - Trac はプラグインを探すときに バージョン番号、格納された日付などを気にしません。この場合 Trac がどのプラグインを最初に見つけ出すかを確実に指定する方法はありません。
 
-=== If all of the above failed ===
+=== 上記のすべてに失敗した場合 === #Ifalloftheabovefailed
 
-OK, so the logs don't mention plugins, the egg is readable, the python version is correct ''and'' the egg has been installed globally (and is enabled in the trac.ini) and it still doesn't work or give any error messages or any other indication as to why? Hop on the [trac:IrcChannel IrcChannel] and ask away.
+plugins に対するログが出力されず、 egg が読み込み可能であり、 Python のバージョンが正しく、 ''その上で'' egg がグローバルにインストールされて (そして trac.ini で使用可能に設定されて) いても、なぜかプラグインが動かず、なんのエラーメッセージも表示されない場合は、 [http://trac.edgewall.org/wiki/IrcChannel IrcChannel] で質問してください。
 
 ----
-See also TracGuide, [trac:PluginList plugin list], [trac:TracDev/ComponentArchitecture component architecture]
+See also TracGuide, [http://trac.edgewall.org/wiki/PluginList プラグイン一覧], [http://trac.edgewall.org/wiki/TracDev/ComponentArchitecture コンポーネント設計]

@@ -69,26 +69,27 @@ class WikiMacroBase(Component):
 
 
 class TitleIndexMacro(WikiMacroBase):
-    """Insert an alphabetic list of all wiki pages into the output.
+    """すべての Wiki ページをアルファベットのリスト形式で出力に挿入します。
 
-    Accepts a prefix string as parameter: if provided, only pages with names
-    that start with the prefix are included in the resulting list. If this
-    parameter is omitted, all pages are listed.
-    If the prefix is specified, a second argument of value 'hideprefix'
-    can be given as well, in order to remove that prefix from the output.
+    引数として、接頭辞となる文字列を許容します: 指定された場合、
+    生成されるリストにはページ名が接頭辞で始まるものだけが含まれます。
+    すべてのページがリストされます。
+    接頭辞が与えられた上で、第二引数に 'hideprefix' が与えられた場合、
+    出力からは接頭辞が除外されます。
 
-    Alternate `format` and `depth` named parameters can be specified:
-     - `format=compact`: The pages are displayed as comma-separated links.
-     - `format=group`: The list of pages will be structured in groups
-       according to common prefix. This format also supports a `min=n`
-       argument, where `n` is the minimal number of pages for a group.
-     - `format=hierarchy`: The list of pages will be structured according
-       to the page name path hierarchy. This format also supports a `min=n`
-       argument, where higher `n` flatten the display hierarchy
-     - `depth=n`: limit the depth of the pages to list. If set to 0,
-       only toplevel pages will be shown, if set to 1, only immediate
-       children pages will be shown, etc. If not set, or set to -1,
-       all pages in the hierarchy will be shown.
+    この他、 `format` および `depth` などを名前付き引数として指定できます:
+     - `format=compact`: ページ名をカンマ区切りのリストとして表示します。
+     - `format=group`: 共通の接頭辞を持つページでリストを生成します。
+       また `min=n` の引数を使用することができ、
+       `n` にはリストを生成するページの最小数を指定します。
+     - `format=hierarchy`: ページ名をパスとした階層構造で表示します。
+       このフォーマットでも `min=n` の引数を使用することができ、
+       `n` には階層を生成するページの最小数を指定します。
+     - `depth=n`: リストするページの階層数を指定します。
+       0を指定した場合、トップレベルのページのみ表示され、
+       1を指定した場合、1代目の子ページが表示されます。
+       何も指定しない場合か、-1を指定した場合、
+       全てのページが階層構造により表示されます。
     """
 
     SPLIT_RE = re.compile(r"([/ 0-9.]+)")
@@ -211,16 +212,15 @@ class TitleIndexMacro(WikiMacroBase):
 
 
 class RecentChangesMacro(WikiMacroBase):
-    """List all pages that have recently been modified, grouping them by the
-    day they were last modified.
+    """最近更新されたすべてのページを最後に変更した日付でグループ化し、リストします。
 
-    This macro accepts two parameters. The first is a prefix string: if
-    provided, only pages with names that start with the prefix are included in
-    the resulting list. If this parameter is omitted, all pages are listed.
+    このマクロは、 2 つの引数をとります。最初の引数はプレフィックスの文字列です:
+    プレフィックスが指定された場合、結果のリストにはそのプレフィックスで始まるページのみが
+    含まれます。この引数が省略された場合は、すべてのページがリストされます。
 
-    The second parameter is a number for limiting the number of pages returned.
-    For example, specifying a limit of 5 will result in only the five most
-    recently changed pages to be included in the list.
+    2番目の引数は結果リストに表示するページの数を制限するために使用します。
+    例えば 5 に制限すると指定した場合、最近更新されたページのうち、新しいもの
+    5 件がリストに含まれます。
     """
 
     def expand_macro(self, formatter, name, content):
@@ -277,24 +277,24 @@ class RecentChangesMacro(WikiMacroBase):
 
 
 class PageOutlineMacro(WikiMacroBase):
-    """Display a structural outline of the current wiki page, each item in the
-    outline being a link to the corresponding heading.
+    """現在の Wiki ページの構造的なアウトラインを表示します。
+    アウトラインのそれぞれの項目は一致する表題へのリンクとなります。
 
-    This macro accepts three optional parameters:
+    このマクロは 3 つの任意のパラメータをとります:
     
-     * The first is a number or range that allows configuring the minimum and
-       maximum level of headings that should be included in the outline. For
-       example, specifying "1" here will result in only the top-level headings
-       being included in the outline. Specifying "2-3" will make the outline
-       include all headings of level 2 and 3, as a nested list. The default is
-       to include all heading levels.
-     * The second parameter can be used to specify a custom title (the default
-       is no title).
-     * The third parameter selects the style of the outline. This can be
-       either `inline` or `pullout` (the latter being the default). The `inline`
-       style renders the outline as normal part of the content, while `pullout`
-       causes the outline to be rendered in a box that is by default floated to
-       the right side of the other content.
+     * 1 番目の引数はアウトラインに含まれる表題の範囲 (レベル) を設定することができ、
+       数または数の範囲をとります。
+       例えば、 "1" と指定した場合、アウトラインにはトップレベルの表題のみが表示されます。
+       "2-3" と指定した場合、アウトラインには、レベル 2 とレベル 3 のすべての表題が
+       ネストしたリストとして表示されます。
+       デフォルトでは、すべてのレベルの表題が表示されます。
+     * 2 番目の引数は、タイトルを特定するのに使われます。
+       (デフォルトはタイトルなし)
+     * 3 番目の引数はアウトラインのスタイルを指定します。
+       inline または pullout を指定することができます (後者がデフォルトです) 。
+       inline スタイルでは、アウトラインをコンテンツの一部として整形しますが、
+       pullout スタイルでは、アウトラインをフローティングボックスに整形し、
+       コンテンツの右側に配置します。
     """
 
     def expand_macro(self, formatter, name, content):
@@ -331,64 +331,64 @@ class PageOutlineMacro(WikiMacroBase):
 
 
 class ImageMacro(WikiMacroBase):
-    """Embed an image in wiki-formatted text.
+    """画像を Wiki 形式のテキストに組み込みます。
     
-    The first argument is the file specification. The file specification may
-    reference attachments in three ways:
-     * `module:id:file`, where module can be either '''wiki''' or '''ticket''',
-       to refer to the attachment named ''file'' of the specified wiki page or
-       ticket.
-     * `id:file`: same as above, but id is either a ticket shorthand or a Wiki
-       page name.
-     * `file` to refer to a local attachment named 'file'. This only works from
-       within that wiki page or a ticket.
+    1 番目の引数は、ファイル名を指定します。ファイルの指定は添付ファイルなど
+    3つの指定方法があります:
+     * `module:id:file`: module に '''wiki''' または '''ticket''' が指定すると、
+       その Wiki ページまたはチケットの添付ファイルで ''file'' とファイル名が
+       ついているものを参照します。
+     * `id:file`: 上記と同様ですが、 id はチケットの短い記述方法か、 Wiki
+       ページ名を指定します。
+     * `file`: 'file' というローカルの添付ファイルを指します。これはファイルが
+       添付されている Wiki ページまたはチケットの中でのみ使用できます。
     
-    Also, the file specification may refer to repository files, using the
-    `source:file` syntax (`source:file@rev` works also).
+    またファイルはリポジトリのファイルも指定できます。
+    `source:file` シンタックスを使用します。 (`source:file@rev` も可能です)
     
-    Files can also be accessed with a direct URLs; `/file` for a
-    project-relative, `//file` for a server-relative, or `http://server/file`
-    for absolute location of the file.
+    直接 URL を記述することもできます; `/file` と記述すると、プロジェクトの
+    ディレクトリからの相対パスになり、 `//file` と記述すると、サーバルートからの
+    パスになります。また、 `http://server/file` ではファイルの絶対パスになります。
     
-    The remaining arguments are optional and allow configuring the attributes
-    and style of the rendered `<img>` element:
-     * digits and unit are interpreted as the size (ex. 120, 25%)
-       for the image
-     * `right`, `left`, `center`, `top`, `bottom` and `middle` are interpreted 
-       as the alignment for the image (alternatively, the first three can be
-       specified using `align=...` and the last three using `valign=...`)
-     * `link=some TracLinks...` replaces the link to the image source by the
-       one specified using a TracLinks. If no value is specified, the link is
-       simply removed.
-     * `nolink` means without link to image source (deprecated, use `link=`)
-     * `key=value` style are interpreted as HTML attributes or CSS style
-       indications for the image. Valid keys are:
-        * align, valign, border, width, height, alt, title, longdesc, class, 
-          margin, margin-(left,right,top,bottom), id and usemap
-        * `border`, `margin`, and `margin-`* can only be a single number
-        * `margin` is superseded by `center` which uses auto margins 
+    残りの引数は任意で、
+    `<img>` 要素を組み立てる際の属性を設定します:
+     * 数字と単位は画像のサイズと解釈されます。
+       (ex. 120, 25%)
+     * `right`, `left`, `center`, `top`, `bottom`, `middle` は画像の配置として
+       解釈されます。 (`right`, `left`, `center` は `align=...` でも指定でき、
+       `top`, `bottom`, `middle` は `valign=...` でも指定できます)
+     * `link=some TracLinks...` を指定すると、画像のソースへのリンクが、
+       TracLinks に置き換えられます。値なしで引数が指定された場合、
+       リンクは単に削除されます。
+     * `nolink` は画像のソースへのリンクを作成しません。 (非推奨, `link=` を使用してください)
+     * `key=value` スタイルは画像の HTML 属性または CSS スタイルの
+        指示として解釈されます。有効なキーは以下の通りです:
+        * align, valign, border, width, height, alt, title, longdesc, class,
+          margin, margin-(left,right,top,bottom), id, usemap
+        * `border`, `margin`, `margin-*` は数値での指定のみ可能です。
+        * `margin` は `center` によって自動計算されたマージンを上書きします。
     
-    Examples:
+    例:
     {{{
-        [[Image(photo.jpg)]]                           # simplest
-        [[Image(photo.jpg, 120px)]]                    # with image width size
-        [[Image(photo.jpg, right)]]                    # aligned by keyword
-        [[Image(photo.jpg, nolink)]]                   # without link to source
-        [[Image(photo.jpg, align=right)]]              # aligned by attribute
+        [[Image(photo.jpg)]]                           # シンプルな指定方法
+        [[Image(photo.jpg, 120px)]]                    # 画像の幅サイズ指定
+        [[Image(photo.jpg, right)]]                    # キーワードによる配置指定
+        [[Image(photo.jpg, nolink)]]                   # ソースへのリンクなし
+        [[Image(photo.jpg, align=right)]]              # 属性による配置指定
     }}}
-    
-    You can use image from other page, other ticket or other module.
+
+    他の wiki ページ、チケット、モジュールの画像を使用することができます。
     {{{
-        [[Image(OtherPage:foo.bmp)]]    # if current module is wiki
-        [[Image(base/sub:bar.bmp)]]     # from hierarchical wiki page
-        [[Image(#3:baz.bmp)]]           # if in a ticket, point to #3
+        [[Image(OtherPage:foo.bmp)]]    # 現在のモジュールが Wiki の場合
+        [[Image(base/sub:bar.bmp)]]     # 下位の Wiki ページから
+        [[Image(#3:baz.bmp)]]           # #3というチケットを指している場合
         [[Image(ticket:36:boo.jpg)]]
-        [[Image(source:/images/bee.jpg)]] # straight from the repository!
-        [[Image(htdocs:foo/bar.png)]]   # image file in project htdocs dir.
+        [[Image(source:/images/bee.jpg)]] # リポジトリから直接指定する！
+        [[Image(htdocs:foo/bar.png)]]   # プロジェクトの htdocs ディレクトリにあるファイル
     }}}
-    
-    ''Adapted from the Image.py macro created by Shun-ichi Goto
-    <gotoh@taiyo.co.jp>''
+
+    ''このマクロは Shun-ichi Goto <gotoh@taiyo.co.jp> さんが作成した Image.py が
+    元になっています''
     """
 
     def expand_macro(self, formatter, name, content):
@@ -531,14 +531,14 @@ class ImageMacro(WikiMacroBase):
 
 
 class MacroListMacro(WikiMacroBase):
-    """Display a list of all installed Wiki macros, including documentation if
-    available.
+    """インストールされている、すべての Wiki マクロをリストします。
+    もし利用可能ならばドキュメントも含みます。
     
-    Optionally, the name of a specific macro can be provided as an argument. In
-    that case, only the documentation for that macro will be rendered.
+    非必須オプションとして、特定のマクロの名前を引数として渡すことが出来ます。
+    この場合、指定されたマクロのドキュメントだけを表示します。
     
-    Note that this macro will not be able to display the documentation of
-    macros if the `PythonOptimize` option is enabled for mod_python!
+    Note: このマクロは mod_python の `PythonOptimize` オプションが有効になっている
+    場合は、マクロのドキュメントを表示することが出来ません!
     """
 
     def expand_macro(self, formatter, name, content):
@@ -586,12 +586,12 @@ class MacroListMacro(WikiMacroBase):
 
 
 class TracIniMacro(WikiMacroBase):
-    """Produce documentation for the Trac configuration file.
+    """Trac の設定ファイルのドキュメントを生成します。
 
-    Typically, this will be used in the TracIni page.
-    Optional arguments are a configuration section filter,
-    and a configuration option name filter: only the configuration
-    options whose section and name start with the filters are output.
+    通常、このマクロは Wiki ページ TracIni の中で使用されます。
+    省略可能な引数にはコンフィグのセクションのフィルタ、
+    コンフィグのオプション名のフィルタを指定できます: フィルタで指定された文字列
+    で始まるコンフィグのセクションとオプション名のみが出力されます。
     """
 
     def expand_macro(self, formatter, name, args):
@@ -624,9 +624,9 @@ class TracIniMacro(WikiMacroBase):
 
 
 class KnownMimeTypesMacro(WikiMacroBase):
-    """List all known mime-types which can be used as WikiProcessors.
+    """WikiProcessors で処理できる既知の mime-type を表示します。
 
-    Can be given an optional argument which is interpreted as mime-type filter.
+    引数が与えられた場合は、 mime-type へのフィルタとして作用します。
     """
 
     def expand_macro(self, formatter, name, args):
@@ -660,12 +660,12 @@ class KnownMimeTypesMacro(WikiMacroBase):
 
 
 class TracGuideTocMacro(WikiMacroBase):
-    """Display a table of content for the Trac guide.
+    """Trac ガイドの目次を表示する。
     
-    This macro shows a quick and dirty way to make a table-of-contents
-    for the Help/Guide. The table of contents will contain the Trac* and 
-    WikiFormatting pages, and can't be customized. Search for TocMacro for a
-    a more customizable table of contents.
+    このマクロは !Help/Guide の目次 (ToC) を簡単かつ荒っぽく作成します。
+    この目次には Trac* と WikiFormatting のページが含まれていますが、
+    カスタマイズはできません。目次をカスタマイズしたい場合は、 !TocMacro
+    を探してください。
     """
 
     TOC = [('TracGuide',                    'Index'),

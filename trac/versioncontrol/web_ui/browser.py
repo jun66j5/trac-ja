@@ -116,17 +116,17 @@ class WikiPropertyRenderer(Component):
 
     wiki_properties = ListOption('browser', 'wiki_properties',
                                  'trac:description',
-        doc="""Comma-separated list of version control properties to render
-        as wiki content in the repository browser.
+        doc="""カンマ区切りでバージョン管理の属性を設定すると、その属性は
+        リポジトリブラウザ上で Wiki コンテンツとして表示されます。
 
-        (''since 0.11'')""")
+        (''0.11 以降'')""")
 
     oneliner_properties = ListOption('browser', 'oneliner_properties',
                                  'trac:summary',
-        doc="""Comma-separated list of version control properties to render
-        as oneliner wiki content in the repository browser.
+        doc="""カンマ区切りでバージョン管理の属性を設定すると、その属性は
+        リポジトリブラウザ上で 1 行スタイルの Wiki コンテンツとして表示されます。
 
-        (''since 0.11'')""")
+        (''0.11 以降'')""")
 
     def match_property(self, name, mode):
         return (name in self.wiki_properties or \
@@ -182,66 +182,67 @@ class BrowserModule(Component):
 
     downloadable_paths = ListOption('browser', 'downloadable_paths',
                                     '/trunk, /branches/*, /tags/*',
-        doc="""List of repository paths that can be downloaded.
+        doc="""ダウンロード可能なリポジトリのパスをリストします。
         
-        Leave the option empty if you want to disable all downloads, otherwise
-        set it to a comma-separated list of authorized paths (those paths are
-        glob patterns, i.e. "*" can be used as a wild card)
-        (''since 0.10'')""")
+        このオプションに何も設定しない場合、全てのダウンロードを禁止されます。
+        部分的に許可する場合は、カンマ区切りでダウンロードを許可するパスを設定します
+        (パスには "*" をワイルドカードとして扱うような glob パターンを使用できます)
+        (''0.10 以降'')""")
 
     color_scale = BoolOption('browser', 'color_scale', True,
-        doc="""Enable colorization of the ''age'' column.
+        doc="""''age'' 列に色付けされます。
         
-        This uses the same color scale as the source code annotation:
-        blue is older, red is newer.
-        (''since 0.11'')""")
+        ソースコード注釈と同じカラースケールが使用されます:
+        青が古く、赤が新しいものを指します。
+        (''0.11 以降'')""")
 
     NEWEST_COLOR = (255, 136, 136)
 
     newest_color = Option('browser', 'newest_color', repr(NEWEST_COLOR),
-        doc="""(r,g,b) color triple to use for the color corresponding
-        to the newest color, for the color scale used in ''blame'' or
-        the browser ''age'' column if `color_scale` is enabled.
-        (''since 0.11'')""")
+        doc="""(r,g,b) の 3 色で指定します。この色は新しいものを指す
+        色として ''注釈 (blame)'' や、 `color_scale` が有効に設定されていれば
+        ブラウザの ''age'' 列のカラースケールに使用されます。
+        (''0.11 以降'')""")
 
     OLDEST_COLOR = (136, 136, 255)
 
     oldest_color = Option('browser', 'oldest_color', repr(OLDEST_COLOR),
-        doc="""(r,g,b) color triple to use for the color corresponding
-        to the oldest color, for the color scale used in ''blame'' or
-        the browser ''age'' column if `color_scale` is enabled.
-        (''since 0.11'')""")
+        doc="""(r,g,b) の 3 色で指定します。この色は古いものを指す
+        色として ''注釈 (blame)'' や、 `color_scale` が有効に設定されていれば
+        ブラウザの ''age'' 列のカラースケールに使用されます。
+        (''0.11 以降'')""")
 
     intermediate_point = Option('browser', 'intermediate_point', '',
-        doc="""If set to a value between 0 and 1 (exclusive), this will be the
-        point chosen to set the `intermediate_color` for interpolating
-        the color value.
-        (''since 0.11'')""")
+        doc="""0 から 1 (最大) の間で値を設定します。
+        この値は `intermediate_color` に設定したポイントへの補間に
+        使用されます。
+        (''0.11 以降'')""")
 
     intermediate_color = Option('browser', 'intermediate_color', '',
-        doc="""(r,g,b) color triple to use for the color corresponding
-        to the intermediate color, if two linear interpolations are used
-        for the color scale (see `intermediate_point`).
-        If not set, the intermediate color between `oldest_color` and
-        `newest_color` will be used.
-        (''since 0.11'')""")
+        doc="""(r,g,b) の 3 色で指定します。この色は中間を指す
+        色として、 2 色の間のカラースケールとして使用されます
+        (`intermediate_point` 参照)。
+        `intermediate color` をセットしない場合、
+        `oldest_color` と `newest_color` の中間の色が使用されます。
+        (''0.11 以降'')""")
 
     render_unsafe_content = BoolOption('browser', 'render_unsafe_content',
                                         'false',
-        """Whether raw files should be rendered in the browser, or only made 
-        downloadable.
+        """ファイルをブラウザ上に表示するか、単にダウンロード可能にしておくか
+        を設定します。
  
-        Pretty much any file may be interpreted as HTML by the browser,
-        which allows a malicious user to create a file containing cross-site
-        scripting attacks.
+        この設定を有効にすると、ブラウザがほとんどのファイルを HTML として解釈
+        するため、悪意のあるユーザにクロスサイトスクリプティング攻撃を含む
+        ファイルの作成を許すことになります。
         
-        For open repositories where anyone can check-in a file, it is
-        recommended to leave this option disabled (which is the default).""")
+        誰でもファイルをチェックインできるような公開リポジトリでは、
+        このオプションを無効に設定しておくことを推奨します
+        (デフォルトは無効に設定されています)。""")
 
     hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
-        doc="""Comma-separated list of version control properties to hide from
-        the repository browser.
-        (''since 0.9'')""")
+        doc="""カンマ区切りでバージョン管理の属性を設定すると、その属性は
+        リポジトリブラウザで表示されなくなります。
+        (''0.9 以降'')""")
 
     # public methods
 
@@ -795,26 +796,26 @@ class BrowserModule(Component):
 
     def get_macro_description(self, name):
         return cleandoc("""
-        Display the list of available repositories.
+        リポジトリ一覧を表示します。
 
-        Can be given the following named arguments:
+        下記の名前付きの引数を使用することができます:
         
           ''format''::
-            Select the rendering format:
-            - ''compact'' produces a comma-separated list of repository prefix
-              names (default)
-            - ''list'' produces a description list of repository prefix names 
-            - ''table'' produces a table view, similar to the one visible in
-              the ''Browse View'' page
+            レンダリングするフォーマットを選択します:
+            - ''compact'' はリポジトリのプレフィックスの名前をカンマ区切りの
+              リストで表示します ( デフォルト )
+            - ''list'' はリポジトリのプレフィックスの名前を、通常の記述のリストで表示します 
+            - ''table'' はリポジトリブラウザのトップページと同様の形式で
+              表形式で表示します
           ''glob''::
-            Do a glob-style filtering on the repository names (defaults to '*')
+            リポジトリ名に対する glob 形式のフィルタとして作用します (デフォルトは '*' です)
           ''order''::
-            Order repositories by the given column (one of "name", "date" or
-            "author")
+            引数で指定されたカラムでリポジトリを並べ替えます。 ( "name", "date" または、 "author"
+            のいずれかを使用できます )
           ''desc''::
-            When set to 1, order by descending order
+            1 を設定すると、降順に並べ替えます。
 
-        (''since 0.12'')
+        (''0.12 以降'')
         """)
 
     def expand_macro(self, formatter, name, content):

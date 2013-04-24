@@ -1,46 +1,46 @@
-= Repository Administration =
+= リポジトリ管理 = #RepositoryAdministration
 [[PageOutline(2-3)]]
 
-== Quick start == #QuickStart
+== クイックスタート == #QuickStart
 
- * Manage repositories in the "Repository" admin panel, with `trac-admin` or in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini].
- * Set up a call to `trac-admin $ENV changeset added $REPO $REV` in the post-commit hook of each repository. Additionally, add a call to `trac-admin $ENV changeset modified $REPO $REV` in the post-revprop-change hook of repositories allowing revision property changes.
- * Set the `[trac] repository_sync_per_request` option to an empty value to disable per-request syncing.
- * Make sure the user under which your Subversion hooks are run has write access to the Trac environment, or use a tool like `sudo` to temporarily elevate privileges.
+ * リポジトリの管理は、 "リポジトリ" (英語版では "Repository") 管理パネル、 `trac-admin` または、 [wiki:TracIni#repositories-section trac.ini] の `[repositories]` セクションで管理します。
+ * 各リポジトリの post-commit フックに `trac-admin $ENV changeset added $REPO $REV` を実行するよう設定して下さい。さらに、リポジトリのリビジョンのプロパティが変更されたときのために、 post-revprop-change フックに `trac-admin $ENV changeset modified $REPO $REV` を追加してください。
+ * `[trac] repository_sync_per_request` オプションを empty 値に設定し、リクエスト毎の同期を行なわないようにします。
+ * Subversion のフックを実行するユーザが Trac environment に対して書き込み権限を持っていることを確認して下さい。もしくは、一時的に権限を高める `sudo` のようなツールを使って下さい。
 
-== Specifying repositories == #Repositories
-Starting with 0.12, Trac can handle more than one repository per environment. The pre-0.12 way of specifying the repository with the `repository_dir` and `repository_type` options in the `[trac]` section of [wiki:TracIni trac.ini] is still supported, but two new mechanisms allow including additional repositories into an environment.
+== リポジトリを指定する == #Repositories
+バージョン 0.12 から Trac は 1 つの Trac Environment に対して 1 つ以上のリポジトリを扱えるようになりました。 0.12 以前の [wiki:TracIni trac.ini] の `[trac]` セクションの `repository_dir` と `repository_type` オプションでリポジトリを指定する方法もサポートしていますが、 2 つの新しいメカニズムにより、 Trac Environment にリポジトリを追加することができます。
 
-It is also possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking all the links to the old name.
+リポジトリのエイリアスを定義することも可能です。エイリアスは実際のリポジトリへの "ポインタ" となります。これはリポジトリの名前変更を行なったときに古い名前へのリンク切れを防ぐのに便利です。
 
-A number of attributes can be associated with each repository, which define the repository's location, type, name and how it is displayed in the source browser. The following attributes are supported:
+各リポジトリに関連したいくつかの属性があり、リポジトリのロケーション、名前、リポジトリブラウザでどのように表示されるかを定義できます。下記の属性がサポートされています:
 
-||='''Attribute''' =||='''Description''' =||
+||='''属性''' =||='''概要''' =||
 ||`alias` ||\
-||A repository having an `alias` attribute is an alias to a real repository. All TracLinks referencing the alias resolve to the aliased repository. Note that multiple indirection is not supported, so an alias must always point to a real repository. The `alias` and `dir` attributes are mutually exclusive. ||
+||リポジトリは 実在するリポジトリへのエイリアスとなる `alias` 属性を 1 つ持っています。すべての TracLinks はエイリアスされたリポジトリを解決するためにエイリアスを参照します。複数の間接参照はサポートされていません。従って、エイリアスは常に実在するリポジトリをポイントしなければなりません。 `alias` 属性と `dir` 属性は相反するものです。 ||
 ||`description` ||\
-||The text specified in the `description` attribute is displayed below the top-level entry for the repository in the source browser. It supports WikiFormatting. ||
+||`description` 属性で指定されているテキストは、リポジトリブラウザ内のそのリポジトリのトップレベルのエントリの下部に表示されます。 WikiFormatting をサポートします。 ||
 ||`dir` ||\
-||The `dir` attribute specifies the location of the repository in the filesystem. It corresponds to the value previously specified in the option `[trac] repository_dir`. The `alias` and `dir` attributes are mutually exclusive. ||
-||`hidden` ||When set to `true`, the repository is hidden from the repository index page in the source browser. Browsing the repository is still possible, and links referencing the repository remain valid. ||
-||`name` ||The `name` attribute specifies the leading path element to the repository. ||
-||`type` ||The `type` attribute sets the type of version control system used by the repository. Trac supports Subversion out-of-the-box, and plugins add support for many other systems. If `type` is not specified, it defaults to the value of the `[trac] repository_type` option. ||
-||`url` ||The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
+||`dir` 属性はファイルシステム内におけるリポジトリのロケーションを指定します。これは以前に設定していた `[trac] repository_dir` と一致するものです。 `alias` 属性と `dir` 属性は相反する設定です。 ||
+||`hidden` ||`true` に設定すると、リポジトリブラウザのインデックスのページから見えなくなります。それでもなお、リポジトリをブラウズすることはできますし、リポジトリを参照するリンクは有効です。 ||
+||`name` ||`name` 属性はリポジトリへ通じるパスの一部を指定します。 ||
+||`type` ||`type` 属性はリポジトリが使用しているバージョン管理システムのタイプを設定します。 Trac は Subversion を当初からサポートしており、プラグインを使用して他のシステムをサポートします。もし `type` 属性が指定されていなかったら、 `[trac] repository_type` オプションの値が使用されます。 ||
+||`url` ||`url` 属性はリポジトリからチェックアウトするときに使用するルートのURLを指定します。指定された場合、 "リポジトリ URL" リンクがリポジトリブラウザのナビゲーションコンテキストに追加されます。 URL はツールにコピーすることができるので、ワーキングコピーを作るときに使用できます。 ||
 
-The `name` attribute and one of `alias` or `dir` are mandatory. All others are optional.
+`name` 属性と`alias` 属性または `dir` 属性は必須項目です。他の項目はオプションです。
 
-After adding a repository, the cache for that repository must be re-synchronized once with the `trac-admin $ENV repository resync` command.
+リポジトリを追加した後、そのリポジトリのキャッシュは `trac-admin $ENV repository resync` コマンドで再同期されなければなりません。
 
  `repository resync <repos>`::
-   Re-synchronize Trac with a repository.
+   Trac とリポジトリを再同期する。
 
 
-=== In `trac.ini` === #ReposTracIni
-Repositories and repository attributes can be specified in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini]. Every attribute consists of a key structured as `{name}.{attribute}` and the corresponding value separated with an equal sign (`=`). The name of the default repository is empty.
+=== ファイル (`trac.ini`) を使用した設定 === #ReposTracIni
+リポジトリとリポジトリの属性は [wiki:TracIni#repositories-section trac.ini] の `[repositories]` セクションで設定することができます。すべてのキーは `{name}.{attribute}` という規則で構成されていて、キーに対応する値は、等号 (`=`) で区切られています。デフォルトのリポジトリの名前は empty になります。
 
-The main advantage of specifying repositories in `trac.ini` is that they can be inherited from a global configuration (see the [wiki:TracIni#GlobalConfiguration global configuration] section of TracIni). One drawback is that, due to limitations in the `ConfigParser` class used to parse `trac.ini`, the repository name is always all-lowercase.
+`trac.ini` でリポジトリを設定する主たる利点は、グローバルな設定から継承できることです ( TracIni の [wiki:TracIni#GlobalConfiguration グローバルな設定 ] 参照 ) 欠点は、 `trac.ini` をパースするのに使用されている `ConfigParser` クラスの制限事項として、リポジトリ名が常に小文字しか受け付けないということです。
 
-The following example defines two Subversion repositories named `project` and `lib`, and a hidden alias to `project` as the default repository. This is a typical use case where a Trac environment previously had a single repository (the `project` repository), and was converted to multiple repositories. The alias ensures that links predating the change continue to resolve to the `project` repository.
+下記の例では `project`, `lib` という 2 つのSubversion リポジトリが定義されています。そして、デフォルトのリポジトリとしてエイリアスが `project` に設定されていて、hidden 属性設定されています。これは以前の Trac Environment が単一のリポジトリ ( `project` リポジトリ ) を扱っていたときの典型的な使用例です。エイリアスは設定変更前から存在するリンクが `project` リポジトリを解決できることを保証します。
 {{{
 #!ini
 [repositories]
@@ -55,106 +55,106 @@ lib.url = http://example.com/svn/lib
 .alias = project
 .hidden = true
 }}}
-Note that `name.alias = target` makes `name` an alias for the `target` repo, not the other way around.
+Note: `name.alias = target` の場合、 `name` を `target` リポジトリへのエイリアスにします。他の方法がありません。
 
-=== In the database === #ReposDatabase
-Repositories can also be specified in the database, using either the "Repositories" admin panel under "Version Control", or the `trac-admin $ENV repository` commands.
+=== データベースを使用した設定 === #ReposDatabase
+リポジトリは (trac.ini ファイルではなく) データベース内でも設定することができます。 "バージョンコントロール" (英語版では "Version Control") 配下の "リポジトリ" 管理パネル、もしくは `trac-admin $ENV repository` コマンドを使用します。
 
-The admin panel shows the list of all repositories defined in the Trac environment. It allows adding repositories and aliases, editing repository attributes and removing repositories. Note that repositories defined in `trac.ini` are displayed but cannot be edited.
+管理パネルは Trac Environment 内に定義されているすべてのリポジトリのリストを表示します。リポジトリ、エイリアスの追加、リポジトリの属性の編集、リポジトリの削除ができます。 `trac.ini` に定義されているリポジトリもまた表示されますが、編集はできません。
 
-The following [wiki:TracAdmin trac-admin] commands can be used to perform repository operations from the command line.
+以下の [wiki:TracAdmin trac-admin] コマンドはコマンドラインからリポジトリを操作する際に使用します。
 
  `repository add <repos> <dir> [type]`::
-   Add a repository `<repos>` located at `<dir>`, and optionally specify its type.
+   `<dir>` にあるリポジトリ `<repos>` を Trac に追加し、オプションとして、リポジトリのタイプを指定します。
 
  `repository alias <name> <target>`::
-   Create an alias `<name>` for the repository `<target>`.
+   リポジトリ `<target>` のエイリアス `<name>` を設定します。
 
  `repository remove <repos>`::
-   Remove the repository `<repos>`.
+   リポジトリ `<repos>` を削除します。
 
  `repository set <repos> <key> <value>`::
-   Set the attribute `<key>` to `<value>` for the repository `<repos>`. 
+   リポジトリ `<repos>` の属性 `<key>` と `<value>` を設定します。
 
-Note that the default repository has an empty name, so it will likely need to be quoted when running `trac-admin` from a shell. Alternatively, the name "`(default)`" can be used instead, for example when running `trac-admin` in interactive mode.
+Note: デフォルトリポジトリはの名前は空文字列です。したがって、 `trac-admin` をシェルから起動させたときは、おそらくクオートする必要があるでしょう。代替手段として、例えば `trac-admin` を対話モードで起動しているときは、代わりに "`(default)`" を使用することができます。
 
 
-== Repository synchronization == #Synchronization
-Prior to 0.12, Trac synchronized its cache with the repository on every HTTP request. This approach is not very efficient and not practical anymore with multiple repositories. For this reason, explicit synchronization through post-commit hooks was added. 
+== リポジトリの同期 == #Synchronization
+Trac 0.12 以前では、HTTP リクエストが発生するたびに Trac が持つキャッシュとリポジトリの同期処理を行なっていました。このアプローチは効果的ではなく、複数のリポジトリを扱う上ではもはや実用的ではありません。この理由から、 post-commit フックを利用した明示的な同期処理が追加されました。
 
-There is also new functionality in the form of a repository listener extension point ''(IRepositoryChangeListener)'' that is triggered by the post-commit hook when a changeset is added or modified, and can be used by plugins to perform actions on commit.
+リポジトリの変更を監視する拡張ポイントを定義するインタフェース ''(IRepositoryChangeListener)'' が追加されました。このインタフェースの呼び出しは、チェンジセットが追加または修正されたときの post-commit フックをトリガーとしています。コミット時に何かしらのアクションを実行するプラグインで使用することができます。
 
-=== Mercurial Repositories ===
-Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:#9485] for more information. 
+=== Mercurial リポジトリ === #MercurialRepositories
+このドキュメントを書いている時点では、 Mercurial 導入時の同期作業やフックは必要ではありません - 詳細は [http://trac.edgewall.org/ticket/9485 本家チケット 9485] を参照して下さい。
 
-=== Explicit synchronization === #ExplicitSync
-This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the post-commit hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the post-revprop-change hook as well.
+=== 明示的な同期 === #ExplicitSync
+これは推奨するリポジトリの同期方法です。 [wiki:TracIni#trac-section trac.ini] の `[trac]  repository_sync_per_request` オプションを empty 値に設定する必要があります。そして、各リポジトリの post-commit フック内で `trac-admin` を呼び出すようにします。さらに、リポジトリでリビジョンのメタデータを変更することが許されているならば、 post-revprop-change フックにも同様に `trac-admin` を呼び出すように設定します。
 
  `changeset added <repos> <rev> [...]`::
-   Notify Trac that one or more changesets have been added to a repository.
+   Trac に 1 つ以上のチェンジセットがリポジトリに発生したことを知らせる。
 
  `changeset modified <repos> <rev> [...]`::
-   Notify Trac that metadata on one or more changesets in a repository has been modified.
+   Trac に 1 つ以上のチェンジセットに対するメタデータの変更がリポジトリに加えられたことを知らせる。
 
-The `<repos>` argument can be either a repository name (use "`(default)`" for the default repository) or the path to the repository.
+引数 `<repos>` にはリポジトリ名 ( デフォルトのリポジトリには "`(default)`" を使用する ) または、リポジトリへのパスを指定します。
 
-Note that you may have to set the environment variable PYTHON_EGG_CACHE to the same value as was used for the web server configuration before calling trac-admin, if you changed it from its default location. See [wiki:TracPlugins Trac Plugins] for more information.
+Note: もし PYTHON_EGG_CACHE のロケーションをデフォルトから変更している場合、 trac-admin を起動する前にウェブサーバと同じ値の PYTHON_EGG_CACHE を環境変数として設定しないといけないかもしれません。詳細については、 [wiki:TracPlugins Trac プラグイン] を参照して下さい。
 
-The following examples are complete post-commit and post-revprop-change scripts for Subversion. They should be edited for the specific environment, marked executable (where applicable) and placed in the `hooks` directory of each repository. On Unix (`post-commit`):
+下記は、 Subversion の完璧な post-commit と post-revprop-change スクリプトの一例です。特定の環境用に編集、そして適切な実行権を付けて 各リポジトリの `hooks` ディレクトリにおいてください。 UNIX における (`post-commit`) 例:
 {{{#!sh
 #!/bin/sh
 export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset added "$1" "$2"
 }}}
-On Windows (`post-commit.cmd`):
+Windows における (`post-commit.cmd`) の例:
 {{{#!application/x-dos-batch
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset added "%1" "%2"
 }}}
 
-The post-revprop-change hook for Subversion is very similar. On Unix (`post-revprop-change`):
+Subversion の post-revprop-change フックはとても似たものになります。 UNIX における (`post-revprop-change`) の例:
 {{{#!sh
 #!/bin/sh
 export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset modified "$1" "$2"
 }}}
-On Windows (`post-revprop-change.cmd`):
+Windows における (`post-revprop-change.cmd`) の例:
 {{{#!application/x-dos-batch
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset modified "%1" "%2"
 }}}
 
-The Unix variants above assume that the user running the Subversion commit has write access to the Trac environment, which is the case in the standard configuration where both the repository and Trac are served by the web server. If you access the repository through another means, for example `svn+ssh://`, you may have to run `trac-admin` with different privileges, for example by using `sudo`.
+上記の UNIX の変数は、 Subversion のコミットの実行ユーザが Trac に対して、書き込み権限があると仮定したもので、リポジトリと Trac の両方がウェブサーバを使って、動作している一般的な設定に基づいています。もし、ウェブサーバ経由以外での方法でリポジトリにアクセス (例: `svn+ssh://` ) しているならば、 `trac-admin` を別の権限で起動 (例: `sudo` コマンド ) しなければならないかもしれません。
 
-Note that calling `trac-admin` in your Subversion hooks can slow down the commit and log editing operations on the client side. You might want to use the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script which starts `trac-admin` in an asynchronous way. The script also comes with a number of safety checks and usage advices which should make it easier to set up and test your hooks. There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
+Note: Subversion のフックで `trac-admin` を呼び出すことは、クライアントサイドにおいては、コミットとログの編集操作に時間がかかってしまうことになります。非同期な方法で行なうために、 `trac-admin` で始まる [http://trac.edgewall.org/browser/trunk/contrib/trac-svn-hook contrib/trac-svn-hook] を使いたいと思うかもしれません。スクリプトもまた何回もの安全性のチェックと使い方のアドバイスを行なっているので、フックを設定したりテストするのはずっと簡単なことかもしれません。まだ Windows 用の `trac-svn-hook.bat` に匹敵するものはありませんが、スクリプトは Cygwin の bash で起動することができます。
 
-See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups. Please see the plugin documentation for specific instructions.
+Subversion についてのより詳しい情報は、Subversion 本の [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks フックについて] を参照して下さい。他のリポジトリのタイプでは異なったフックの設定が必要です。操作手順については、プラグインのドキュメントを参照して下さい。
 
-=== Per-request synchronization === #PerRequestSync
-If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `[trac] repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] must be set to a comma-separated list of repository names to be synchronized.
+=== リクエスト毎の同期処理 === #PerRequestSync
+もし post-commit フックが使用できないならば、その環境ではリクエスト毎の同期処理を設定することができます。この場合、 [wiki:TracIni#trac-section trac.ini] のオプション `[trac] repository_sync_per_request` に同期対象のリポジトリをカンマ区切りでリストしなければなりません。
 
-Note that in this case, the changeset listener extension point is not called, and therefore plugins using it will not work correctly.
+Note: この場合、チェンジセットのリスナの拡張ポイントは呼び出されません。それゆえ、使用しているプラグインは正しく動かないかもしれません。
 
 
-== Migration from a single-repository setup (Subversion) == #Migration
-The following procedure illustrates a typical migration from a Subversion single-repository setup to multiple repositories.
+== 単一リポジトリからの移行手順 (Subversion) == #Migration
+下記の手順は、 Subversion における単一リポジトリから複数のリポジトリの設定へ変更するための典型的な移行方法になります。
 
- 1. Remove the default repository specification from the `[trac] repository_dir` option.
- 1. Add the "main" repository as a named repository.
- 1. Re-synchronize the main repository.
- 1. Set up post-commit and post-revprop-change hooks on the main repository, and set `[trac] repository_sync_per_request` to an empty value.
- 1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
- 1. Repeat steps 2, 3 and 4 to add other (named) repositories as needed.
+ 1. `[trac] repository_dir` オプションからリポジトリのデフォルトの設定を削除する。
+ 1. "メイン" となるリポジトリを名前付きのリポジトリとして登録する。
+ 1. メインのリポジトリを再同期する。
+ 1. post-commit フックと post-revprop-change フックをメインのリポジトリに設定し、 `[trac] repository_sync_per_request` オプションに empty 値を設定します。
+ 1. メインリポジトリをデフォルトのリポジトリとして、 hidden 属性と alias 属性を追加します。これは移行前に作成されたすべてのリンクがメインリポジトリを解決できることを保証します。
+ 1. ステップ 2,3,4 を他の ( 名前付きの ) リポジトリに対して必要に応じて繰り返します。
 
-== Migration from a single-repository setup (Mercurial) == #MigrationMercurial
-The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see #9485 for more information.
+== 単一リポジトリからの移行手順 (Mercurial) == #MigrationMercurial
+下記の手順は、 Mercurial における単一リポジトリから複数のリポジトリの設定へ変更するための典型的な移行方法になります。このドキュメントを執筆している時点では、 Mercurial 導入時の同期作業やフックは必要ではありません - 詳細は [http://trac.edgewall.org/ticket/9485 本家チケット 9485] を参照して下さい。
 
- 1. Upgrade to the latest version of the TracMercurial plugin.
- 1. Remove the default repository specification from the `[trac] repository_dir` option.
- 1. Add the "main" repository as a named repository.
- 1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
- 1. Repeat step 3 to add other (named) repositories as needed.
+ 1. TracMercurial プラグインを最新バージョンにアップグレードします。
+ 1. デフォルトリポジトリの設定を trac.ini の `[trac] repository_dir` オプションから削除します。
+ 1. メインとなるリポジトリを名前付きのリポジトリとして追加します。
+ 1. メインリポジトリをデフォルトリポジトリとして扱うための hidden 属性のエイリアスを追加します。これで確実に移行前のすべてのリンクをメインリポジトリへ向けることができるようにします。
+ 1. 手順 3 を繰り返して、必要に応じて他の (名前付きの) リポジトリを追加します。
 
-== Troubleshooting ==
+== トラブルシューティング == #Troubleshooting
 
-=== My trac-post-commit-hook doesn't work anymore === #trac-post-commit-hook
+=== trac-post-commit-hook はもはや機能しません === #trac-post-commit-hook
 
-You must now use the optional components from `tracopt.ticket.commit_updater.*`, which you can activate through the Plugins panel in the Administrative part of the web interface, or by directly modifying the [TracIni#components-section "[components]"] section in the trac.ini. Be sure to use [#ExplicitSync explicit synchronization] as explained above.
+今では、 `tracopt.ticket.commit_updater.*` のオプションのコンポーネントを使用しなければなりません。 Web からの管理の一般設定配下のプラグインパネルか trac.ini の [TracIni#components-section "[components]"] セクションを直接編集することによって有効にすることができます。上記で説明している [#ExplicitSync 明示的な同期] を確実に行なってください。

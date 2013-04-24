@@ -1,19 +1,19 @@
-= Trac Navigation =
+= ナビゲーション = #TracNavigation
 
-Starting with Trac 0.11, it is now possible to customize the main and meta navigation entries in some basic ways.
+Trac 0.11 以降では、メインナビゲーションとメタナビゲーションのエントリを簡単な方法でカスタマイズできるようになりました。
 
-The new `[mainnav]` and `[metanav]` configuration sections can now be used to customize the text and link used for the navigation items, or even to disable them.
+新しく追加されたコンフィグのセクション `[mainnav]` と `[metanav]` を使用すると、ナビゲーション項目に使用されるテキストとリンクをカスタマイズしたり、無効化することができます。
 
 === `[mainnav]` #mainnav-bar
-`[mainnav]` corresponds to the '''main navigation bar''', the one containing entries such as ''Wiki'', ''Timeline'', ''Roadmap'', ''Browse Source'' and so on. This navigation bar is meant to access the default page of the main modules enabled in Trac and accessible for the current user.
+`[mainnav]` は '''メインナビゲーションバー (main navigation bar)''' に対応しています。メインナビゲーションは ''Wiki'', ''タイムライン'' (英語版では ''Timeline''), ''ロードマップ'' (英語版では ''Roadmap''), ''リポジトリブラウザ'' (英語版では ''Browse Source'') のようなエントリを含むバーです。このナビゲーションバーは Trac で有効に設定され、現在のユーザがアクセスできるようになっている、各メインモジュールのデフォルトページにアクセスします。
 
 
-** [=#Example Example] ** 
+** [=#Example 例] ** 
 
-In the following example, we rename the link to the Wiki start "Home", and hide the "!Help/Guide" link. 
-We also make the "View Tickets" entry link to a specific report.
+以下の例では、 Wiki のスタートページへのリンク名を "Home" に変更して、 "ヘルプ/ガイド" (英語版では "!Help/Guide") を非表示にします。
+さらに、 "チケットを見る" (英語版では "View Tickets") エントリを特定のレポートにリンクさせます。
 
-Relevant excerpt from the TracIni:
+TracIni からの引用:
 {{{
 [mainnav]
 wiki.label = Home
@@ -21,12 +21,12 @@ tickets.href = /report/24
 }}}
 
 === `[metanav]` #metanav-bar
-`[metanav]` corresponds to the '''meta navigation bar''', by default positioned above the main navigation bar and below the ''Search'' box. It contains the ''Log in'', ''Logout'', ''!Help/Guide'' etc. entries. This navigation bar is meant to access some global information about the Trac project and the current user.
+`[metanav]` は '''メタナビゲーションバー (meta navigation bar)''' に対応しています。メタナビゲーションは通常、メインナビゲーションバーの上、 ''検索'' (英語版では ''Search'') ボックスの下に配置されています。 ''ログイン'' (英語版では ''Log in''), ''ログアウト'' (英語版では ''Logout''), ''ヘルプ/ガイド'' (英語版では ''!Help/Guide'') などのエントリが含まれています。このナビゲーションバーは Trac プロジェクト全体の情報や、現在のユーザの情報にアクセスします。
 
-There is one special entry in the  `[metanav]` section: `logout.redirect` is the page the user sees after hitting the logout button. 
-[[comment(see also #Trac3808)]]
+`[metanav]` セクションには特別なエントリを記述できます: `logout.redirect` を設定することで、ログアウト後に表示するページを指定できます。
+[[comment([http://trac.edgewall.org/ticket/3808 #Trac3808] を参照してください)]]
 
-** Example ** 
+** 例 ** 
 
 {{{
 [metanav]
@@ -36,14 +36,14 @@ logout.redirect = wiki/Logout
 
 
 === Notes
-Possible URL formats (for `.href` or `.redirect`):
-|| '''config''' || '''redirect to''' ||
+記述可能な URL のフォーマット (for `.href` or `.redirect`):
+|| '''設定内容''' || '''リダイレクト先''' ||
 || `wiki/Logout` || `/projects/env/wiki/Logout` ||
 || `http://hostname/` || `http://hostname/` ||
 || `/projects` || `/projects` ||
 
 
-Note that it is still not possible to customize the '''contextual navigation bar''', i.e. the one usually placed below the main navigation bar.
+今のところ、 '''コンテキストナビゲーションバー (contextual navigation bar)''' をカスタマイズすることはできません。コンテキストナビゲーションはメインナビゲーションの下に位置するバーです。
 
 
 ----

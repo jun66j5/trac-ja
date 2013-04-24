@@ -360,20 +360,20 @@ class AttachmentModule(Component):
     CHUNK_SIZE = 4096
 
     max_size = IntOption('attachment', 'max_size', 262144,
-        """Maximum allowed file size (in bytes) for ticket and wiki 
-        attachments.""")
+        """チケットと Wiki の添付ファイルの最大サイズをバイト数で
+        指定します。""")
 
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
                                        'false',
-        """Whether attachments should be rendered in the browser, or
-        only made downloadable.
+        """添付ファイルをブラウザ上に表示するか、 
+        単にダウンロード可能にしておくかどうかを設定します。 
 
-        Pretty much any file may be interpreted as HTML by the browser,
-        which allows a malicious user to attach a file containing cross-site
-        scripting attacks.
+        ブラウザがほとんどのファイルを HTML として解釈することがあるため、 
+        悪意のあるユーザにクロスサイトスクリプティング攻撃を可能にするファイル
+        の添付を許すことになります。
 
-        For public sites where anonymous users can create attachments it is
-        recommended to leave this option disabled (which is the default).""")
+        誰でもファイルを添付できるような公開サイトでは、このオプションを無効に
+        設定しておくことを推奨します (デフォルトは、無効に設定されています)。""")
 
     # IEnvironmentSetupParticipant methods
 

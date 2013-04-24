@@ -45,8 +45,8 @@ class LogModule(Component):
                IWikiSyntaxProvider)
 
     default_log_limit = IntOption('revisionlog', 'default_log_limit', 100,
-        """Default value for the limit argument in the TracRevisionLog
-        (''since 0.11'').""")
+        """TracRevisionLog での最大表示数のデフォルト値
+        (''0.11 以降'')。""")
 
     # INavigationContributor methods
 

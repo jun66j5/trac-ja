@@ -145,7 +145,7 @@
                           </td>
                         </py:when>
 
-                        <py:when test="col == 'summary' and row.id">
+                        <py:when test="col in ('summary', '概要') and row.id">
                           <td class="$col" py:attrs="td_attrs">
                             <a title="${_('View %(realm)s', realm=row.resource.realm)}"
                                href="${url_of(row.resource)}">$cell.value</a>
@@ -154,32 +154,32 @@
                         </py:when>
 
                         <!--! generic fields -->
-                        <py:when test="col == 'time'">
+                        <py:when test="col == 'time' or col.endswith('時刻')">
                           <td class="date" py:attrs="td_attrs">${cell.value != '' and format_time(from_utimestamp(long(cell.value))) or '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
-                        <py:when test="col in ('date', 'created', 'modified')">
+                        <py:when test="col in ('date', 'created', 'modified') or col.endswith('日付')">
                           <td class="date" py:attrs="td_attrs">${cell.value != '' and format_date(from_utimestamp(long(cell.value))) or '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
-                        <py:when test="col == 'datetime'">
+                        <py:when test="col == 'datetime' or col.endswith('日時')">
                           <td class="date" py:attrs="td_attrs">${cell.value != '' and format_datetime(from_utimestamp(long(cell.value))) or '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
-                        <py:when test="col == 'description'">
+                        <py:when test="col in ('description', '説明')">
                           <td class="$col" py:attrs="td_attrs" xml:space="preserve">
                             ${wiki_to_html(context(row.resource), cell.value)}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
-                        <py:when test="col == 'milestone'">
+                        <py:when test="col in ('milestone', 'マイルストーン')">
                           <td class="$col" py:attrs="td_attrs">
                             <a py:if="cell.value" title="View milestone" href="${href.milestone(cell.value)}">$cell.value</a>
                             <hr py:if="fullrow"/>

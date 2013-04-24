@@ -1,15 +1,24 @@
-= Trac Support =
+= Trac サポート = #TracSupport
 
-Like in most [http://www.opensource.org/ open source projects], "free" Trac support is available primarily through the community itself, mainly through the [trac:MailingList mailing list] and the [trac: project wiki].
+ほとんどの [http://www.opensource.org/ オープンソースプロジェクト] と同様、第一にコミュニティを通しての "free" Trac サポートが利用できます。主として、 [http://trac.edgewall.org/wiki/MailingList メーリングリスト] と [http://trac.edgewall.org プロジェクトのwiki] になります。
 
-There is also an [trac:IrcChannel IRC channel], where people might be able to help out. Much of the 'live' development discussions also happen there.
+[http://trac.edgewall.org/wiki/IrcChannel IRC チャネル] もありますので、そこの人々が助けてくれるでしょう。開発に関する '生きた' 議論はほとんどがそこで行われています。
 
-Before you start a new support query, make sure you've done the appropriate searching:
- * in the project's [trac:TracFaq FAQ]
- * in past messages to the [http://groups.google.com/group/trac-users Trac Users Mailing List]
- * in the Trac ticket system, using either a [trac:search:?q=&ticket=on&wiki=on full search] or a [trac:query: ticket query].
+サポートを求める質問を始める前に、似たような事象があるかどうかを検索してみて下さい:
+ * プロジェクトの [http://trac.edgewall.org/wiki/TracFaq FAQ]
+ * [http://groups.google.com/group/trac-users Trac Users メーリングリスト] の過去のメッセージ。
+ * Trac のチケット。 [http://trac.edgewall.org/search?q=&ticket=on&wiki=on 全検索] もしくは [[http://trac.edgewall.org/query?summary=~&keywords=~ チケットクエリ] を使用することができます。
 
-Please '''don't''' create a ticket in trac.egdewall.org for asking a support question about Trac. Only use it when you face a ''real'' and ''new'' bug in Trac, and do so only after having read the [trac:NewTicketGuidelines NewTicketGuidelines]. The more a bug report or enhancement request complies with those guidelines, the higher the chances are that it will be fixed or implemented promptly!
+trac.egdewall.org Trac についてのサポートを求める内容のチケットを '''作成しないでください'''。Trac で ''新規の'' バグが ''現実に起きた'' ときにだけ、 [http://trac.edgewall.org/wiki/NewTicketGuidelines NewTicketGuidelines] を読んでからチケットを起票して下さい。これらのガイドラインを守っているバグレポートや機能追加要望の方が、修正されたり、実装されたりする可能性が高くなります!
+
+
+'''訳注:'''
+ * !EdgeWall 社やコミュニティによるサポートは '''英語で''' 行われています。
+ * このページにあるサポートでは Trac-ja (日本語ローカライズ版) は '''対象ではありません'''。
+   本家 Trac でも再現する問題だけが対象になるとお考えください。
+ * セキュリティの問題などについて、翻訳元 ([http://www.i-act.co.jp/ インタアクト株式会社])
+   では可能な限り誠意的に対応したいと考えておりますが、
+   現在のところ一般向けの Trac, Trac-ja のサポートは提供しておりません。
 
 ----
 See also: [trac:MailingList], [trac:TracTroubleshooting], [trac:CommercialServices]

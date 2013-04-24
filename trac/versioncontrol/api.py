@@ -283,33 +283,33 @@ class RepositoryManager(Component):
     change_listeners = ExtensionPoint(IRepositoryChangeListener)
 
     repository_type = Option('trac', 'repository_type', 'svn',
-        """Default repository connector type. (''since 0.10'')
+        """リポジトリの種類を指定します。 (''0.10 以降'')
         
-        This is also used as the default repository type for repositories
-        defined in [[TracIni#repositories-section repositories]] or using the
-        "Repositories" admin panel. (''since 0.12'')
+        このオプションは、 [[TracIni#repositories-section repositories]] に
+        定義されているデフォルトのリポジトリの種類として使用されるか 
+        Web アドミンの "リポジトリ" パネルで使用されます。 (''0.12 以降'')
         """)
 
     repository_dir = Option('trac', 'repository_dir', '',
-        """Path to the default repository. This can also be a relative path
-        (''since 0.11'').
+        """デフォルトのリポジトリへのパスを指定します。相対パスを使用できます
+        (''0.11 以降'')。
         
-        This option is deprecated, and repositories should be defined in the
-        [TracIni#repositories-section repositories] section, or using the
-        "Repositories" admin panel. (''since 0.12'')""")
+        このオプションは将来廃止予定です。リポジトリは
+        [TracIni#repositories-section repositories] セクションにて定義されるか 
+        Web アドミンの "リポジトリ" パネルで使用されます (''0.12 以降'')""")
 
     repository_sync_per_request = ListOption('trac',
         'repository_sync_per_request', '(default)',
-        doc="""List of repositories that should be synchronized on every page
-        request.
+        doc="""ページリクエスト毎に同期処理を行なうリポジトリ
+        のリスト。
         
-        Leave this option empty if you have set up post-commit hooks calling
-        `trac-admin $ENV changeset added` on all your repositories
-        (recommended). Otherwise, set it to a comma-separated list of
-        repository names. Note that this will negatively affect performance,
-        and will prevent changeset listeners from receiving events from the
-        repositories specified here. The default is to synchronize the default
-        repository, for backward compatibility. (''since 0.12'')""")
+        このオプションは、すべてのリポジトリの post-commit フックで、 
+        `trac-admin $ENV changeset added` を呼んでいるならば空に設定して下さい。 
+        ( 推奨 ) そうでなければ、カンマ区切りでリポジトリの名前を
+        設定して下さい。 Note: この設定は、性能にマイナスの影響を与えます。
+        そして、 changeset リスナがここで指定したリポジトリからのイベントの受信することを
+        妨げます。後方互換性を保つためにデフォルト値はデフォルトに設定したリポジトリを
+        設定しています。 (''0.12 以降'')""")
 
     def __init__(self):
         self._cache = {}

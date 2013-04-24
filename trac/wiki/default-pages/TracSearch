@@ -1,32 +1,32 @@
-= Using Search =
+= 検索 = #UsingSearch
 
-Trac has a built-in search engine to allow finding occurrences of keywords and substrings in wiki pages, tickets and changeset properties (author, revision and log message).
+Trac には Wiki ページ、チケット、チェンジセットのプロパティ ( コミッタ, リビジョン, ログメッセージ ) からキーワードや部分文字列を検索するエンジンが内蔵されています。
 
-Using the Trac search facility is straightforward and its interface should be familiar to most users.
+Trac の検索機能の使い方はシンプルで、インタフェースもユーザに親しみやすいものになっています。
 
-Apart from the [search: Search module], you will also find a small search field above the navigation bar at all time. It provides convenient access to the search module from all pages.
+また、 [search: 検索モジュール] (英語版では Search) とは別に、ナビゲーションバーの上に小さな検索フィールドが常に表示され、すべてのページから簡単に検索機能にアクセスすることができます。
 
-== "Quickjump" searches ==
-For quick access to various project resources, the quick-search field at the top of every page can be used to enter a [TracLinks wiki link], which will take you directly to the resource identified by that link.
+== "クイックジャンプ" 検索 == #Quickjumpsearches
+プロジェクトのいろいろなリソースに素早くアクセスするために、すべてのページの一番上にある検索フィールドでは、 [TracLinks Wiki リンク] を入力して、対応するページに直接移動することができます。
 
-For example:
+例:
 
- * ![42] -- Opens change set 42
- * !#42 -- Opens ticket number 42
- * !{1} -- Opens report 1
- * /trunk -- Opens the browser for the `trunk` directory
+ * ![42] -- リビジョン 42 のチェンジセットを開きます。
+ * !#42 -- チケット !#42 を開きます。
+ * !{1} -- レポート !{1} を開きます。
+ * /trunk -- リポジトリブラウザの `trunk` ディレクトリを直接開きます。
 
-== Advanced ==
+== 上級編 == #Advanced
 
-=== Disabling Quickjumps ===
-To disable the quickjump feature for a search keyword - for example when searching for occurences of the literal word !TracGuide - begin the query with an exclamation mark (!).
+=== クイックジャンプを無効にする === #DisablingQuickjumps
+検索するキーワードに対するクイックジャンプ機能を無効にしたい場合 (例えば !TracGuide という文字列を検索したいとき) は、先頭にエクスクラメーションマーク (!) を付けて入力してください。
 
-=== Search Links ===
-From the Wiki, it is possible to link to a specific search, using
-`search:` links:
- * `search:?q=crash` will search for the string "crash" 
- * `search:?q=trac+link&wiki=on` will search for "trac" and "link" 
-   in wiki pages only
+=== 検索リンク === #SearchLinks
+Wiki では、`search:` リンクを使用して、特定の検索に
+リンクすることが可能です:
+ * `search:?q=crash` は "crash" という文字列を検索します。
+ * `search:?q=trac+link&wiki=on` は "trac" と "link" という文字を
+   wiki ページに限定して検索します。
 
 ----
 See also: TracGuide, TracLinks, TracQuery
