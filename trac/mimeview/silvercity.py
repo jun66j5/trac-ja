@@ -80,15 +80,15 @@ class SilverCityRenderer(Component):
 
     silvercity_modes = ListOption('mimeviewer', 'silvercity_modes',
         '', doc=
-        """List of additional MIME types known by SilverCity.
-        For each, a tuple `mimetype:mode:quality` has to be
-        specified, where `mimetype` is the MIME type,
-        `mode` is the corresponding SilverCity mode to be used
-        for the conversion and `quality` is the quality ratio
-        associated to this conversion.
-        That can also be used to override the default
-        quality ratio used by the SilverCity render, which is 3
-        (''since 0.10'').""")
+        """SilverCity が処理できるMIME タイプを追加します。
+        それぞれのエントリは `mimetype:mode:quality` というタプルで
+        設定しなければなりません。 `mimetype` には MIME タイプを、
+        `mode` には変換に使用する Pygments のモードを、
+        `quality` には変換に関連する quality ratio を
+        設定します。
+        `quality` で設定した値で、 SilverCity のデフォルトの quality ratio
+        を上書きします。デフォルトは 3 です
+        (''0.10 以降'')。""")
 
     expand_tabs = True
     returns_source = True

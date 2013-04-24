@@ -1,126 +1,126 @@
-= WikiFormatting =
+= Wiki 文法 = #WikiFormatting
 [[TracGuideToc]]
 
-Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into a flexible and powerful whole.
+Wiki マークアップは Trac のコアとなる機能です。他のパーツと緊密に統合することによって、 Trac をフレキシブルかつ強力にしています。
 
-Trac has a built in small and powerful wiki rendering engine. This wiki engine implements an ever growing subset of the commands from other popular Wikis,
-especially [http://moinmo.in/ MoinMoin] and [trac:WikiCreole].
-
-
-This page will give you an in-depth explanation of the wiki markup available anywhere WikiFormatting is allowed.
-
-The ''Cheat sheet'' below gives you a quick overview for the most common syntax, each link in the ''Category'' column will lead you to the more detailed explanation later in this page.
-
-A few other wiki pages present the advanced features of the Trac wiki markup in more depth: 
- - TracLinks covers all the possible ways to refer precisely to any Trac resource or parts thereof,
- - WikiPageNames talks about the various names a wiki page can take, CamelCase or not
- - WikiMacros lists the macros available for generating dynamic content,
- - WikiProcessors and WikiHtml details how parts of the wiki text can be processed in special ways
+Trac はビルトインの小規模だけれども強力な wiki のレンダリングエンジンを搭載しています。この wiki エンジンは他の有名な wiki のコマンドのサブセット
+特に、 [http://moinmo.in/ MoinMoin] や [trac:WikiCreole] を拡張して実装しています。
 
 
-== Cheat sheet ==
+このページでは、 WikiFormatting が使用できるところではどこでも使用できる wiki のマークアップについて掘り下げた説明をします。
 
-||= '''Category''' =||= '''Wiki Markup''' =||= '''Display''' =||
+以下に記述する ''チートシート'' に最も一般的なシンタックスのちょっとした概要を載せます。 ''カテゴリ'' カラムの中にあるそれぞれのリンクをたどってこのページの下の方にある詳細な説明を見ることができます。
+
+いくつかの他の wiki ページにも Trac の wiki のマークアップについて詳細な特徴について、より掘り下げて書かれています:
+ - TracLinks はいかなる Trac のリソースまたはその一部を正確に参照する方法についてカバーしています。
+ - WikiPageNames wiki ページの命名規則、 CamelCase かそれ以外かについて書かれています。
+ - WikiMacros には動的にコンテンツを生成するためのマクロの一覧がリストされています。
+ - WikiProcessors と WikiHtml には wiki テキストの一部を特別な方法で処理する方法についての詳細が書かれています。
+
+
+== チートシート == #Cheatsheet
+
+||= '''カテゴリ''' =||= '''Wiki マークアップ''' =||= '''表示''' =||
 |-----------------------------------------------------------
 {{{#!th rowspan=3
-[#FontStyles Font Styles]
+[#FontStyles フォント書式]
 }}}
-|| `'''bold'''`, `''italic''`, `'''''Wikipedia style'''''` || \
-|| '''bold''', ''italic'', '''''Wikipedia style''''' ||
-|| {{{`monospaced (''other markup ignored'')`}}} || \
-|| `monospaced (''other markup ignored'')` ||
-|| `**bold**`, `//italic//`, `**//!WikiCreole style//**` || \
-|| **bold**, //italic//, **//!WikiCreole style//** ||
+|| `'''太字'''`, `''斜体''`, `'''''Wikipedia 書式'''''` || \
+|| '''太字''', ''斜体'', '''''Wikipedia 書式''''' ||
+|| {{{`等幅 (''他のマークアップを無視'')`}}} || \
+|| `等幅 (''他のマークアップを無視'')` ||
+|| `**太字**`, `//斜体//`, `**//!WikiCreole 書式//**` || \
+|| **太字**, //斜体//, **//!WikiCreole 書式//** ||
 |-----------------------------------------------------------
-||= [#Headings Headings] =||\
+||= [#Headings 見出し] =||\
 {{{#!td 
  {{{
- == Level 2 ==
- === Level 3 ^([#hn note])^
+ == 見出し 2 ==
+ === 見出し 3 ^([#hn 注])^
  }}}
 }}}
 {{{#!td style="padding-left: 2em"
-== Level 2 ==
-=== Level 3 ^([#hn note])^
+== 見出し 2 ==
+=== 見出し 3 ^([#hn 注])^
 }}}
 |-----------------------------------------------------------
-||= [#Paragraphs Paragraphs]  =||\
+||= [#Paragraphs 改行]  =||\
 {{{#!td
  {{{
- First paragraph
- on multiple lines.
+ 複数行の
+ 第一段落
 
- Second paragraph.
+ 第二段落
  }}}
 }}}
 {{{#!td
-First paragraph
-on multiple lines.
+複数行の
+第一段落
 
-Second paragraph.
+第二段落
 }}}
 |-----------------------------------------------------------
-||= [#Lists Lists] =||\
+||= [#Lists リスト] =||\
 {{{#!td
  {{{
- * bullets list
-   on multiple lines
-   1. nested list
-     a. different numbering 
-        styles
+ * 複数行の
+   番号なしリスト
+   1. ネストしたリスト
+     a. 異なる番号付け 
+        書式
  }}}
 }}}
 {{{#!td
-* bullets list
-  on multiple lines
-  1. nested list
-    a. different numbering
-       styles
+* 複数行の
+  番号なしリスト
+  1. ネストしたリスト
+    a. 異なる番号付け
+       書式
 }}}
 |-----------------------------------------------------------
 {{{#!th
-[#DefinitionLists Definition Lists]
+[#DefinitionLists 用語定義リスト]
 }}}
 {{{#!td
  {{{
-  term:: definition on
-         multiple lines
+  用語:: 複数行にわたる
+         用語の定義
  }}}
 }}}
 {{{#!td
- term:: definition on
-        multiple lines
+ 用語:: 複数行にわたる
+        用語の定義
 }}}
 |-----------------------------------------------------------
-||= [#PreformattedText Preformatted Text] =||\
+||= [#PreformattedText 整形済みテキスト] =||\
 {{{#!td
  {{{
  {{{
- multiple lines, ''no wiki''
-       white space respected
+ 複数行、 ''no wiki''
+       空白文字も除去しない
  }}}
  }}}
 }}}
 {{{#!td
  {{{
- multiple lines, ''no wiki''
-       white space respected
+ 複数行、 ''no wiki''
+       空白文字も除去しない
  }}}
 }}}
 |-----------------------------------------------------------
-||= [#Blockquotes Blockquotes] =||\
+||= [#Blockquotes 引用ブロック] =||\
 {{{#!td
  {{{
-   if there's some leading
-   space the text is quoted
+   もし、いくつかのスペースが行の先頭にある場合、
+   テキストは引用を表します。
  }}}
 }}}
 {{{#!td
- if there's some leading
- space the text is quoted
+ もし、いくつかのスペースが行の先頭にある場合、
+ テキストは引用を表します。
 }}}
 |-----------------------------------------------------------
-||= [#DiscussionCitations Discussion Citations] =||\
+||= [#DiscussionCitations 引用] =||\
 {{{#!td
  {{{
  >> ... (I said)
@@ -132,20 +132,20 @@ Second paragraph.
 > (he replied)
 }}}
 |-----------------------------------------------------------
-||= [#Tables Tables] =||\
+||= [#Tables 表] =||\
 {{{#!td
  {{{
- ||= Table Header =|| Cell ||
- ||||  (details below)  ||
+ ||= 表のヘッダ =|| セル ||
+ ||||  (詳細は下記参照)  ||
  }}}
 }}}
 {{{#!td
-||= Table Header =|| Cell ||
-||||  (details below)  ||
+||= 表のヘッダ =|| セル ||
+||||  (詳細は下記参照)  ||
 }}}
 |-----------------------------------------------------------
 {{{#!th rowspan=2
-[#Links Links]
+[#Links リンク]
 }}}
 || `http://trac.edgewall.org` ||\
 || http://trac.edgewall.org ||
@@ -153,51 +153,51 @@ Second paragraph.
 || WikiFormatting (CamelCase) ||
 |-----------------------------------------------------------
 {{{#!th rowspan=5
-[#TracLinks TracLinks]
+[#TracLinks Trac リンク]
 }}}
 || `wiki:WikiFormatting`, `wiki:"WikiFormatting"` ||\
 || wiki:WikiFormatting, wiki:"WikiFormatting" ||
-|| `#1 (ticket)`, `[1] (changeset)`, `{1} (report)` ||\
-|| #1 (ticket), [1] (changeset), {1} (report) ||
+|| `#1 (チケット)`, `[1] (チェンジセット)`, `{1} (レポート)` ||\
+|| #1 (チケット), [1] (チェンジセット), {1} (レポート) ||
 || `ticket:1, ticket:1#comment:1` ||\
 || ticket:1, ticket:1#comment:1 ||
-|| `Ticket [ticket:1]`, `[ticket:1 ticket one]` ||\
-|| Ticket [ticket:1], [ticket:1 ticket one] ||
-|| `Ticket [[ticket:1]]`, `[[ticket:1|ticket one]]` ||\
-|| Ticket [[ticket:1]], [[ticket:1|ticket one]] ||
+|| `チケット [ticket:1]`, `[ticket:1 チケット 1]` ||\
+|| チケット [ticket:1], [ticket:1 チケット 1] ||
+|| `チケット [[ticket:1]]`, `[[ticket:1|チケット 1]]` ||\
+|| チケット [[ticket:1]], [[ticket:1|チケット 1]] ||
 |-----------------------------------------------------------
 {{{#!th rowspan=2 
-[#SettingAnchors Setting Anchors]
+[#SettingAnchors アンカーの設定]
 }}}
-|| `[=#point1 (1)] First...` ||\
-|| [=#point1 (1)] First... ||
-|| `see [#point1 (1)]` ||\
-|| see [#point1 (1)] ||
+|| `[=#point1 (1)] 1 つ目...` ||\
+|| [=#point1 (1)] 1 つ目... ||
+|| `[#point1 (1)] 参照` ||\
+|| [#point1 (1)] 参照 ||
 |-----------------------------------------------------------
 {{{#!th rowspan=3
-[#Escaping Escaping Markup]
+[#EscapingLinksWikiPageNamesandotherMarkup リンクの無効化]
 }}}
-|| `!'' doubled quotes` ||\
-|| !'' doubled quotes ||
+|| `!'' シングルクオテーション 2 つ` ||\
+|| !'' シングルクオテーション 2 つ ||
 || `!wiki:WikiFormatting`, `!WikiFormatting` ||\
 || !wiki:WikiFormatting, !WikiFormatting ||
-|| {{{`}}}`{{{-}}}`{{{`}}}` triple curly brackets` ||\
-|| `{{{-}}}` triple curly brackets ||
+|| {{{`}}}`{{{-}}}`{{{`}}}` 3重中括弧` ||\
+|| `{{{-}}}` 3重中括弧 ||
 |-----------------------------------------------------------
-||= [#Images Images] =|| `[[Image(`''link''`)]]` || [[Image(htdocs:../common/trac_logo_mini.png)]] ||
+||= [#Images 画像] =|| `[[Image(`''link''`)]]` || [[Image(htdocs:../common/trac_logo_mini.png)]] ||
 |-----------------------------------------------------------
 {{{#!th rowspan=2
-[#Macros Macros]
+[#Macros マクロ]
 }}}
-|| `[[MacroList(*)]]` ||  ''(short list of all available macros)''  ||
-|| `[[Image?]]` ||  ''(help for the Image macro)''  ||
+|| `[[MacroList(*)]]` ||  ''(簡単なマクロ一覧)''  ||
+|| `[[Image?]]` ||  ''(イメージマクロのヘルプ)''  ||
 |-----------------------------------------------------------
-||= [#Processors Processors] =||\
+||= [#Processors プロセッサ] =||\
 {{{#!td
  {{{
  {{{
  #!div style="font-size: 80%"
- Code highlighting:
+ ソースコードのハイライト:
    {{{#!python
    hello = lambda: "world"
    }}}
@@ -207,154 +207,154 @@ Second paragraph.
 {{{#!td style="padding-left: 2em"
  {{{
  #!div style="font-size: 80%"
- Code highlighting:
+ ソースコードのハイライト:
    {{{#!python 
    hello = lambda: "world"
    }}}
  }}}
 }}}
 |-----------------------------------------------------------
-||= [#Comments Comments] =||\
+||= [#Comments コメント] =||\
 {{{#!td
  {{{
  {{{#!comment
- Note to Editors: ...
+ 編集している人への注: ...
  }}}
  }}}
 }}}
 {{{#!td style="padding-left: 2em"
  {{{#!comment
- Note to Editors: ...
+ 編集している人への注: ...
  }}}
 }}}
 |-----------------------------------------------------------
-||= [#Miscellaneous Miscellaneous] =||\
+||= [#Miscellaneous その他] =||\
 {{{#!td
  {{{
- Line [[br]] break 
- Line \\ break
+ 改 [[br]] 行 
+ 改 \\ 行
  ----
  }}}
 }}}
 {{{#!td style="padding-left: 2em"
-Line [[br]] break
-Line \\ break
+改 [[br]] 行
+改 \\ 行
 ----
 }}}
 
 
-== Font Styles ==
+== フォント書式 == #FontStyles
 
-The Trac wiki supports the following font styles:
-||= Wiki Markup =||= Display =||
+Trac の Wiki は以下のフォント書式に対応しています:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-   * '''bold''', 
-     ''' triple quotes !''' 
-     can be bold too if prefixed by ! ''', 
-   * ''italic''
-   * '''''bold italic''''' or ''italic and
-     ''' italic bold ''' ''
-   * __underline__
-   * {{{monospace}}} or `monospace`
-     (hence `{{{` or {{{`}}} quoting)
-   * ~~strike-through~~
-   * ^superscript^ 
-   * ,,subscript,,
-   * **also bold**, //italic as well//, 
-     and **'' bold italic **'' //(since 0.12)//
+   * '''太字''', 
+     ''' シングルクオテーションを 3 つ (!''') も
+     頭にエクスクラメーションマーク (!) を付ければ、太字になります。''', 
+   * ''斜体''
+   * '''''太字 + 斜体''''' そして ''斜体と
+     ''' 斜体 + 太字 ''' ''
+   * __下線__
+   * {{{等幅}}} または `等幅`
+     (ゆえに `{{{` または {{{`}}} で囲む)
+   * ~~取り消し線~~
+   * ^上付き文字^ 
+   * ,,下付き文字,,
+   * **これも太字**, //これは斜体//, 
+     そして **'' 太字 + 斜体 **'' //(0.12 以降)//
   }}}
 }}}
 {{{#!td
- * '''bold''', 
-   ''' triple quotes !''' 
-   can be bold too if prefixed by ! ''', 
- * ''italic''
- * '''''bold italic''''' or ''italic and
-   ''' italic bold ''' ''
- * __underline__
- * {{{monospace}}} or `monospace`
-   (hence `{{{` or {{{`}}} quoting)
- * ~~strike-through~~
- * ^superscript^ 
- * ,,subscript,,
- * **also bold**, //italic as well//, 
-   and **'' bold italic **'' //(since 0.12)//
+ * '''太字''', 
+   ''' シングルクオテーションを 3 つ (!''') も
+   頭にエクスクラメーションマーク (!) を付ければ、太字になります。''', 
+ * ''斜体''
+ * '''''太字 + 斜体''''' そして ''斜体と
+   ''' 斜体 + 太字 ''' ''
+ * __下線__
+ * {{{等幅}}} または `等幅`
+   (ゆえに `{{{` または {{{`}}} で囲む)
+ * ~~取り消し線~~
+ * ^上付き文字^ 
+ * ,,下付き文字,,
+ * **これも太字**, //これは斜体//, 
+   そして **'' 太字 + 斜体 **'' //(0.12 以降)//
 }}}
 
-Notes:
- * `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
- * {{{ ! }}} tells wiki parser to not take the following characters as wiki format, so pay attention to put a space after !, e.g. when ending bold.
- * all the font styles marks have to be used in opening/closing pairs, 
-   and they must nest properly (in particular, an `''` italic can't be paired 
-   with a `//` one, and `'''` can't be paired with `**`)
+Note:
+ * `{{{...}}}`と {{{`...`}}} コマンドは表示を等角フォントにするだけではなく、内容を整形済みテキストとして扱います。つまりテキストに対して、どのような Wiki 処理も行いません。
+ * {{{ ! }}} は wiki パーサに wiki フォーマットとして解釈しないように伝えます。なので、 ! の後ろにスペースを置くことに注意して下さい。例えば、太字で行が終わるようなときです。
+ * すべてのフォント書式の記号は開始記号と終了記号のペアで使われなければなりません。
+   そして、これらのペアは適切にネストされなければなりません ( 特に、斜体の `''` は
+   `//` とペアにすることはできませんし、太字の `'''` は `**` とペアにすることはできません )
 
 
-== Headings ==
+== 見出し == #Headings
 
-You can create heading by starting a line with one up to six ''equal'' characters ("=")
-followed by a single space and the headline text. 
+見出しは、その行を 1 つから 6 つまでの等号記号 ("=") ではじめ、
+その後にスペースを 1 つおいて、見出しのテキストを記述することにより作成することができます。
 
 [=#hn]
-The headline text can be followed by the same number of "=" characters, but this is no longer mandatory.
+見出しのテキストの後ろには同じ数の等号 ("=") が必要ですが、もはやこれは必須ではありません。
 
-Finally, the heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
+ついに、ヘッダは 1 つの明示的な id によって選択的に追えるかもしれません。そうでなければ、暗黙ではあるけれども読み取り可能な id が生成されます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-  = Heading =
-  == Subheading
-  === About ''this'' ===
-  === Explicit id === #using-explicit-id-in-heading
-  == Subheading #sub2
+  = 見出し1 =
+  == 見出し2
+  === ''これ'' について ===
+  === 明示的な Id === #using-explicit-id-in-heading
+  == 見出し2 #sub2
 }}}
 }}}
 {{{#!td style="padding: 1em;"
   {{{
   #!div
-  = Heading =
-  == Subheading
-  === About ''this'' ===
-  === Explicit id === #using-explicit-id-in-heading
-  == Subheading #sub2
+  = 見出し1 =
+  == 見出し2
+  === ''これ'' について ===
+  === 明示的な Id === #using-explicit-id-in-heading
+  == 見出し2 #sub2
   }}}
 }}}
 
-== Paragraphs ==
+== 改行 == #Paragraphs
 
-A new text paragraph is created whenever two blocks of text are separated by one or more empty lines.
+2 つのテキストブロックの間に 1 行以上の空行がある場合、新しい段落として改行を行います。
 
-A forced line break can also be inserted, using:
-||= Wiki Markup =||= Display =||
+強制的に改行だけを行いたい場合、このように書いてください:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-  Line 1[[BR]]Line 2
+  行 1[[BR]]行 2
   }}}
   {{{
-  Paragraph
-  one
+  段落
+  1
 
-  Paragraph 
-  two
+  段落 
+  2
   }}}
 }}}
 {{{#!td
-  Line 1[[BR]]Line 2
+  行 1[[BR]]行 2
 
-  Paragraph 
-  one
+  段落 
+  1
 
-  Paragraph 
-  two
+  段落 
+  2
 }}}
 
-== Lists ==
+== リスト == #Lists
 
-The wiki supports both ordered/numbered and unordered lists.
+番号付きリストと番号無しリストの両方があります。
 
-Example:
-||= Wiki Markup =||= Display =||
+例:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
    * Item 1
@@ -364,11 +364,11 @@ Example:
         * Item 1.1.3
      * Item 1.2
    * Item 2
-  - items can start at the beginning of a line
-    and they can span multiple lines
-    - be careful though to continue the line 
-    with the appropriate indentation, otherwise
-  that will start a new paragraph...
+  - 各項目は行の先頭から開始することができます。
+    そして複数行にまたがることができます。
+    - 複数行にまたがる場合は、適切なインデントをするよう
+    注意してください。さもないと
+  新しい段落が開始してしまいます。
   
    1. Item 1
      a. Item 1.a
@@ -376,8 +376,8 @@ Example:
         i. Item 1.b.i
         i. Item 1.b.ii
    1. Item 2
-  And numbered lists can also be restarted
-  with an explicit number:
+  番号付きのリストは明示的に番号を付けてあげることで
+  リストを再開できます:
    3. Item 3
   }}}
 }}}
@@ -389,11 +389,11 @@ Example:
       * Item 1.1.3
    * Item 1.2
  * Item 2
-- items can start at the beginning of a line
-  and they can span multiple lines
-  - be careful though to continue the line 
-  with the appropriate indentation, otherwise
-that will start a new paragraph...
+- 各項目は行の先頭から開始することができます。
+  そして複数行にまたがることができます。
+  - 複数行にまたがる場合は、適切なインデントをするよう
+  注意してください。さもないと
+新しい段落が開始してしまいます。
 
  1. Item 1
    a. Item 1.a
@@ -401,41 +401,41 @@ that will start a new paragraph...
       i. Item 1.b.i
       i. Item 1.b.ii
  1. Item 2
-And numbered lists can also be restarted with an explicit number:
+番号付きのリストは明示的に番号を付けてあげることでリストを再開できます:
  3. Item 3
 }}}
 
 
-== Definition Lists ==
+== 用語定義リスト == #DefinitionLists
 
-The wiki also supports definition lists.
+Wikiは用語定義リストも作成できます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
    llama::
-     some kind of mammal, with hair
+     毛の生えた哺乳類の一種。
    ppython::
-     some kind of reptile, without hair
-     (can you spot the typo?)
+     毛がない爬虫類の一種。
+     (typoを見つけたかい?)
   }}}
 }}}
 {{{#!td
  llama::
-   some kind of mammal, with hair
+   毛の生えた哺乳類の一種。
  ppython::
-   some kind of reptile, without hair
-   (can you spot the typo?)
+   毛がない爬虫類の一種。
+   (typoを見つけたかい?)
 }}}
 
-Note that you need a space in front of the defined term.
+定義する用語の前にスペースが一つ必要なことを忘れないで下さい。
 
 
-== Preformatted Text ==
+== 整形済みテキスト == #PreformattedText
 
-Block containing preformatted text are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote. The curly braces need to be on a separate line.
+整形済みテキストを含むブロックは、ソースコードの一部や、ノート、例示に適しています。引用ブロックとしたいテキストの前後を、 3 つの ''ブレース (curly braces)'' で括ってください。ブレースは独立した行に置かなければいけません。
   
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   {{{
@@ -451,29 +451,29 @@ Block containing preformatted text are suitable for source code snippets, notes 
   }}}
 }}}
 
-Note that this kind of block is also used for selecting lines that should be processed through WikiProcessors.
+Note: このブロックは、 [WikiProcessors Wiki プロセッサ] で処理されるべき行を示すためにも使用されます。
 
-== Blockquotes ==
+== 引用ブロック == #Blockquotes
 
-In order to mark a paragraph as blockquote, indent that paragraph with two spaces.
+段落を引用ブロックとしてマークするには、段落を 2 個のスペースでインデントします。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
 {{{
-Paragraph
-  This text is a quote from someone else.
+段落
+  このテキストは何かの引用です。
 }}}
 }}}
 {{{#!td
-Paragraph
-  This text is a quote from someone else.
+段落
+  このテキストは何かの引用です。
 }}}
 
-== Discussion Citations ==
+== 引用 == #DiscussionCitations
 
-To delineate a citation in an ongoing discussion thread, such as the ticket comment area, e-mail-like citation marks (">", ">>", etc.) may be used.  
+進行中の議題のスレッド、チケットのコメントエリアなどで引用を表すために、メールライクな引用マーク (">", ">>" など) が使用できます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   >> Someone's original text
@@ -490,10 +490,10 @@ My reply text
 }}}
 
 
-== Tables ==
+== 表 == #Tables
 === Simple Tables ===
-Simple tables can be created like this:
-||= Wiki Markup =||= Display =||
+簡単なテーブルはこのように記述します:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   ||Cell 1||Cell 2||Cell 3||
@@ -505,24 +505,24 @@ Simple tables can be created like this:
 ||Cell 4||Cell 5||Cell 6||
 }}}
 
-Cell headings can be specified by wrapping the content in a pair of '=' characters.
-Note that the '=' characters have to stick to the cell separators, like this:
-||= Wiki Markup =||= Display =||
+ヘッダとするセルは、等号 ('=') のペアで中身をラップすることで指定できます。
+下記の例のように、等号 ('=') はセルのセパレータとくっつけておかなければなりません:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-  ||        ||= stable =||= latest =||
+  ||        ||= 安定版 =||= 最新版 =||
   ||= 0.10 =||  0.10.5  || 0.10.6dev||
   ||= 0.11 =||  0.11.6  || 0.11.7dev||
   }}}
 }}}
 {{{#!td style="padding: 2em;"
-||        ||= stable =||= latest =||
+||        ||= 安定版 =||= 最新版 =||
 ||= 0.10 =||  0.10.5  || 0.10.6dev||
 ||= 0.11 =||  0.11.6  || 0.11.7dev||
 }}}
 
-Finally, specifying an empty cell means that the next non empty cell will span the empty cells. For example:
-||= Wiki Markup =||= Display =||
+最後に、空のセルを指定することは、隣の空ではないセルの範囲が空のセルまで広がることを意味します。例:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   || 1 || 2 || 3 ||
@@ -538,59 +538,59 @@ Finally, specifying an empty cell means that the next non empty cell will span t
 |||||| 1-2-3 ||
 }}}
 
-Note that if the content of a cell "sticks" to one side of the cell and only one, then the text will be aligned on that side. Example:
-||= Wiki Markup =||= Display =||
+もし、セルの中身がセルの左右どちらか一方の端に "くっついている" ならば、そのテキストはくっついている端に寄せて表示されるでしょう。例:
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-  ||=Text =||= Numbers =||
-  ||left align    ||        1.0||
-  ||  center      ||        4.5||
-  ||      right align||     4.5||
-  || default alignment ||   2.5||
-  ||default||         2.5||
-  ||  default ||      2.5||
-  || default ||       2.5||
+  ||=テキスト =||= 数字 =||
+  ||左寄せ    ||        1.0||
+  ||  中央寄せ      ||        4.5||
+  ||      右寄せ||     4.5||
+  || デフォルトの配置 ||   2.5||
+  ||デフォルト||         2.5||
+  ||  デフォルト ||      2.5||
+  || デフォルト ||       2.5||
   }}}
 }}}
 {{{#!td style="padding: 2em;"
-||=Text =||= Numbers =||
-||left align    ||        1.0||
-||  center      ||        4.5||
-||      right align||     4.5||
-|| default alignment ||   2.5||
-||default||         2.5||
-||  default ||      2.5||
-|| default ||       2.5||
+||=テキスト =||= 数字 =||
+||左寄せ    ||        1.0||
+||  中央寄せ      ||        4.5||
+||      右寄せ||     4.5||
+|| デフォルトの配置 ||   2.5||
+||デフォルト||         2.5||
+||  デフォルト ||      2.5||
+|| デフォルト ||       2.5||
 }}}
 
-If contrary to the example above, the cells in your table contain more text, it might be convenient to spread a table row over multiple lines of markup. The `\` character placed at the end of a line after a cell separator tells Trac to not start a new row for the cells on the next line.
+上記の例に反して、テーブルのセルにより多くのテキストが含まれている場合、複数の行にわたるマークアップを使用して行を広げられれば便利かもしれません。バックスラッシュ (`\`) がセルのセパレータの後ろの行末にあるとき、Trac は次の行に新しい行の新しいセルがあったとしても、新しい行を開始しません。
 
-||= Wiki Markup =||
+||= Wiki マークアップ =||
 {{{#!td
   {{{
-  || this is column 1 [http://trac.edgewall.org/newticket new ticket] || \
-  || this is column 2 [http://trac.edgewall.org/roadmap the road ahead] || \
-  || that's column 3 and last one ||
+  || 行 1 [http://trac.edgewall.org/newticket 新しいチケット] || \
+  || 行 2 [http://trac.edgewall.org/roadmap ロードマップ] || \
+  || 行 3 最後の行 ||
   }}}
 }}}
 |-------------
-||= Display =||
+||= 表示 =||
 {{{#!td style="padding: 2em;"
-|| this is column 1 [http://trac.edgewall.org/newticket new ticket] || \
-|| this is column 2 [http://trac.edgewall.org/roadmap the road ahead] || \
-|| that's column 3 and last one ||
+|| 行 1 [http://trac.edgewall.org/newticket 新しいチケット] || \
+|| 行 2 [http://trac.edgewall.org/roadmap ロードマップ] || \
+|| 行 3 最後の行 ||
 }}}
 
-=== Complex Tables ===
+=== 複雑なテーブル === #ComplexTables
 
-If the possibilities offered by the simple "pipe"-based markup for tables described above are not enough for your needs, you can create more elaborated tables by using [#Processors-example-tables WikiProcessor based tables].
+上記に記載されている表における簡単な "パイプ" 形式のマークアップによる試みがあなたのニーズに合わないとしたら、 [#Processors-example-tables テーブル用 Wiki プロセッサ] を使用して、より凝ったテーブルを作成することができます。
 
 
-== Links ==
+== リンク == #Links
 
-Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks can be disabled by prepending an exclamation mark "!" character, such as {{{!WikiPageLink}}}.
+WikiPageNames や URL は自動的にハイパーリンクされます。 !WikiPageLinks を無効化したい場合、 {{{!WikiPageLink}}} のように、エクスクラメーションマーク (!) を語頭に置きます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   TitleIndex, http://www.edgewall.com/, !NotAlink
@@ -600,10 +600,10 @@ Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks 
 TitleIndex, http://www.edgewall.com/, !NotAlink
 }}}
 
-Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets. 
-If the descriptive title is omitted, then the explicit prefix is discarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
+スクエアブラケット ('[', ']') 内にリンクの後ろにスペースとタイトルをつけることによって、よりリンクの内容をふさわしく表したタイトルをつけることができます。
+このタイトルが省略されたとき、リンクが外部リンクでない限りにおいて明示的なプレフィックスが捨てられるでしょう。これは、 [WikiPageNames Wiki ページ名] のコンベンションに従わない wiki ページを扱うときに役に立つでしょう。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
    * [http://www.edgewall.com Edgewall Software]
@@ -619,15 +619,15 @@ If the descriptive title is omitted, then the explicit prefix is discarded, unle
    * [wiki:ISO9000]
 }}}
 
-Following the [trac:WikiCreole] trend, the descriptive title can also be specified by writing the link followed by a pipe ('|') and a title and all this inside //double// square brackets. 
+[trac:WikiCreole] の書式に従って、この種のタイトルはまた、//二重の// スクエアブラケット ('![[', ']]') 内にリンクの後ろにパイプ ('|') とタイトルを書くことによっても指定することができます。 
 
 {{{#!td
   {{{
    * [[http://www.edgewall.com|Edgewall Software]]
    * [[wiki:TitleIndex|Title Index]]
-     or even [[TitleIndex|Title Index]]
+     または [[TitleIndex|Title Index]]
    * [[wiki:TitleIndex]]
-     ''' but not ![[TitleIndex]]! '''
+     ''' ![[TitleIndex]] はできません ! '''
    * [[ISO9000]]
   }}}
 }}}
@@ -640,130 +640,130 @@ Following the [trac:WikiCreole] trend, the descriptive title can also be specifi
    * [[ISO9000]]
 }}}
 
-'''Note''': the [trac:WikiCreole] style for links is quick to type and
-certainly looks familiar as it's the one used on Wikipedia and in many
-other wikis. Unfortunately it conflicts with the syntax for [#Macros macros].
-So in the rare case when you need to refer to a page which is named after
-a macro (typical examples being TitleIndex, InterTrac and InterWiki), 
-by writing `[[TitleIndex]]` you will actually call the macro instead of linking
-to the page.
+'''Note''': [trac:WikiCreole] のリンク用の書式は 
+Wikipedia や他の wiki で使用されていたりするので、素早くタイプでき、
+確実に親しみやすいです。しかし不幸なことにこの書式は、 [#Macros マクロ] の書式とかぶってしまいます。
+したがって、まれなケースですが、マクロ名にちなんだ wiki ページ名にリンクをはる必要があるとき 
+( 典型的な例では、 TitleIndex, InterTrac や InterWiki)、 
+`[[TitleIndex]]` と書くと、ページへリンクする代わりにマクロを
+呼び出してしまいます。
 
-== Trac Links ==
+== Trac リンク == #TracLinks
 
-Wiki pages can link directly to other parts of the Trac system. Pages can refer to tickets, reports, changesets, milestones, source files and other Wiki pages using the following notations:
+Wiki ページでは Trac の他のコンポーネントに直接リンクできます。チケット、レポート、チェンジセット、マイルストーン、ソースファイル、他の Wiki ページへは以下のようにリンクを記述します:
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-   * Tickets: #1 or ticket:1
-   * Reports: {1} or report:1
-   * Changesets: r1, [1] or changeset:1
+   * チケット: #1 または ticket:1
+   * レポート: {1} または report:1
+   * チェンジセット: r1, [1] または changeset:1
    * ...
-   * targeting other Trac instances, 
-     so called InterTrac links:
-     - Tickets: #Trac1 or Trac:ticket:1
-     - Changesets: [Trac1] or Trac:changeset:1
+   * 他の Trac のインスタンスをターゲット、
+     つまり InterTrac リンクを使用している場合:
+     - チケット: #Trac1 または Trac:ticket:1
+     - チェンジセット: [Trac1] or Trac:changeset:1
   }}}
 }}}
 {{{#!td
- * Tickets: #1 or ticket:1
- * Reports: {1} or report:1
- * Changesets: r1, [1] or changeset:1
+ * チケット: #1 または ticket:1
+ * レポート: {1} または report:1
+ * チェンジセット: r1, [1] または changeset:1
  * ... 
- * targeting other Trac instances, 
-   so called InterTrac links:
-   - Tickets: #Trac1 or Trac:ticket:1
-   - Changesets: [Trac1] or Trac:changeset:1
+ * 他の Trac のインスタンスをターゲット、 
+   つまり InterTrac リンクを使用している場合:
+   - チケット: #Trac1 または Trac:ticket:1
+   - チェンジセット: [Trac1] or Trac:changeset:1
 }}}
 
-There are many more flavors of Trac links, see TracLinks for more in-depth information and a reference for all the default link resolvers.
+他にもいろいろな Trac リンクがあります。 [TracLinks Trac リンク] により細かい情報とデフォルトで使用できるすべてのリンクのリソルバのリファレンスについて書かれています。
 
 
-== Setting Anchors ==
+== アンカーの設定 == #SettingAnchors
 
-An anchor, or more correctly speaking, an [http://www.w3.org/TR/REC-html40/struct/links.html#h-12.2.1 anchor name] can be added explicitly at any place in the Wiki page, in order to uniquely identify a position in the document:
+アンカー、またはもっと正しく言うならば、 [http://www.w3.org/TR/REC-html40/struct/links.html#h-12.2.1 アンカー名] は ドキュメント内の場所をユニークに特定するために、Wiki ページ内のいたるところに明示的に追加することができます:
 
 {{{
 [=#point1]
 }}}
 
-This syntax was chosen to match the format for explicitly naming the header id [#Headings documented above]. For example:
+[#Headings 上記で説明した] 明示的にヘッダ id をつけるときのフォーマットと合うようにこのシンタックスが採用されました。例:
 {{{
-== Long title == #title
+== 長いタイトル == #title
 }}}
 
-It's also very close to the syntax for the corresponding link to that anchor:
+そのアンカーに対応するリンクのシンタックスにも近いです:
 {{{
 [#point1]
 }}}
 
-Optionally, a label can be given to the anchor:
+オプションとしてアンカーにラベルを設定できます:
 {{{
 [[=#point1 '''Point 1''']]
 }}}
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 |----------------------------------
 {{{#!td
   {{{
-  [#point2 jump to the second point]
+  [#point2 ポイント 2 へジャンプする]
 
   ...
 
-  Point2:  [=#point2] Jump here
+  ポイント 2:  [=#point2] ここにジャンプしています
   }}}
 }}}
 {{{#!td
-  [#point2 jump to the second point]
+  [#point2 ポイント 2 へジャンプする]
 
   ...
 
-  Point2:  [=#point2] Jump here
+  ポイント 2:  [=#point2] ここにジャンプしています
 }}}
 
-For more complex anchors (e.g. when a custom title is wanted), one can use the Span macro, e.g. `[[span(id=point2, class=wikianchor, title=Point 2, ^(2)^)]]`.
+より複雑なアンカー (例: カスタマイズしたタイトルが必要なとき) については、Span　マクロ (例: `[[span(id=point2, class=wikianchor, title=Point 2, ^(2)^)]]`) を使用することができます。
 
 
-== Escaping Links, WikiPageNames and other Markup == #Escaping
+== リンクの無効化と Wiki ページ名、その他のマークアップ == #EscapingLinksWikiPageNamesandotherMarkup
 
-You may avoid making hyperlinks out of TracLinks by preceding an expression with a single "!" (exclamation mark).
+エクスクラメーションマーク (!) を語頭に付与することで、 TracLinks が出力するハイパーリンクを無効化できます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
    !NoHyperLink
-   !#42 is not a link
+   !#42 はリンクではありません。
   }}}
   {{{
-Various forms of escaping for list markup:
- `-` escaped minus sign \\
- ``1. escaped number  \\
- {{{*}}} escaped asterisk sign
+様々な形式のリストマークアップの無効化:
+ `-` マイナス記号の無効化 \\
+ ``1. 番号の無効化  \\
+ {{{*}}} アスタリスク記号の無効化
   }}}
 }}}
 {{{#!td
  !NoHyperLink
- !#42 is not a link
+ !#42 はリンクではありません。
 
-Various forms of escaping for list markup:
- `-` escaped minus sign \\
- ``1. escaped number  \\
- {{{*}}} escaped asterisk sign
+様々な形式のリストマークアップの無効化:
+ `-` マイナス記号の無効化 \\
+ ``1. 番号の無効化  \\
+ {{{*}}} アスタリスク記号の無効化
 }}}
 
-== Images ==
+== 画像 == #Images
 
-Urls ending with `.png`, `.gif` or `.jpg` are no longer automatically interpreted as image links, and converted to `<img>` tags.
+URL が `.png`, `.gif` or `.jpg` で終わっている場合、自動的にイメージへのリンクとはならずに `<img>` タグに変換されます。
 
-You now have to use the ![[Image]] macro. The simplest way to include an image is to upload it as attachment to the current page, and put the filename in a macro call like `[[Image(picture.gif)]]`.
+現在では `[[Image]]` マクロを使用しなければなりません。画像を表示する最も簡単な方法は、現在のページへの添付ファイルとして画像をアップロードし、 `[[Image(picture.gif)]]` のようにファイル名を指定してマクロを呼び出す方法です。
 
-In addition to the current page, it is possible to refer to other resources:
- * `[[Image(wiki:WikiFormatting:picture.gif)]]` (referring to attachment on another page)
- * `[[Image(ticket:1:picture.gif)]]` (file attached to a ticket)
- * `[[Image(htdocs:picture.gif)]]` (referring to a file inside the [TracEnvironment environment] `htdocs` directory)
- * `[[Image(source:/trunk/trac/htdocs/trac_logo_mini.png)]]` (a file in repository)
+現在のページに加えて、他のリソースを参照することも可能です。
+ * `[[Image(wiki:WikiFormatting:picture.gif)]]` (他のページの添付ファイルを参照する)
+ * `[[Image(ticket:1:picture.gif)]]` (チケットに添付されたファイルを参照する)
+ * `[[Image(htdocs:picture.gif)]]` ( [TracEnvironment TracEnvironment 環境] の `htdocs` ディレクトリ内のファイルを参照する)
+ * `[[Image(source:/trunk/trac/htdocs/trac_logo_mini.png)]]` (リポジトリにあるファイルを参照)
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   [[Image(htdocs:../common/trac_logo_mini.png)]]
@@ -773,14 +773,14 @@ In addition to the current page, it is possible to refer to other resources:
 [[Image(htdocs:../common/trac_logo_mini.png)]]
 }}}
 
-See WikiMacros for further documentation on the `[[Image()]]` macro, which has several useful options (`title=`, `link=`, etc.)
+`[[Image()]]` マクロに関するより詳しい情報は WikiMacros に記載されています。役に立ついくつかのオプションがあります (`title=`, `link=`, など)
 
 
-== Macros ==
+== マクロ == #Macros
 
-Macros are ''custom functions'' to insert dynamic content in a page.
+マクロは、動的コンテンツを Wiki ページに挿入するための ''カスタム関数'' です。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   [[RecentChanges(Trac,3)]]
@@ -790,11 +790,11 @@ Macros are ''custom functions'' to insert dynamic content in a page.
 [[RecentChanges(Trac,3)]]
 }}}
 
-See WikiMacros for more information, and a list of installed macros.
+使用方法とインストールされているマクロの一覧は WikiMacros に記述されています。
 
-The detailed help for a specific macro can also be obtained more directly by appending a "?" to the macro name.
+特定のマクロの詳細なヘルプを見るためには、マクロ名にクエスチョンマーク ("?") をつけることにより、直接見ることができます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
   [[MacroList?]]
@@ -805,12 +805,12 @@ The detailed help for a specific macro can also be obtained more directly by app
 }}}
 
 
-== Processors ==
+== プロセッサ == #Processors
 
-Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in 
-[wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
+Trac は WikiProcessors の機能によって、 Wiki 以外のマークアップにも対応しています。例えば、プロセッサとしてページの描画に 
+[wiki:WikiRestructuredText reStructuredText] や [wiki:WikiHtml HTML] を使用することができます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 |--------------------------------------------------------
 {{{#!td align="center" colspan=2 style="border: 0px; font-size: 90%"
 
@@ -823,7 +823,7 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
   {{{
   #!html
   <h1 style="text-align: right; color: blue">
-   HTML Test
+   HTML テスト
   </h1>
   }}}
   }}}
@@ -832,14 +832,14 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
 
 {{{
 #!html
-<h1 style="text-align: right; color: blue">HTML Test</h1>
+<h1 style="text-align: right; color: blue">HTMLテスト</h1>
 }}}
 
 }}}
 |--------------------------------------------------------
 {{{#!td align="center" colspan=2 style="border: 0px; font-size: 90%"
 
-   [=#Processors-example-highlight Example 2:] Code Highlighting
+   [=#Processors-example-highlight Example 2:] ソースコードのハイライト
 
 }}}
 |--------------------------------------------------------
@@ -872,38 +872,38 @@ if __name__ == '__main__':
 |--------------------------------------------------------
 {{{#!td align="center" colspan=2 style="border: 0px; font-size: 90%"
 
-       [=#Processors-example-tables Example 3:] Complex Tables
+       [=#Processors-example-tables Example 3:] 複雑なテーブル
 
 }}}
 |--------------------------------------------------------
 {{{#!td style="border: 0px"
   {{{
   {{{#!th rowspan=4 align=justify
-  With the `#td` and `#th` processors,
-  table cells can contain any content:
+  `#td` や `#th` プロセッサを用いることによって、
+  表にいろいろな中身を入れ込むことができます:
   }}}
   |----------------
   {{{#!td
-    - lists
-    - embedded tables
-    - simple multiline content
+    - リスト
+    - 埋め込みテーブル
+    - 簡単な複数行にわたる内容
   }}}
   |----------------
   {{{#!td
-  As processors can be easily nested, 
-  so can be tables:
+  プロセッサはネストして使用することが簡単にできるので、
+  表はこのようにもできます:
     {{{#!th
-    Example:
+    例:
     }}}
     {{{#!td style="background: #eef"
-    || must be at the third level now... ||
+    || ここは三重の入れ子になっている違いない... ||
     }}}
   }}}
   |----------------
   {{{#!td
-  Even when you don't have complex markup,
-  this form of table cells can be convenient
-  to write content on multiple lines.
+  複雑なマークアップではなかったときでさえ、
+  この表のセルのフォームは複数行にわたる
+  内容を書くときには便利でしょう。
   }}}
   }}}
 }}}
@@ -911,97 +911,97 @@ if __name__ == '__main__':
 #!td  valign="top"  style="border: 0px"
 
   {{{#!th rowspan=4 align=justify
-  With the `#td` and `#th` processors,
-  table cells can contain any content:
+  `#td` や `#th` プロセッサを用いることによって、
+  表にいろいろな中身を入れ込むことができます:
   }}}
   |----------------
   {{{#!td
-    - lists
-    - embedded tables
-    - simple multiline content
+    - リスト
+    - 埋め込みテーブル
+    - 簡単な複数行にわたる内容
   }}}
   |----------------
   {{{#!td
-  As processors can be easily nested, 
-  so can be tables:
+  プロセッサはネストして使用することが簡単にできるので、
+  表はこのようにもできます:
     {{{#!th
-    Example:
+    例:
     }}}
     {{{#!td style="background: #eef"
-    || must be at the third level now... ||
+    || ここは三重の入れ子になっている違いない... ||
     }}}
   }}}
   |----------------
   {{{#!td
-  Even when you don't have complex markup,
-  this form of table cells can be convenient
-  to write content on multiple lines.
+  複雑なマークアップではなかったときでさえ、
+  この表のセルのフォームは複数行にわたる
+  内容を書くときには便利でしょう。
   }}}
 
 }}}
 
-See WikiProcessors for more information.
+より詳細な情報は WikiProcessors に記載されています。
 
 
-== Comments ==
+== コメント == #Comments
 
-Comments can be added to the plain text. These will not be rendered and will not display in any other format than plain text.
+コメントをプレーンテキストに追加することができます。コメントはレンダリングされず、プレーンテキスト形式でのみ表示されます。
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-  Nothing to
+  何も
   {{{
   #!comment
-  Your comment for editors here
+  ここに編集者向けのコメントを書く
   }}}
-  see ;-)
+  見えないよ ;-)
   }}}
 }}}
 {{{#!td
-  Nothing to
+  何も
   {{{
   #!comment
-  Your comment for editors here
+  ここに編集者向けのコメントを書く
   }}}
-  see ;-)
+  見えないよ ;-)
 }}}
 
-== Miscellaneous ==
+== その他 == #Miscellaneous
 
-An horizontal line can be used to separated different parts of your page:
+横線はページをいくつかに分けるために使用されます:
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
   {{{
-  Four or more dashes will be replaced 
-  by an horizontal line (<HR>)
+  4 つ以上のハイフン ('-') は横線 
+  (<HR>) に置き換えられます。
   ----
-  See?
+  分かる?
   }}}
 }}}
 {{{#!td
-Four or more dashes will be replaced
-by an horizontal line (<HR>)
+  4 つ以上のハイフン ('-') は横線 
+  (<HR>) に置き換えられます。
 ----
-See?
+  分かる?
 }}}
 |----------------------------------
 {{{#!td
   {{{
-  "macro" style [[br]] line break
+  "マクロ" 書式 [[br]] 改行
   }}}
 }}}
 {{{#!td
-"macro" style [[br]] line break
+"マクロ" 書式 [[br]] 改行
 }}}
 |----------------------------------
 {{{#!td
   {{{
-  !WikiCreole style \\ line\\break
+  !WikiCreole 書式 \\ 改\\行
   }}}
 }}}
 {{{#!td
-!WikiCreole style \\ line\\break
+!WikiCreole 書式 \\ 改\\行
 }}}
 

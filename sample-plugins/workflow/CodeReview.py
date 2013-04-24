@@ -6,8 +6,8 @@ from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.perm import IPermissionRequestor
 from trac.config import Option, ListOption
 
-revision = "$Rev$"
-url = "$URL$"
+revision = "$Rev: 7457 $"
+url = "$URL: https://svn.edgewall.org/repos/trac/trunk/sample-plugins/workflow/CodeReview.py $"
 
 class CodeReviewActionController(Component):
     """Support for simple code reviews.

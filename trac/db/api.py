@@ -123,20 +123,20 @@ class DatabaseManager(Component):
     connectors = ExtensionPoint(IDatabaseConnector)
 
     connection_uri = Option('trac', 'database', 'sqlite:db/trac.db',
-        """Database connection
-        [wiki:TracEnvironment#DatabaseConnectionStrings string] for this
-        project""")
+        """このプロジェクトのデータベースに接続する
+        [wiki:TracEnvironment#DatabaseConnectionStrings 文字列]
+        を設定します。""")
 
     backup_dir = Option('trac', 'backup_dir', 'db',
-        """Database backup location""")
+        """データベースのバックアップ作成位置を設定します。""")
 
     timeout = IntOption('trac', 'timeout', '20',
-        """Timeout value for database connection, in seconds.
-        Use '0' to specify ''no timeout''. ''(Since 0.11)''""")
+        """データベース接続のタイムアウト秒数を設定します。
+        '0' を指定すると、 ''タイムアウトなし'' になります。 ''(0.11 以降)''""")
 
     debug_sql = BoolOption('trac', 'debug_sql', False,
-        """Show the SQL queries in the Trac log, at DEBUG level.
-        ''(Since 0.11.5)''""")
+        """DEBUG レベルのログとして SQL クエリを出力します。
+        ''(0.11.5 以降)''""")
 
     def __init__(self):
         self._cnx_pool = None

@@ -1,137 +1,137 @@
-= Trac Permissions =
+= アクセス制御とパーミッション = #TracPermissions
 [[TracGuideToc]]
 
-Trac uses a simple, case sensitive, permission system to control what users can and can't access.
+Trac はシンプルなアクセス制御システムを使用しています。大文字小文字は区別されます。
 
-Permission privileges are managed using the [TracAdmin trac-admin] tool or (new in version 0.11) the ''General / Permissions'' panel in the ''Admin'' tab of the web interface.
+パーミッションの付与は [wiki:TracAdmin trac-admin] ツール、または (バージョン 0.11 の新しい機能では) ''管理'' (英語版では ''Admin'') Web インタフェースの ''一般設定 / パーミッション'' (英語版では ''General / Permissions'') パネルを使用して操作します。
 
-In addition to the default permission policy described in this page, it is possible to activate additional permission policies by enabling plugins and listing them in the `[trac] permission_policies` configuration entry in the TracIni. See TracFineGrainedPermissions for more details.
+このページで説明するデフォルトのパーミッションポリシーに加え、他のパーミッションポリシーを使用することができます。プラグインを有効化し、 TracIni の `[trac] permission_policies` リストのエントリに追加してください。詳細は TracFineGrainedPermissions を参照してください。
 
-Non-authenticated users accessing the system are assigned the name "anonymous". Assign permissions to the "anonymous" user to set privileges for anonymous/guest users. The parts of Trac that a user does not have the privileges for will not be displayed in the navigation.
-In addition to these privileges, users can be granted additional individual rights in effect when authenticated and logged into the system. All logged in users belong to the virtual group "authenticated", which inherits permissions from "anonymous".
+認証していないユーザは "anonymous" としてシステムにアクセスします。 "anonymous" ユーザには anonymous/guest ユーザの権限を割り当てます。 権限が与えられていない Trac のモジュールはナビゲーションバーに表示されません。
+これらの権限に加えて、登録したユーザ (HTTP 認証を行ったユーザ) には個別に権限を付与することができます。ログインしたすべてのユーザは "authenticated" という仮想グループに所属します ("authenticated" は "anonymous" からパーミッションを継承します)。
 
-== Graphical Admin Tab ==
-''This feature is new in version 0.11.''
+== Web Admin でのタブ == #GraphicalAdminTab
+''この機能はバージョン 0.11 で追加されました。''
 
-To access this tab, a user must have one of the following permissions: `TRAC_ADMIN`, `PERMISSION_ADMIN`, `PERMISSION_ADD`, `PERMISSION_REMOVE`. The permissions can granted using the `trac-admin` command (more on `trac-admin` below):
+このタブにアクセスするには、次のいずれかの権限が必要です: `TRAC_ADMIN`、 `PERMISSION_ADMIN`、 `PERMISSION_ADD`、 `PERMISSION_REMOVE`。これら権限は、 `trac-admin` コマンドを使用して付与することができます(`trac-admin` に関しては下記):
 {{{
   $ trac-admin /path/to/projenv permission add bob TRAC_ADMIN
 }}}
 
-Then, the user `bob` will be able to see the Admin tab, and can then access the permissions menu. This menu will allow you to perform all the following actions, but from the browser without requiring root access to the server (just the correct permissions for your user account). '''Use at least one lowercase character in user names, as all-uppercase names are reserved for permissions.'''
+ユーザ `bob` には管理 (英語版では Admin) タブが表示されるようになり、パーミッションのメニューにアクセスできるようになります。このメニューでは、以下に記述される全ての機能を Web ブラウザから使用でき、サーバへの root 権限でのアクセスは必要としません (ユーザアカウントに適切なパーミッションが付与されている必要があります)。'''ユーザ名には小文字を少なくとも1文字使ってください。すべて大文字の名前は権限名のために予約されています。'''
 
  1. [[Image(htdocs:../common/guide/admin.png)]]
  1. [[Image(htdocs:../common/guide/admin-permissions.png)]]
  1. [[Image(htdocs:../common/guide/admin-permissions-TICKET_ADMIN.png)]]
 
-An easy way to quickly secure a new Trac install is to run the above command on the anonymous user, install the [http://trac-hacks.org/wiki/AccountManagerPlugin AccountManagerPlugin], create a new admin account graphically and then remove the TRAC_ADMIN permission from the anonymous user.
+An easy way to quickly secure a new Trac install is to run the above command on the anonymous user, install the [http://trac-hacks.org/wiki/AccountManagerPlugin AccountManagerPlugin], create a new admin account graphically and then remove the TRAC_ADMIN permission from the anonymous user.  (訳者註: secure と書いてありますがセキュリティ的に脆弱な瞬間が発生するため、お薦めできません。コマンドを使用してください。)
 
-== Available Privileges ==
+== 付与できる権限 == #AvailablePrivileges
 
-To enable all privileges for a user, use the `TRAC_ADMIN` permission. Having `TRAC_ADMIN` is like being `root` on a *NIX system: it will allow you to perform any operation.
+あるユーザで全ての権限を有効にしたい場合、 `TRAC_ADMIN` 権限を使用してください。 `TRAC_ADMIN` 権限を持っているユーザは *NIX システムでの `root` と同じように、いかなる操作も行うことができます。
 
-Otherwise, individual privileges can be assigned to users for the various different functional areas of Trac ('''note that the privilege names are case-sensitive'''):
+または Trac の機能ごとに異なる種類の権限を、ユーザごとに個別に付与することができます。('''パーミッション名は大文字/小文字を区別します'''):
 
-=== Repository Browser ===
+=== リポジトリブラウザ === #RepositoryBrowser
 
-|| `BROWSER_VIEW` || View directory listings in the [wiki:TracBrowser repository browser] ||
-|| `LOG_VIEW` || View revision logs of files and directories in the [wiki:TracBrowser repository browser] ||
-|| `FILE_VIEW` || View files in the [wiki:TracBrowser repository browser] ||
-|| `CHANGESET_VIEW` || View [wiki:TracChangeset repository check-ins] ||
+|| `BROWSER_VIEW` || [wiki:TracBrowser リポジトリブラウザ] でディレクトリの一覧表示を行う ||
+|| `LOG_VIEW` || [wiki:TracBrowser リポジトリブラウザ] でファイルとディレクトリのリビジョンログを表示する ||
+|| `FILE_VIEW` || [wiki:TracBrowser リポジトリブラウザ] でファイルを表示する ||
+|| `CHANGESET_VIEW` || [wiki:TracChangeset リポジトリへのチェックイン] を表示する ||
 
-=== Ticket System ===
+=== チケットシステム === #TicketSystem
 
-|| `TICKET_VIEW` || View existing [wiki:TracTickets tickets] and perform [wiki:TracQuery ticket queries] ||
-|| `TICKET_CREATE` || Create new [wiki:TracTickets tickets] ||
-|| `TICKET_APPEND` || Add comments or attachments to [wiki:TracTickets tickets] ||
-|| `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties (priority, assignment, keywords, etc.) with the following exceptions: edit description field, add/remove other users from cc field when logged in, and set email to pref ||
-|| `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets]. Tickets can be assigned to users through a [TracTickets#Assign-toasDrop-DownList drop-down list] when the list of possible owners has been restricted. ||
-|| `TICKET_EDIT_CC` || Full modify cc field ||
-|| `TICKET_EDIT_DESCRIPTION` || Modify description field ||
-|| `TICKET_EDIT_COMMENT` || Modify comments ||
-|| `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the reporter and description fields. It also allows managing ticket properties in the WebAdmin panel. ||
+|| `TICKET_VIEW` || 登録済みの [wiki:TracTickets チケット] を表示し、 [wiki:TracQuery チケットクエリ] を実行する ||
+|| `TICKET_CREATE` || 新規 [wiki:TracTickets チケット] を登録する ||
+|| `TICKET_APPEND` || [wiki:TracTickets チケット] にコメントや添付ファイルを追加する ||
+|| `TICKET_CHGPROP` || [wiki:TracTickets チケット] 属性 (優先度 (Priority), 担当者 (Owner), キーワード (Keywords)など) を変更する。ただし例外があり、説明 (Description) の編集は不可能で、ログイン名やユーザ設定 (Pref) から取得したメールアドレスを関係者 (Cc) に追加/削除する場合に他のユーザを対象にできない。 ||
+|| `TICKET_MODIFY` || `TICKET_APPEND` と `TICKET_CHGPROP` の両方に加え、 [wiki:TracTickets チケット] の解決を可能にする。チケットの担当者を制限している場合は、担当者となりうるユーザの [TracTickets#Assign-toasDrop-DownList リスト] に使用される ||
+|| `TICKET_EDIT_CC` || 関係者 (英語版では Cc) のリストを直接編集できる ||
+|| `TICKET_EDIT_DESCRIPTION` || 説明 (英語版では description) フィールドを編集できる ||
+|| `TICKET_EDIT_COMMENT` || チケットのコメントを編集できる ||
+|| `TICKET_ADMIN` || 全ての `TICKET_*` 権限に加え、チケットへの添付ファイルの削除したり、チケットの報告者 (Reporter) や、説明 (Description) フィールドの変更が可能となる。また [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] のパネルを通してチケット属性を管理できる ||
 
-Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
+注意: "チケットを見る" (英語版では "view tickets") ボタンは、 `REPORT_VIEW` 権限で表示されます。
 
-=== Roadmap ===
+=== ロードマップ === #Roadmap
 
-|| `MILESTONE_VIEW` || View milestones and assign tickets to milestones. ||
-|| `MILESTONE_CREATE` || Create a new milestone ||
-|| `MILESTONE_MODIFY` || Modify existing milestones ||
-|| `MILESTONE_DELETE` || Delete milestones ||
-|| `MILESTONE_ADMIN` || All `MILESTONE_*` permissions ||
-|| `ROADMAP_VIEW` || View the [wiki:TracRoadmap roadmap] page, is not (yet) the same as MILESTONE_VIEW, see [trac:#4292 #4292] ||
-|| `ROADMAP_ADMIN` || to be removed with [trac:#3022 #3022], replaced by MILESTONE_ADMIN ||
+|| `MILESTONE_VIEW` || マイルストーンを表示する。マイルストーンにチケットを割り当てる ||
+|| `MILESTONE_CREATE` || 新しいマイルストーンを作成する ||
+|| `MILESTONE_MODIFY` || 既に存在するマイルストーンを編集する ||
+|| `MILESTONE_DELETE` || マイルストーンを削除する ||
+|| `MILESTONE_ADMIN` || 全ての `MILESTONE_*` 権限を持つ ||
+|| `ROADMAP_VIEW` || [wiki:TracRoadmap ロードマップ] を表示する, (すでに) MILESTONE_VIEW と同じではない [http://trac.edgewall.org/ticket/4292 #4292] 参照 ||
+|| `ROADMAP_ADMIN` || [http://trac.edgewall.org/ticket/3022 #3022] で削除され、 MILESTONE_ADMIN に置き換えられた ||
 
-=== Reports ===
+=== レポート === #Reports
 
-|| `REPORT_VIEW` || View [wiki:TracReports reports], i.e. the "view tickets" link. ||
-|| `REPORT_SQL_VIEW` || View the underlying SQL query of a [wiki:TracReports report] ||
-|| `REPORT_CREATE` || Create new [wiki:TracReports reports] ||
-|| `REPORT_MODIFY` || Modify existing [wiki:TracReports reports] ||
-|| `REPORT_DELETE` || Delete [wiki:TracReports reports] ||
-|| `REPORT_ADMIN` || All `REPORT_*` permissions ||
+|| `REPORT_VIEW` || [wiki:TracReports レポート] を表示する。つまり "チケットを見る" (英語版では "view tickets") リンク ||
+|| `REPORT_SQL_VIEW` || [wiki:TracReports レポート] の SQL を表示する ||
+|| `REPORT_CREATE` || 新しい [wiki:TracReports レポート] を作成する ||
+|| `REPORT_MODIFY` || 既に存在する [wiki:TracReports レポート] を編集する ||
+|| `REPORT_DELETE` || [wiki:TracReports レポート] を削除する ||
+|| `REPORT_ADMIN` || 全ての `REPORT_*` 権限を持つ ||
 
-=== Wiki System ===
+=== Wiki システム === #WikiSystem
 
-|| `WIKI_VIEW` || View existing [wiki:TracWiki wiki] pages ||
-|| `WIKI_CREATE` || Create new [wiki:TracWiki wiki] pages ||
-|| `WIKI_MODIFY` || Change [wiki:TracWiki wiki] pages ||
-|| `WIKI_RENAME` || Rename [wiki:TracWiki wiki] pages ||
-|| `WIKI_DELETE` || Delete [wiki:TracWiki wiki] pages and attachments ||
-|| `WIKI_ADMIN` || All `WIKI_*` permissions, plus the management of ''readonly'' pages. ||
+|| `WIKI_VIEW` || 既に存在する [wiki:TracWiki Wiki] ページを表示する ||
+|| `WIKI_CREATE` || 新しい [wiki:TracWiki Wiki] ページを作成する ||
+|| `WIKI_MODIFY` || [wiki:TracWiki Wiki] ページを編集する ||
+|| `WIKI_RENAME` || [wiki:TracWiki Wiki] ページのページ名を変更できる ||
+|| `WIKI_DELETE` || [wiki:TracWiki Wiki] ページと添付ファイルを削除する ||
+|| `WIKI_ADMIN` || 全ての `WIKI_*` 権限に加え、 ''読み込み専用'' ページを管理する ||
 
-=== Permissions ===
+=== パーミッション === #Permissions
 
-|| `PERMISSION_GRANT` || add/grant a permission ||
-|| `PERMISSION_REVOKE` || remove/revoke a permission ||
-|| `PERMISSION_ADMIN` || All `PERMISSION_*` permissions ||
+|| `PERMISSION_GRANT` || パーミッションを追加および付与する ||
+|| `PERMISSION_REVOKE` || パーミッションを削除およびはく奪する ||
+|| `PERMISSION_ADMIN` || 全ての `PERMISSION_*` 権限を持つ ||
 
-=== Others ===
+=== その他 === #Others
 
-|| `TIMELINE_VIEW` || View the [wiki:TracTimeline timeline] page ||
-|| `SEARCH_VIEW` || View and execute [wiki:TracSearch search] queries ||
-|| `CONFIG_VIEW` || Enables additional pages on ''About Trac'' that show the current configuration or the list of installed plugins ||
-|| `EMAIL_VIEW` || Shows email addresses even if [wiki:TracIni#trac-section trac show_email_addresses] configuration option is false ||
+|| `TIMELINE_VIEW` || [wiki:TracTimeline タイムライン] を表示する ||
+|| `SEARCH_VIEW` || [wiki:TracSearch 検索] の表示と実行 ||
+|| `CONFIG_VIEW` || ''Trac について'' (英語版では ''About Trac'') のページに追加して、現在のコンフィグやインストールされているプラグインの表示を可能にする ||
+|| `EMAIL_VIEW` || [wiki:TracIni#trac-section trac show_email_addresses] オプションが false でも常にメールアドレスを表示する ||
 
-== Creating New Privileges ==
+== 新しい権限の作成 == #CreatingNewPrivileges
 
-To create custom permissions, for example to be used in a custom workflow, enable the optional [trac:ExtraPermissionsProvider tracopt.perm.config_perm_provider.ExtraPermissionsProvider] component in the "Plugins" admin panel, and add the desired permissions to the `[extra-permissions]` section in your [wiki:TracIni#extra-permissions-section trac.ini]. For more information, please refer to the documentation of the component in the admin panel.
+例えばカスタムワークフローで使用されるような、カスタムパーミッションを作成するには、管理 (英語版では ''Admin'') パネルの "プラグイン" (英語版では ''Plugins'') の [trac:ExtraPermissionsProvider tracopt.perm.config_perm_provider.ExtraPermissionsProvider] コンポーネントのチェックボックスを ON にし、 [wiki:TracIni#extra-permissions-section trac.ini] の `[extra-permissions]` に希望するパーミッションを書き加えます。詳細は、管理パネル内のコンポーネントのドキュメントを参照して下さい。 
 
-== Granting Privileges ==
+== 権限の付与 == #GrantingPrivileges
 
-You grant privileges to users using [wiki:TracAdmin trac-admin]. The current set of privileges can be listed with the following command:
+[wiki:TracAdmin trac-admin] を使用してユーザに権限を与えて下さい。現在設定されている権限は以下のコマンドで一覧できます:
 {{{
   $ trac-admin /path/to/projenv permission list
 }}}
 
-This command will allow the user ''bob'' to delete reports:
+次のコマンドはユーザ ''bob'' にレポートの削除権限を与えます:
 {{{
   $ trac-admin /path/to/projenv permission add bob REPORT_DELETE
 }}}
 
-The `permission add` command also accepts multiple privilege names:
+`permission add` コマンドでは複数の権限を扱うことができます:
 {{{
   $ trac-admin /path/to/projenv permission add bob REPORT_DELETE WIKI_CREATE
 }}}
 
-Or add all privileges:
+次のコマンドはユーザ ''bob'' に管理者権限を与えます:
 {{{
   $ trac-admin /path/to/projenv permission add bob TRAC_ADMIN
 }}}
 
-== Permission Groups ==
+== パーミッショングループ == #PermissionGroups
 
-There are two built-in groups, "authenticated" and "anonymous".
-Any user who has not logged in is automatically in the "anonymous" group.
-Any user who has logged in is also in the "authenticated" group.
-The "authenticated" group inherits permissions from the "anonymous" group.
-For example, if the "anonymous" group has permission WIKI_MODIFY, 
-it is not necessary to add the WIKI_MODIFY permission to the "authenticated" group as well.
+二つのビルトイングループ "認証済み (authenticated)" と "匿名 (anonymous)" があります。[[BR]]
+ログインしていないユーザは自動的に "匿名 (anonymous)" グループに属します。[[BR]]
+ログインしたユーザは "認証済み (authenticated)" グループに属します。[[BR]]
+"認証済み (authenticated)" グループの権限は "匿名 (anonymous)" グループの権限を継承します。[[BR]]
+例えば、"匿名 (anonymous)" グループが WIKI_MODIFY 権限を持っていれば、"認証 (authenticated)" グループに 
+WIKI_MODIFY 権限を与える必要はありません。
 
-Custom groups may be defined that inherit permissions from the two built-in groups.
+カスタムグループは二つのビルトイングループから権限を継承します。
 
-Permissions can be grouped together to form roles such as ''developer'', ''admin'', etc.
+パーミッションをグループ化してロール (''developer''、''admin''、etc.) を構成することができます
 {{{
   $ trac-admin /path/to/projenv permission add developer WIKI_ADMIN
   $ trac-admin /path/to/projenv permission add developer REPORT_ADMIN
@@ -140,45 +140,45 @@ Permissions can be grouped together to form roles such as ''developer'', ''admin
   $ trac-admin /path/to/projenv permission add john developer
 }}}
 
-Group membership can be checked by doing a {{{permission list}}} with no further arguments; the resulting output will include group memberships. '''Use at least one lowercase character in group names, as all-uppercase names are reserved for permissions'''.
+グループのメンバーは {{{permission list}}} を引数なしで起動すると見ることができます; 出力される結果にはグループのメンバが含まれています。 '''グループ名には小文字を少なくとも1文字使ってください。すべて大文字の名前は権限名のために予約されています。'''
 
-== Adding a New Group and Permissions ==
-Permission groups can be created by assigning a user to a group you wish to create, then assign permissions to that group.
+== グループと権限を追加する == #AddingaNewGroupandPermissions
+あなたが望むようにパーミッショングループを作り、ユーザを割り当てて、そのグループに権限を付与することができます。
 
-The following will add ''bob'' to the new group called ''beta_testers'' and then will assign WIKI_ADMIN permissions to that group. (Thus, ''bob'' will inherit the WIKI_ADMIN permission)
+以下は、新しいグループ ''beta_testers'' に ''bob'' というユーザを割り当てて、 ''beta_testers'' に WIKI_ADMIN の権限を付与する例です ( その結果 ''bob'' は WIKI_ADMIN という権限を引き継ぐでしょう ) 。
 {{{ 
    $ trac-admin /path/to/projenv permission add bob beta_testers
    $ trac-admin /path/to/projenv permission add beta_testers WIKI_ADMIN
 
 }}}
 
-== Removing Permissions ==
+== パーミッションを削除する == #RemovingPermissions
 
-Permissions can be removed using the 'remove' command. For example:
+パーミッションは 'remove' コマンドを使用して削除します。例:
 
-This command will prevent the user ''bob'' from deleting reports:
+このコマンドは、ユーザ ''bob'' から レポートを削除する権限を削除します:
 {{{
   $ trac-admin /path/to/projenv permission remove bob REPORT_DELETE
 }}}
 
-Just like `permission add`, this command accepts multiple privilege names.
+`permission add` と同様に、このコマンドは複数の権限名を扱うことができます。
 
-You can also remove all privileges for a specific user:
+特定のユーザからすべての権限を削除することもできます:
 {{{
   $ trac-admin /path/to/projenv permission remove bob '*'
 }}}
 
-Or one privilege for all users:
+または、すべてのユーザからある権限を削除することもできます:
 {{{
   $ trac-admin /path/to/projenv permission remove '*' REPORT_ADMIN
 }}}
 
-== Default Permissions ==
+== デフォルトのパーミッション == #DefaultPermissions
 
-By default on a new Trac installation, the `anonymous` user will have ''view'' access to everything in Trac, but will not be able to create or modify anything.
-On the other hand, the `authenticated` users will have the permissions to ''create and modify tickets and wiki pages''.
+`匿名 (anonymous)` のユーザは、デフォルトで Trac 内の全てに対して ''参照 (view)'' 権限を持ちますが、作成 (create) および変更 (modify) の権限はありません。
+加えて、 `認証済み (authenticated)` のユーザは ''チケットと Wiki ページに関する作成 (create) 及び変更 (modify)'' の権限を持ちます。
 
-'''anonymous'''
+'''匿名 (anonymous)'''
 {{{
  BROWSER_VIEW 
  CHANGESET_VIEW 
@@ -194,7 +194,7 @@ On the other hand, the `authenticated` users will have the permissions to ''crea
  WIKI_VIEW
 }}}
 
-'''authenticated'''
+'''認証済み (authenticated)'''
 {{{
  TICKET_CREATE 
  TICKET_MODIFY 

@@ -1,116 +1,116 @@
-= The Trac Ticket System =
+= チケットシステム = #TheTracTicketSystem
 [[TracGuideToc]]
 
-The Trac ticket database provides simple but effective tracking of issues and bugs within a project.
+Trac のチケットデータベースは、プロジェクトのチケットやバグについての、簡単で効果的なトラッキング機能を提供します。
 
-As the central project management element of Trac, tickets can be used for '''project tasks''', '''feature requests''', '''bug reports''', '''software support issues''' among others. 
+Trac のプロジェクト管理機能の中枢である、チケットシステムは、 '''プロジェクトのタスク管理''', '''機能追加のリクエスト''', '''バグレポート''', '''ソフトウェアサポートの課題''' などに使用できます。
 
-As with the TracWiki, this subsystem has been designed with the goal of making user contribution and participation as simple as possible. It should be as easy as possible to report bugs, ask questions, suggest improvements and discuss resolutions.
+このサブシステムは TracWiki のように、ユーザのコントリビュートと参加をできるだけ簡単にするという目標で設計しています。バグの報告や質問、改良の提案、決議に関する議論は簡単であるべきです。
 
-An issue is assigned to a person who must resolve it or reassign the ticket to someone else.
-All tickets can be edited, annotated, assigned, prioritized and discussed at any time.
+チケットは、それを解決しなければならない人にすでにアサインされているか、あるいは解決可能な人に再アサインされます。
+すべてのチケットは、いつでも、編集したり、注釈をしたり、アサインしたり、優先付けしたり、議論したりできます。
 
 [=#edit-permissions]
-However, some Trac installations may put restrictions in place about who can change what. For example, the default installation doesn't permit to non-authenticated users ("anonymous" users) to change anything, even to comment on an issue, for obvious spam prevention reasons. Check the local contributing policy, which you can usually find on the front page WikiStart, or contact your local Trac administrator.
+しかしながら、Trac の設定において 個人が変更できる箇所に制限を加える場合があります。例えばデフォルトの設定では、認証していないユーザ("anonymous" ユーザ)に対して変更やコメントを許可しないことで、明らかなスパム行為を予防しています。ローカル貢献ポリシーを確認してください。通常はフロントページである WikiStart で見つけることが出来ます。また、使用している Trac の管理者にお問い合わせください。
 
-== Ticket Fields ==
+== チケット属性 == #TicketFields 
 
-A  ticket contains the following information attributes:
+チケットは、以下の情報を属性として含んでいます:
  
- * '''Reporter''' — The author of the ticket.
- * '''Type''' — The nature of the ticket (for example, defect or enhancement request). See TicketTypes for more details.
- * '''Component''' — The project module or subsystem this ticket concerns.
- * '''Version''' — Version of the project that this ticket pertains to.
- * '''Keywords''' — Keywords that a ticket is marked with. Useful for searching and report generation.
- * '''Priority''' — The importance of this issue, ranging from ''trivial'' to ''blocker''. A pull-down if different priorities where defined.
- * '''Milestone''' — When this issue should be resolved at the latest. A pull-down menu containing a list of milestones.
- * '''Assigned to/Owner''' — Principal person responsible for handling the issue.
- * '''Cc''' — A comma-separated list of other users or E-Mail addresses to notify. ''Note that this does not imply responsiblity or any other policy.''
- * '''Resolution''' — Reason for why a ticket was closed. One of {{{fixed}}}, {{{invalid}}}, {{{wontfix}}}, {{{duplicate}}}, {{{worksforme}}}.
- * '''Status''' — What is the current status? One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.
- * '''Summary''' — A brief description summarizing the problem or issue. Simple text without WikiFormatting.
- * '''Description''' — The body of the ticket. A good description should be specific, descriptive and to the point. Accepts WikiFormatting.
+ * '''報告者 (Reporter)''' - チケットの作成者 
+ * '''分類 (Type)''' - チケットの本質 (例えば、不具合 (defect), 機能追加 (enhancement request) など) 詳細は [trac:TicketTypes TicketTypes] 参照
+ * '''コンポーネント (Component)''' - チケットが適用されるモジュールやサブシステム
+ * '''バージョン (Version)''' - チケットが適用されるプロジェクトのバージョン
+ * '''キーワード (Keywords)''' - チケットに付与するキーワード。検索や、レポートの生成で使用する
+ * '''優先度 (Priority)''' - ''trivial'' から ''blocker'' の範囲で示されるチケットの重要度。定義した他の優先度を含めプルダウンで表示
+ * '''マイルストーン (Milestone)''' -  このチケットを少なくとも、いつまでに解決しなければならないのか。マイルストーンのリストをプルダウンで表示
+ * '''担当者 (Assigned to/Owner)''' - チケットの扱いに責任を持つ主たる人
+ * '''関係者 (Cc)''' -チケットに関係がある人または通知メール用の E-mail アドレスのカンマ区切りのリスト。 ''これは責任もいかなるポリシも意味していないことを注記しておく'' 
+ * '''解決方法 (Resolution)''' - チケットが解決された際の理由。{{{修正した(fixed)}}}、{{{無効なチケット(invalid)}}}、{{{修正しない(wontfix)}}}、{{{他のチケットと重複(duplicate)}}}、{{{再現しない(worksforme)}}}など
+ * '''ステータス (Status)''' - チケットの現在の状態。 {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}} のいずれか
+ * '''概要 (Summary)''' - 問題点や、チケットについての簡単な説明。タイトル。WikiFormatting の適用されない単純なテキスト
+ * '''説明 (Description)''' - チケットの内容。 特定された状況について、詳しく記述され、的を絞った良い説明文を書いてください。 WikiFormatting が適用されます
 
 '''Notes:''' 
- - Versions of Trac prior to 0.9 did not have the ''type'' field, but instead provided a ''severity'' field and different default values for the ''priority'' field. This change was done to simplify the ticket model by removing the somewhat blurry distinction between ''priority'' and ''severity''. However, the old model is still available if you prefer it: just add/modify the default values of the ''priority'' and ''severity'', and optionally hide the ''type'' field by removing all the possible values through [wiki:TracAdmin trac-admin].
+ - バージョン 0.9 以前の Trac では ''分類 (Type)'' 属性がありませんでしたが、代わりに ''重要度 (Severity)'' 属性が提供されており、 ''優先度 (Priority)'' 属性のデフォルトの値も異なっていました。この変更を行ったのは、やや不鮮明な ''優先度 (Priority)'' と ''重要度 (Severity)'' の区別を排除し、チケットモデルを簡素化するためです。しかしながら以前のチケットモデルも利用可能です: 単に ''優先度 (Priority)'' と ''重要度 (Severity)'' のデフォルトの値を追加/変更し、必要なら ''分類 (Type)'' 属性の全ての値を削除してください。これらは [wiki:TracAdmin trac-admin] コマンドで出来ます。
 
- - the [trac:TicketTypes type], [trac:TicketComponent component], version, priority and severity fields can be managed with [wiki:TracAdmin trac-admin] or with the [trac:WebAdmin WebAdmin] plugin.
+ - [http://trac.edgewall.org/wiki/TicketTypes 分類 (type)], [http://trac.edgewall.org/wiki/TicketComponent コンポーネント (component)], バージョン (version), 優先度 (priority), 重要度 (severity) の各フィールドは [wiki:TracAdmin trac-admin] か [trac:WebAdmin WebAdmin プラグイン] を用いて管理することができます。
 
- - Description of the builtin ''priority'' values is available at [trac:TicketTypes#Whyistheseverityfieldgone TicketTypes]
+ - ''優先度 (Priority)'' のデフォルト値についての説明は [http://trac.edgewall.org/wiki/TicetTypes#Whyistheseverityfieldgone TicketTypes] に書かれています。
 
-== Changing and Commenting Tickets ==
+== チケットの更新や注釈 == #ChangingandCommentingTickets
 
-With appropriate permissions, as already mentioned [#edit-permissions above], a ticket entered into Trac can at any time be modified by '''annotating'''.
+すでに [#edit-permissions 上記] で説明しているように、適切な権限を持っていれば、Trac にチケットを登録し、いつでも '''注釈''' を編集することができます。
 
-Then, annotations like changes and comments to the ticket are logged as a part of the ticket itself. When viewing a ticket, the history of changes will appear below the main ticket area.
+その際、変更やチケットへのコメントのような注釈は、チケットそのものの一部として記録されます。チケットの閲覧画面では、更新履歴がメイン表示領域の下部に表示されます。
 
-Comment editing (available since 0.12) is meant to be used to make small corrections to comments, like fixing formatting, forgotten WikiFormatting or spelling errors, not major edits. For longer edits, you should be adding a new comment instead. Editing a comment will not produce a new entry on [/timeline] while entering a new comment or other changes will do.
+コメントの編集機能 (0.12 以降から) は フォーマットの調整や誤字脱字の修正のような小さな訂正を行うために使用するものであって、大幅な編集を行うものではありません。編集が長くなるような場合は、代わりとなるコメントを新しく追加するべきです。コメントを編集した場合、新しくコメントを記入した際や何か変更を行ったときのように [/timeline] に通知されることはありません。
 
-All edits (field changes, new comments, comment edits) update the "last changed" time of the ticket.
+すべての編集(フィールドの変更、コメントの追加、コメントの編集)において、チケットの "最終更新" 時間が更新されます。
 
 
 '''Notes:''' 
- - An important feature is being able to use TracLinks and WikiFormatting in ticket descriptions and comments. Use TracLinks to refer to other issues, changesets or files to make your ticket more specific and easier to understand.
+ - 重要な特性として、チケットの説明やコメントでは TracLinks と WikiFormatting が使用できます。 TracLinks を用いて、他の課題やチェンジセット、ファイルを関連付けて、より明確で簡単に理解できるようにチケットを作成してください。
 
- - See TracNotification for how to configure email notifications of ticket changes.
+ - チケットの変更を E メールで通知する設定方法に関しては TracNotification をご覧ください。
 
- - See TracWorkflow for information about the state transitions (ticket lifecycle), and how this workflow can be customized.
+ - チケットの状態遷移(ライフサイクル)とワークフローのカスタマイズ方法に関する情報は、 TracWorkflow をご覧ください。
 
-== Default Values for Drop-Down Fields ==
+== ドロップダウン形式の属性のデフォルト値 == #DefaultValuesforDrop-DownFields
 
-The option selected by default for the various drop-down fields can be set in [wiki:TracIni trac.ini], in the `[ticket]` section:
+ドロップダウン形式のチケット属性では、デフォルトで選択される値を [wiki:TracIni trac.ini] の `[ticket]` セクションで指定できます:
 
- * `default_component`: Name of the component selected by default
- * `default_milestone`: Name of the default milestone
- * `default_priority`: Default priority value
- * `default_severity`: Default severity value
- * `default_type`: Default ticket type
- * `default_version`: Name of the default version
- * `default_owner`: Name of the default owner. If set to the text "< default >" (the default value), the component owner is used.
+ * `default_component`: デフォルトで選択されているコンポーネント名
+ * `default_milestone`: デフォルトのマイルストーン
+ * `default_priority`: デフォルトの優先度
+ * `default_severity`: デフォルトの重要度
+ * `default_type`: デフォルトのチケットの分類
+ * `default_version`: デフォルトのバージョン
+ * `default_owner`: デフォルトの担当者。 もし "< default >" (デフォルトの値)と設定された場合、コンポーネントの担当者が使用されます
 
-If any of these options are omitted, the default value will either be the first in the list, or an empty value, depending on whether the field in question is required to be set.  Some of these can be chosen through the [trac:WebAdmin WebAdmin] plugin in the "Ticket System" section (others in the [[wiki:TracIni#ticket-section|"[ticket]"]] section in `trac.ini`).
-
-
-== Hiding Fields and Adding Custom Fields ==
-
-Many of the default ticket fields can be hidden from the ticket web interface simply by removing all the possible values through [wiki:TracAdmin trac-admin]. This of course only applies to drop-down fields, such as ''type'', ''priority'', ''severity'', ''component'', ''version'' and ''milestone''.
-
-Trac also lets you add your own custom ticket fields. See TracTicketsCustomFields for more information.
+これらのオプションが設定されていない場合、デフォルト値はリストの 1 番目の項目になるか、空の値が使用されます。これは、問題となるフィールドが必須項目かどうかで異なります。これらのオプションのいくつかは、 [trac:WebAdmin WebAdmin] プラグインの "チケットシステム" セクションを通じて選択できます (その他のものは、 "trac.ini" の [wiki:TracIni#ticket-section|"[ticket]"] セクションで設定できます) 。
 
 
-== Assign-to as Drop-Down List ==
+== 属性を非表示にする、またはカスタム属性を追加する == #HidingFieldsandAddingCustomFields
 
-If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to “true”. In that case, Trac will use the list of all users who have accessed the project to populate the drop-down field.
+デフォルトで用意されているチケット属性の多くは、 [wiki:TracAdmin trac-admin] で全ての値を削除すると、チケットの Web インタフェース上で非表示にすることが出来ます。これが出来るのは ''分類 (Type)'', ''優先度 (Priority)'', ''重要度 (Severity)'', ''コンポーネント (Component)'', ''バージョン (Version)'', ''マイルストーン (Milestone)'' などドロップダウン形式のチケット属性だけです。
 
-To appear in the dropdown list, a user needs be registered with the project, ''i.e.'' a user session should exist in the database. Such an entry is automatically created in the database the first time the user submits a change in the project, for example when editing the user's details in the ''Settings'' page, or simply by authenticating if the user has a login. Also, the user must have `TICKET_MODIFY` [TracPermissions permissions].
+Trac は新しいチケット属性を追加することが出来ます。詳しくは TracTicketsCustomFields を参照してください。
+
+
+== 担当者をドロップダウンリストにする == #Assign-toasDrop-DownList
+
+チケットの担当者になりうる人数が限られている場合、 "担当者 (Assigned-To)" 属性をテキスト入力からドロップダウンリストに変更することが出来ます。 [wiki:TracIni trac.ini] で `[ticket]` セクションの `restrict_owner` オプションを "true" に設定してください。この場合 Trac は、プロジェクトにアクセスした全てのユーザのリストを使用し、ドロップダウンリストに表示します。
+
+ドロップダウンリストに表示されるために、ユーザはプロジェクトに登録する必要があります。 ''例として'' ユーザのセッション情報がデータベースの中に存在すべきことがあげられます。セッション情報はユーザがそのプロジェクトで最初にデータベースを更新したときに自動的に生成されます。例えば、 ''ユーザ設定'' のページでユーザの詳細情報を編集したときや、認証ユーザがログインしたときなどです。また、ユーザは `TICKET_MODIFY` [TracPermissions パーミッション] が必要です。
 
 '''Notes:''' 
- - See [http://pacopablo.com/wiki/pacopablo/blog/set-assign-to-drop-down Populating Assign To Drop Down] on how to add user entries at database level
+ - [http://pacopablo.com/wiki/pacopablo/blog/set-assign-to-drop-down ドロップダウンリストにアサインを載せる] に、データベースのレベルで、ユーザのエントリを追加する方法が記載されています。
 
- - If you need serious flexibility and aren't afraid of a little plugin coding of your own, see [http://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo] (disclosure: I'm the author)
+ - 柔軟性が必要で、自分自身でコーディングをすることをいとわないならば、 [http://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo] を参照してみてください。 (ネタばれ: 私が作者です)
 
- -  Activating this option may cause some performance degradation, read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
+ - このオプションを有効にするとパフォーマンスが低下する原因となるかもしれません。 [trac:TracPerformance#Configuration Trac の性能] にさらに詳しい情報があります。
 
-== Preset Values for New Tickets ==
+== 新規チケット登録時に、 URL で値を設定する == #PresetValuesforNewTickets
 
-To create a link to the new-ticket form filled with preset values, you need to call the `/newticket?` URL with `variable=value` separated by `&`. 
+値が設定されたチケット登録フォームへのリンクを作成するには、 `/newticket?` に続いて、 `パラメータ=値` を `&` でつないだ形式の URL を呼び出します。
 
-Possible variables are :
+値を設定できるパラメータ:
 
- * '''type''' — The type droplist
- * '''reporter''' — Name or email of the reporter
- * '''summary''' — Summary line for the ticket
- * '''description''' — Long description of the ticket
- * '''component''' — The component droplist
- * '''version''' — The version droplist
- * '''severity''' — The severity droplist
- * '''keywords''' — The keywords 
- * '''priority''' — The priority droplist
- * '''milestone''' — The milestone droplist
- * '''owner''' — The person responsible for the ticket
- * '''cc''' — The list of emails for notifying about the ticket change
+ * '''type''' — ドロップダウンリストのタイプ
+ * '''reporter''' — 報告者の名前
+ * '''summary''' — チケットの概要
+ * '''description''' — チケットの完全な説明
+ * '''component''' — コンポーネント
+ * '''version''' — バージョン
+ * '''severity''' — 重要度
+ * '''keywords''' — キーワード 
+ * '''priority''' — 優先度
+ * '''milestone''' — マイルストーン
+ * '''owner''' — チケットを解決できそうな人
+ * '''cc''' — チケットが更新されたときに email で通知する人のリスト。
 
-Example: ''`[/newticket?summary=Compile%20Error&version=1.0&component=gui]`''[[BR]]
+例: ''`[/newticket?summary=Compile%20Error&version=1.0&component=gui]`''[[BR]]
 
 ----
 See also:  TracGuide, TracWiki, TracTicketsCustomFields, TracNotification, TracReports, TracQuery
