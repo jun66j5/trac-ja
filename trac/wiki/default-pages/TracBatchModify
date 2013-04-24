@@ -1,10 +1,10 @@
-= Trac Ticket Batch Modification =
+= Tracのチケットを一括更新  = #TracTicketBatchModification
 [[TracGuideToc]]
 
-From [wiki:TracQuery custom query] results Trac provides support for modifying a batch of tickets in one request.
+[wiki:TracQuery custom query] の結果から、チケットを一括して変更できます。
 
-To perform a batch modification select the tickets you wish to modify and set the new field values using the section underneath the query results. 
+一括変更を実行するには、変更したいチケットを選択し、クエリ結果の下のセクションを使用して新しいフィールド値を設定してください。
 
-== List fields
+== リストフィールド == #Listfields
 
-The `Keywords` and `Cc` fields are treated as lists, where list items can be added and/or removed in addition of replacing the entire list value. All list field controls accept multiple items (i.e. multiple keywords or cc addresses).
+`Keywords` と `Cc` フィールドはリストとして扱われます。 リスト値全体を置き換えるのに加え、追加または削除したりすることができます。 すべてのリストフィールドコントロールは多数の項目を使用できます。 (つまり、多数のキーワードあるいはccアドレス)

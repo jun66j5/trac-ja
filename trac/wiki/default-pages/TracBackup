@@ -1,30 +1,30 @@
-= Trac Backup =
+= バックアップ = #TracBackup
 [[TracGuideToc]]
 
-Since Trac uses a database backend, some extra care is required to safely create a backup of a [wiki:TracEnvironment project environment]. Luckily, [wiki:TracAdmin trac-admin] has a command to make backups easier: `hotcopy`.
+Trac はバックエンドにデータベースを使用しているため、安全に [wiki:TracEnvironment プロジェクトの Environment] のバックアップを作成するためには、何らかの配慮が必要になります。 [wiki:TracAdmin trac-admin] に用意されている `hotcopy` コマンドを使用するとバックアップの作成を簡単に行なう事ができます。
 
-  ''Note: Trac uses the `hotcopy` nomenclature to match that of [http://subversion.tigris.org/ Subversion], to make it easier to remember when managing both Trac and Subversion servers.''
+  ''Note: Trac では、 Trac と Subversion 両方を管理するときに分かりやすいよう、 [http://subversion.tigris.org/ Subversion] にあわせて、 `hotcopy` という用語にしました。''
 
-== Creating a Backup ==
+== バックアップの作成 == #CreatingaBackup
 
-To create a backup of a live TracEnvironment, simply run:
+稼働中の TracEnvironment をバックアップするためには、以下のコマンドを実行してください:
 {{{
 
   $ trac-admin /path/to/projenv hotcopy /path/to/backupdir
 
 }}}
 
-[wiki:TracAdmin trac-admin] will lock the database while copying.''
+[wiki:TracAdmin trac-admin] はバックアップを行っている間、データベースをロックします。''
 
-The resulting backup directory is safe to handle using standard file-based backup tools like `tar` or `dump`/`restore`.
+バックアップされたディレクトリは、 `tar` や `dump`/`restore` のような通常のファイルベースのバックアップツールで、安全に取り扱うことができます。
 
-Please, note, that hotcopy command does not overwrite target directory and when such exists, hotcopy ends with error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:ticket:3198 #3198].
+Note: hotcopy コマンドはバックアップ先ディレクトリが存在していた場合、上書きを行うことが出来ないため、次のエラーで失敗します: `Command failed: [Errno 17] File exists:` この問題は [trac:#3198 本家チケット 3198] で議論されています。(訳注: 上書きを行わない動作のまま変更されない方向で議論が進んでいます。同チケットで運用回避の手順が示されています)
 
-=== Restoring a Backup ===
+=== バックアップからの復元 === #RestoringaBackup
 
-Backups are simply a copied snapshot of the entire [wiki:TracEnvironment project environment] directory, including the SQLite database. 
+バックアップは、 SQLite データベースを含む [wiki:TracEnvironment プロジェクトの Environment] ディレクトリ配下の全体のスナップショットです。
 
-To restore an environment from a backup, stop the process running Trac (i.e. the Web server or [wiki:TracStandalone tracd]), restore the contents of your backup (path/to/backupdir) to your [wiki:TracEnvironment project environment] directory and restart the service.
+Environment をバックアップから復元する場合、 Trac を起動しているプロセス (Web サーバ、または [wiki:TracStandalone tracd]) を停止してから、コンテンツをバックアップ (path/to/backupdir) から [wiki:TracEnvironment プロジェクトの Environment] ディレクトリに書き戻して、サービスを再起動します。
 
 ----
 See also: TracAdmin, TracEnvironment, TracGuide, [trac:TracMigrate TracMigrate]

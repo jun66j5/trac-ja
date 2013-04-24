@@ -19,7 +19,7 @@ Other enhancements, Florent Guillaume <fg@nuxeo.com>
 Reworked, Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
 Jeff Moreland <hou5e@hotmail.com>
 
-$Id$
+$Id: bugzilla2trac.py 9298 2010-02-27 09:59:34Z cboos $
 """
 
 from __future__ import with_statement

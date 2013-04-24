@@ -4,8 +4,8 @@ from trac.core import implements,Component
 from trac.ticket.api import ITicketActionController
 from trac.perm import IPermissionRequestor
 
-revision = "$Rev$"
-url = "$URL$"
+revision = "$Rev: 6326 $"
+url = "$URL: https://svn.edgewall.org/repos/trac/trunk/sample-plugins/workflow/DeleteTicket.py $"
 
 class DeleteTicketActionController(Component):
     """Provides the admin with a way to delete a ticket.

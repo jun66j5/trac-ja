@@ -1,139 +1,139 @@
-= Trac Ticket Queries =
+= チケットクエリ = #TracTicketQueries
 [[TracGuideToc]]
 
-In addition to [wiki:TracReports reports], Trac provides support for ''custom ticket queries'', used to display lists of tickets meeting a specified set of criteria. 
+[wiki:TracReports レポート] に加えて、 Trac は ''カスタムチケットクエリ'' があります。 ''カスタムチケットクエリ'' は、ある一定の基準を満たすチケットのリストを表示するのに使用されます。
 
-To configure and execute a custom query, switch to the ''View Tickets'' module from the navigation bar, and select the ''Custom Query'' link.
+カスタムクエリを設定・実行するために、ナビゲーションバーの ''チケットを見る'' (英語版では ''View tickets'') モジュールに切り替え、 ''カスタムクエリ'' (英語版では ''Custom Query'') のリンクを選択します。
 
-== Filters ==
+== フィルタ == #Filters
 
-When you first go to the query page the default filter will display tickets relevant to you:
- * If logged in then all open tickets it will display open tickets assigned to you.
- * If not logged in but you have specified a name or email address in the preferences then it will display all open tickets where your email (or name if email not defined) is in the CC list.
- * If not logged and no name/email defined in the preferences then all open issues are displayed.
+最初にクエリのページを開くと、デフォルトのフィルタが適用され、自分に関連するチケットの一覧が表示されます:
+ * ログインしている場合、自分が担当者 ("assigned to") になっている、オープンチケットが表示されます
+ * ログインしていない場合でも、個人設定 ("Prefernces") で名前やメールアドレスを設定している場合は、自分が設定した名前やメールアドレスが、関係者 ("CC") に含まれているオープンチケットが表示されます
+ * ログインしておらず、個人設定も保存していない場合、すべてのオープンチケットが表示されます
 
-Current filters can be removed by clicking the button to the left with the minus sign on the label.  New filters are added from the pulldown lists at the bottom corners of the filters box ('And' conditions on the left, 'Or' conditions on the right).  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''or'' of the criteria.
+現在のフィルタは検索条件の左側にある "-" (マイナス) のラベルのボタンをクリックすることにより削除することができます。新しいフィルタは、フィルタボックスの下にあるプルダウンリストから追加することができます ('And' 条件は左側に、 'Or' 条件は右側に配置されています)。テキストボックスやオプションのプルダウンメニューのフィルタを ''or'' 条件として、いくつでも追加することができます。
 
-You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
+フィルタボックスの下のフィールドを使用することによって、結果をフィールドごとにグループ化したり、各チケットの完全な説明を表示することができます。
 
-Once you've edited your filters click the ''Update'' button to refresh your results.
+一度フィルタを編集したら、 ''更新'' (英語版では ''Update'') ボタンで結果を更新することができます。
 
-== Navigating Tickets ==
-Clicking on one of the query results will take you to that ticket.  You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
+== チケットナビゲーション == #NavigatingTickets
+クエリの結果の一つをクリックすると、そのチケットが表示されます。メインメニューバーの ''次のチケット'' (英語版では ''Next Ticket'') または ''前のチケット'' (英語版では ''Previous Ticket'') というリンクをクリックすることによって、クエリの結果を行き来することができます。 ''クエリに戻る'' (英語版では ''Back to Query'') というリンクをクリックすると、クエリのページに戻ります。
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which were edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
+あなたは安全にチケットの編集をすることができ、編集を保存した後に ''次のチケット/前のチケット/クエリに戻る'' の各リンクを使用して、結果を行き来することができます。クエリに戻ったとき、 ''編集済みのチケット'' はイタリックのテキストで表示されます。チケットの 1 つが編集され、 [[html(<span style="color: grey">クエリの基準を満たさなくなった</span>)]] 場合、テキストはグレーで表示されます。 '''クエリの基準を満たす新しいチケットが登録される''' と、テキストが太字で表示されます。
 
-The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
+クエリの結果は ''更新'' ボタンを押すごとにステータスがクリアされリフレッシュされます。
 
-== Saving Queries ==
+== クエリを保存する == #SavingQueries
 
-Trac allows you to save the query as a named query accessible from the reports module. To save a query ensure that you have ''Updated'' the view and then click the ''Save query'' button displayed beneath the results.
-You can also save references to queries in Wiki content, as described below.
+Trac ではクエリをレポートモジュールからアクセスできる名前付きクエリとして保存することができます。クエリを保存するには ''更新'' (英語版では ''Update'') ボタンで表示を更新してから、画面の下の方にある ''このクエリを保存'' (英語版では ''Save query'') ボタンを押下します。
+また、下記の方法で Wiki のコンテンツとしてクエリへの参照を保存することもできます。
 
-''Note:'' one way to easily build queries like the ones below, you can build and test the queries in the Custom report module and when ready - click ''Save query''. This will build the query string for you. All you need to do is remove the extra line breaks.
+''Note:'' 下記の方法で使用するクエリを簡単に組み立てるには、カスタムクエリモジュールでクエリを組み立ててテストしてから、 ''このクエリを保存'' を押下します。すると、すでに組み立てられたクエリ文字列が得られるので、余計な改行文字を削除すると、そのまま使うことができます。
 
-''Note:'' you must have the '''REPORT_CREATE''' permission in order to save queries to the list of default reports. The ''Save query'' button will only appear if you are logged in as a user that has been granted this permission. If your account does not have permission to create reports, you can still use the methods below to save a query.
+''Note:'' 保存したクエリをレポートのリストに組み込むには '''REPORT_CREATE''' 権限が必要です。この権限が与えられたユーザのみ ''このクエリを保存'' ボタンを押下することができます。レポートを作成する権限を持っていない場合は、以下の方法でクエリを保存することができます。
 
 
-=== Using TracLinks ===
+=== TracLinks を使用する === #UsingTracLinks
 
-You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.
+クエリを保存しておくと、後から保存したクエリを再度実行できます。保存は Wiki ページにクエリへのリンクを作成することで行います。
 {{{
-[query:status=new|assigned|reopened&version=1.0 Active tickets against 1.0]
+[query:status=new|assigned|reopened&version=1.0 1.0 での未解決のチケット]
 }}}
 
-Which is displayed as:
-  [query:status=new|assigned|reopened&version=1.0 Active tickets against 1.0]
+表示内容:
+  [query:status=new|assigned|reopened&version=1.0 1.0 での未解決のチケット]
 
-This uses a very simple query language to specify the criteria (see [wiki:TracQuery#QueryLanguage Query Language]).
+ここでは、検索内容を特定するとても単純なクエリ言語が使用されています。 ([wiki:TracQuery#QueryLanguage クエリ言語] 参照)
 
-Alternatively, you can copy the query string of a query and paste that into the Wiki link, including the leading `?` character:
+あるいは、クエリを実行した画面の URL をコピーし、 `?` 以降の文字列 (訳注: URL のパラメータ部) を Wiki リンクに貼り付けることができます:
 {{{
-[query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
+[query:?status=new&status=assigned&status=reopened&group=owner 担当者別着手済みチケット]
 }}}
 
-Which is displayed as:
-  [query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
+表示内容:
+  [query:?status=new&status=assigned&status=reopened&group=owner 担当者別着手済みチケット]
 
-=== Using the `[[TicketQuery]]` Macro ===
+=== `[[TicketQuery]]` マクロを使用する === #UsingtheTicketQueryMacro
 
-The [trac:TicketQuery TicketQuery] macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
+[trac:TicketQuery TicketQuery] マクロは条件にマッチするチケットの一覧を表示します。 WikiFormatting が使用できるいずれの場所でも使用できます。
 
-Example:
+例:
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 }}}
 
-This is displayed as:
+表示内容:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 
-Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language]. This also allows displaying the link and description of a single ticket:
+[wiki:TracQuery#UsingTracLinks query: Wiki リンク] 同様、このマクロのパラメータは [wiki:TracQuery#QueryLanguage クエリ言語] に規定されるルールに基づいたクエリ文字列で記述しなければなりません。単一チケットのリンクや説明文を表示させることもできます。
 {{{
 [[TicketQuery(id=123)]]
 }}}
 
-This is displayed as:
+表示内容:
   [[TicketQuery(id=123)]]
 
-A more compact representation without the ticket summaries is also available:
+チケットのサマリを表示しないよりコンパクトな表示も利用可能です:
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 }}}
 
-This is displayed as:
+表示内容:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 
-Finally, if you wish to receive only the number of defects that match the query, use the ``count`` parameter.
+クエリにマッチした件数だけを取得したいのならば、 ``count`` パラメータを使用してください。
 
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
 }}}
 
-This is displayed as:
+表示内容:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
 
-=== Customizing the ''table'' format ===
-You can also customize the columns displayed in the table format (''format=table'') by using ''col=<field>'' - you can specify multiple fields and what order they are displayed by placing pipes (`|`) between the columns like below:
+=== ''table'' 形式でカスタマイズする === #Customizingthetableformat
+table 形式 (''format=table'') では、 ''col=<field>'' を使用することで列の表示をカスタマイズすることができます。複数のフィールドを指定したい場合、表示する順に列をパイプ (`|`) 区切りで指定します:
 
 {{{
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
 }}}
 
-This is displayed as:
+表示内容:
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
 
-==== Full rows ====
-In ''table'' format you can also have full rows by using ''rows=<field>'' like below:
+==== 全行表示 ==== #Fullrows
+''table'' 形式では、以下の例のように ''rows=<field>'' を使用することで、全行表示を行うことができます:
 
 {{{
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
 }}}
 
-This is displayed as:
+表示内容:
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
 
 
-=== Query Language ===
+=== クエリ言語 === #QueryLanguage
 
-`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values. To include a literal `&` or `|` in a value, escape the character with a backslash (`\`).
+`query:` TracLinks と `[[TicketQuery]]` マクロは、いずれもクエリのフィルタを特定するために小さな "クエリ言語" を使用します。基本的に、フィルタはアンパサンド (`&`) で区切られます。それぞれのフィルタはチケットの各フィールドの名前、オペレータ、1つ以上の値で構成されています。値が複数ある場合はパイプ (`|`) で区切り、フィルタがいずれかの値にマッチすればいいことを意味しています。 `&` や `|` の文字そのものを値に含めたい場合、バックスラッシュ (`\`, 環境によっては円マーク) でエスケープしてください。
 
-The available operators are:
-|| '''`=`''' || the field content exactly matches one of the values ||
-|| '''`~=`''' || the field content contains one or more of the values ||
-|| '''`^=`''' || the field content starts with one of the values ||
-|| '''`$=`''' || the field content ends with one of the values ||
+オペレータ一覧:
+|| '''`=`''' || フィールドの内容はいずれかの値と完全に一致する ||
+|| '''`~=`''' || フィールドの内容は1つ以上の値を含む ||
+|| '''`^=`''' || フィールドの内容が値の一つで始まる ||
+|| '''`$=`''' || フィールドの内容が値の一つで終了する ||
 
-All of these operators can also be negated:
-|| '''`!=`''' || the field content matches none of the values ||
-|| '''`!~=`''' || the field content does not contain any of the values ||
-|| '''`!^=`''' || the field content does not start with any of the values ||
-|| '''`!$=`''' || the field content does not end with any of the values ||
+これらのオペレータは否定の意味があります:
+|| '''`!=`''' || フィールドの内容がいずれの値にも一致しない ||
+|| '''`!~=`''' || フィールドの内容がいずれの値も含んでいない ||
+|| '''`!^=`''' || フィールドの内容がいずれの値でも始まらない ||
+|| '''`!$=`''' || フィールドの内容がいずれの値でも終わらない ||
 
-The date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be left out to avoid having to quote the query string. 
-|| '''`created=2007-01-01..2008-01-01`''' || query tickets created in 2007 ||
-|| '''`created=lastmonth..thismonth`''' || query tickets created during the previous month ||
-|| '''`modified=1weekago..`''' || query tickets that have been modified in the last week ||
-|| '''`modified=..30daysago`''' || query tickets that have been inactive for the last 30 days ||
+日付フィールドである `登録日` (英語版では `created`) と `更新日` (英語版では `modified`) は `=` オペレータに二つの日付を、二つのドット (`..`) で区切って指定することができます。日付の範囲の片方が空の場合、空の方向には条件を指定しないことを意味します。また、日付パーサは自然言語に似た構文を解釈できます。たとえば "3 weeks ago", "last month", "now" などです。 Bugzilla スタイルの "1d", "2w", "3m", "4y" なども、それぞれ1日、2週間、3ヶ月、4年と解釈できます。クエリ文字列に指定する場合、これらの構文からは空白文字を除外して指定してください。
+|| '''`created=2007-01-01..2008-01-01`''' || 2007年に登録されたチケットへのクエリ ||
+|| '''`created=lastmonth..thismonth`''' || 前月に登録されたチケットへのクエリ ||
+|| '''`modified=1weekago..`''' || 1週間以内に更新されたチケットへのクエリ ||
+|| '''`modified=..30daysago`''' || 30日間更新されていないチケットへのクエリ ||
 
 ----
 See also: TracTickets, TracReports, TracGuide

@@ -1,19 +1,20 @@
-= Wiki Page Templates = 
+= Wiki ページテンプレート = #WikiPageTemplates
 
-  ''(since [http://trac.edgewall.org/milestone/0.11 0.11])''
+  ''([http://trac.edgewall.org/milestone/0.11 0.11] 以降)''
 
-The default content for a new wiki page can be chosen from a list of page templates. 
+新しい Wiki ページのデフォルトコンテンツをページテンプレートのリストから選ぶことができます。
 
-That list is generated from all the wiki pages having a name starting with ''PageTemplates/''.
-The initial content of a new page will simply be the content of the chosen template page, or a blank page if the special ''(blank page)'' entry is selected. When there are no wiki pages with the ''PageTemplates/'' prefix, the initial content will always be the blank page and the list selector will not be shown (i.e. this matches the behavior we had up to now).
+このリストはページ名が ''PageTemplates/'' で始まる Wiki ページから作成されます。
+新しいページの最初のコンテンツは、選択したテンプレートページのコンテンツがコピーされます。リスト中の ''(空白のページ)'' (訳注: 英語版では ''(blank page)'') は特別なエントリであり、新しいページのコンテンツは、空白のページになります。ページ名の先頭に ''PageTemplates/'' を持つ Wiki ページが存在しない場合、最初のコンテンツは常に空白のページになり、リストは表示されません。 (すなわちマッチするページを作成するまでは今までと同じ動作になります)
 
-To create a new template, simply create a new page having a name starting with ''PageTemplates/''.
+''PageTemplates/'' で始まる新しいページを作成すると、新しいテンプレートが作成されます。
 
-(Hint: one could even create a ''!PageTemplates/Template'' for facilitating the creation of new templates!)
+(Hint: 新しいテンプレートを簡単に作成できるようにするため ''!PageTemplates/Template'' を作っておいたほうがよいでしょう!)
+(訳注: テンプレートのテンプレートという意味合いですが、 Trac はこのページを特別扱いすることはありません。通常のテンプレートとして処理されます。それに対して ''!PageTemplates/DefaultPage'' は特別なテンプレートとして扱われます。ページテンプレートのリストでは初期選択状態が ''!PageTemplates/DefaultPage'' になります。 (存在しなければ ''(空白のページ)'' が初期選択されています。))
 
-After the first template has been created, a drop-down selection box will automatically appear on any new wiki pages that are created.  By default it is located on the right side of the 'Create this page' button. The default selection will be ''blank page'', or ''!DefaultPage'' if ''!PageTemplates/DefaultPage'' exists.
+テンプレートを作成すると、 Wiki ページを新規作成する際に表示されるドロップダウンリストに、自動的に追加されます。ドロップダウンリストは通常、 'ページの作成' (訳注: 英語では 'Create this page') ボタンの右隣に表示されています。デフォルトでは''空白ページ''、''!PageTemplates/DefaultPage'' がある場合は ''!DefaultPage'' が選択されます。
 
-Available templates: 
+テンプレート一覧:
 [[TitleIndex(PageTemplates/)]]
 ----
 See also: TracWiki

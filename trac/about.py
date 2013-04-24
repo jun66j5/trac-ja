@@ -24,6 +24,7 @@ from genshi.builder import tag
 from trac.core import *
 from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
+from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
@@ -78,7 +79,7 @@ class AboutModule(Component):
                     default = default_options.get(name) or ''
                     options.append({
                         'name': name, 'value': value,
-                        'modified': unicode(value) != unicode(default)
+                        'modified': to_unicode(value) != to_unicode(default)
                     })
                 options.sort(key=lambda o: o['name'])
                 sections.append({'name': section, 'options': options})

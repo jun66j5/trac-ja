@@ -1,22 +1,22 @@
-= Unicode Support in Trac =
+= Trac における Unicode の対応 = #UnicodeSupportinTrac
 [[TracGuideToc]]
 
-Trac stores all text using UTF-8 encoding, including text in tickets and wiki pages. Internal processing of text uses true Unicode representations.
+Trac はチケットや wiki ページに含まれているテキストデータを含め、すべてのテキストデータを UTF-8 エンコーディングで保持し、テキストデータの内部処理には Unicode 表記を使用しています。
 
-As such, it supports most (all?) commonly used character encodings.
+Trac はほとんど (すべて?) の一般的に使われる文字エンコードに対応しています。
 
-If the default encoding in your source code repository is not UTF-8, you can specify it in the [TracIni#trac-section trac.ini], for example:
+もしソースコードリポジトリのエンコードの初期値が UTF-8 でない場合, [TracIni#trac-section trac.ini] で指定することができます。 例:
 {{{
 default_charset = gbk
 }}}
 
-You also must make sure that your [trac:DatabaseBackend database backend] stores its data in UTF-8; otherwise strange things will happen.
+また、 [trac:DatabaseBackend バックエンドのデータベース] が確実に UTF-8 を格納するようにしなければなりません。 そうでなければ問題が発生するでしょう。
 
-To convert your database to UTF-8, the easiest way is to dump the database, convert the dump into UTF-8 and then import the converted dump back into the database.[[BR]]
-You can use [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv] to convert the dump.
+データベースを UTF-8 に変換するためにもっとも簡単な方法は、データベースのダンプを取得し、ダンプを UTF-8 に変換して、変換したダンプをデータベースに書き戻すことです。[[BR]]
+ダンプを変換するのに [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv] を使用することができます。
 
 
-== Examples ==
+== 例 == #Examples
 
 === Arabic ===
 تراك يقوم بحفظ كل الكلمات باستخدام صيغة UTF-8، بما في ذلك الكلمات المستخدمة في صفحات  التيكت والويكي.
@@ -31,7 +31,7 @@ You can use [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1
 Traditional: 繁體中文, 漢字測試; Simplified: 简体中文，汉字测试
 
 === Croatian ===
-Ako podržava srpski i slovenski mora podržavati i Hrvatski - čćžšđ ČĆŽŠĐ 
+Ako podržava srpski i slovenski mora podržavati i Hrvatski - čćžšđ ČĆŽŠĐ
 
 === English ===
 Yes indeed, Trac supports English. Fully.

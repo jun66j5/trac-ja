@@ -1,125 +1,125 @@
-= Tracd =
+= Tracd = #Tracd
 
-Tracd is a lightweight standalone Trac web server.
-It can be used in a variety of situations, from a test or development server to a multiprocess setup behind another web server used as a load balancer.
+Tracd は軽量なスタンドアロンの Trac web サーバです。
+Tracd は様々な場面で使用することができます。テストや開発用のサーバからロードバランサとして使用されているもう一つのウェブサーバの後段に複数のプロセスを配置するときなどに使われます。
 
-== Pros ==
+== 利点 == #Pros
 
- * Fewer dependencies: You don't need to install apache or any other web-server.
- * Fast: Should be almost as fast as the [wiki:TracModPython mod_python] version (and much faster than the [wiki:TracCgi CGI]), even more so since version 0.12 where the HTTP/1.1 version of the protocol is enabled by default
- * Automatic reloading: For development, Tracd can be used in ''auto_reload'' mode, which will automatically restart the server whenever you make a change to the code (in Trac itself or in a plugin).
+ * 依存性が低い: apache その他 web サーバをインストールする必要がありません
+ * 速い: [wiki:TracModPython mod_python] バージョンと同じくらい速いでしょう。 ([wiki:TracCgi CGI] よりはずっと速い)。そして、 バージョン 0.12 以降では、デフォルトで HTTP のバージョン 1.1 が使えるようになりました
+ * 自動リロード: 開発のために、 Tracd は ''auto_reload'' モードを使用しています。そのため、コード ( Trac 自身またはプラグインのコード ) を更新したときに、自動的にサーバが再起動します
 
-== Cons ==
+== 欠点 == #Cons
 
- * Fewer features: Tracd implements a very simple web-server and is not as configurable or as scalable as Apache httpd.
- * No native HTTPS support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead,
-   or [http://trac.edgewall.org/wiki/STunnelTracd stunnel -- a tutorial on how to use stunnel with tracd] or Apache with mod_proxy.
+ * 機能が少ない: Tracd に実装されている web サーバはとてもシンプルで、 Apache httpd のように拡張性のある設定ができません
+ * ネイティブで HTTPS に対応しない: 代わりに [http://www.rickk.com/sslwrap/ sslwrap] または
+   [trac:STunnelTracd stunnel -- tracd と stunnel を使うためのチュートリアル] または Apache の mod_proxy を使用します
 
-== Usage examples ==
+== 使用例 == #Usageexamples
 
-A single project on port 8080. (http://localhost:8080/)
+単一のプロジェクトをポート 8080 でホストします。 (http://localhost:8080/)
 {{{
  $ tracd -p 8080 /path/to/project
 }}}
-Stricly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use ''--hostname'' option.
+厳密に言うと、この状態では Trac は ''localhost のみ'' ではなく、ネットワーク越しの全員からアクセス可能になっています。 ''--hostname'' オプションを使用すると接続元を制限できます。
 {{{
  $ tracd --hostname=localhost -p 8080 /path/to/project
 }}}
-With more than one project. (http://localhost:8080/project1/ and http://localhost:8080/project2/)
+複数のプロジェクトをホストする場合はこうです (http://localhost:8080/project1/ と http://localhost:8080/project2/)
 {{{
  $ tracd -p 8080 /path/to/project1 /path/to/project2
 }}}
 
-You can't have the last portion of the path identical between the projects since Trac uses that name to keep the URLs of the
-different projects unique. So if you use `/project1/path/to` and `/project2/path/to`, you will only see the second project.
+Trac は異なるプロジェクト間での URL の一意性を保つために、パスの一番最後の文字列 (訳注: basename) を使用するため、プロジェクト間でパスの一番最後の部分を同じにすることは出来ません。
+もし、 `/project1/path/to` と `/project2/path/to` を同時に指定した場合、二つ目のプロジェクトだけしか見えなくなります。
 
-An alternative way to serve multiple projects is to specify a parent directory in which each subdirectory is a Trac project, using the `-e` option. The example above could be rewritten:
+複数のプロジェクトを動かすもう一つの方法は、 `-e` オプションで親ディレクトリを指定し、サブディレクトリに TracEnvironment を配置します。上記の例は以下のように書き換えられます:
 {{{
  $ tracd -p 8080 -e /path/to
 }}}
 
-To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-C}}} will leave a Python process running in the background.
+Windows でサーバを終了するには必ず {{{CTRL-BREAK}}} を使用してください。 -- {{{CTRL-C}}} を使用すると Python のプロセスがバックグラウンドで起動したままになるでしょう。
 
-== Installing as a Windows Service ==
+== Windows サービスとしてインストールする == #InstallingasaWindowsService
 
-=== Option 1 ===
-To install as a Windows service, get the [http://www.google.com/search?q=srvany.exe SRVANY] utility and run:
+=== オプション 1 === #Option1
+Windows のサービスとしてインストールするには、 [http://www.google.com/search?q=srvany.exe SRVANY] ユーティリティを入手し起動します:
 {{{
  C:\path\to\instsrv.exe tracd C:\path\to\srvany.exe
  reg add HKLM\SYSTEM\CurrentControlSet\Services\tracd\Parameters /v Application /d "\"C:\path\to\python.exe\" \"C:\path\to\python\scripts\tracd-script.py\" <your tracd parameters>"
  net start tracd
 }}}
 
-'''DO NOT''' use {{{tracd.exe}}}.  Instead register {{{python.exe}}} directly with {{{tracd-script.py}}} as a parameter.  If you use {{{tracd.exe}}}, it will spawn the python process without SRVANY's knowledge.  This python process will survive a {{{net stop tracd}}}.
+{{{tracd.exe}}} は使用 '''しない''' で下さい。代わりに {{{python.exe}}} を直接登録し、引数に {{{tracd-script.py}}} を使用して下さい。 {{{tracd.exe}}} を使用してしまうと、 python プロセスが SRVANY の制御下ではなくなってしまうため、 {{{net stop tracd}}} を使用しても python プロセスが残留してしまいます。
 
-If you want tracd to start automatically when you boot Windows, do:
+Windows の起動時に tracd を自動起動させることもできます:
 {{{
  sc config tracd start= auto
 }}}
 
-The spacing here is important.
+空白には意味があります。そのまま入力して下さい。
 
 {{{#!div
-Once the service is installed, it might be simpler to run the Registry Editor rather than use the `reg add` command documented above.  Navigate to:[[BR]]
+一度、Windows サービスがインストールされると、上記の `reg add` コマンドを使用するよりも、レジストリエディタを起動するほうが簡単かもしれません。指定のパスへの移動:[[BR]]
 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\tracd\Parameters`
 
-Three (string) parameters are provided:
+3 つの文字列のパラメータが提供されています:
 ||!AppDirectory ||C:\Python26\ ||
 ||Application ||python.exe ||
 ||!AppParameters ||scripts\tracd-script.py -p 8080 ... ||
 
-Note that, if the !AppDirectory is set as above, the paths of the executable ''and'' of the script name and parameter values are relative to the directory.  This makes updating Python a little simpler because the change can be limited, here, to a single point.
-(This is true for the path to the .htpasswd file, as well, despite the documentation calling out the /full/path/to/htpasswd; however, you may not wish to store that file under the Python directory.)
+Note: もし !AppDirectory が上記のように設定されているならば、実行ファイル ''と'' スクリプトのパス、パラメータの値は、設定したフォルダへの相対パスになります。ここ一点に絞って言うと、これにより Python をアップデートするときに変更箇所が限定されるため少しだけ楽になります。
+(ドキュメントでは、 /full/path/to/htpasswd とフルパス指定するよう書いてあるかもしれませんが、これは、 .htpasswd ファイルについても同様のことが言えます。このファイルを Python ディレクトリ配下に配置したいと思わないかもしれません。)
 }}}
 
-For Windows 7 User, srvany.exe may not be an option, so you can use [http://www.google.com/search?q=winserv.exe WINSERV] utility and run:
+Windows 7 ユーザは、 srvany.exe は使用できないかもしれません。代わりに [http://www.google.com/search?q=winserv.exe WINSERV] ユーティリティを使用して、起動してください:
 {{{
 "C:\path\to\winserv.exe" install tracd -displayname "tracd" -start auto "C:\path\to\python.exe" c:\path\to\python\scripts\tracd-script.py <your tracd parameters>"
 
 net start tracd
 }}}
 
-=== Option 2 ===
+=== オプション 2 === #Option2
 
-Use [http://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript], available at [http://trac-hacks.org/ Trac Hacks]. Installs, removes, starts, stops, etc. your Trac service.
+[http://trac-hacks.org/ Trac Hacks] より [http://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript] を入手して下さい。 Trac のサービスを インストール、削除、開始、停止などできます。
 
-=== Option 3 ===
+=== オプション 3 === #Option3
 
-also cygwin's cygrunsrv.exe can be used:
+cygwin の cygrunsrv.exe を使用することもできます:
 {{{
 $ cygrunsrv --install tracd --path /cygdrive/c/Python27/Scripts/tracd.exe --args '--port 8000 --env-parent-dir E:\IssueTrackers\Trac\Projects'
 $ net start tracd
 }}}
 
-== Using Authentication ==
+== 認証を使用する == #UsingAuthentication
 
-Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (htpasswd and htdigest) to easily create a password file in the proper format for tracd to use in authentication. (It is also possible to create the password file without htpasswd or htdigest; see below for alternatives)
+Tracd は Apache を必要とせずに Trac を実行できるようになっています。しかし、tracd で認証を行う際には Apache のパスワードツール (htpasswd や htdigest) を使ってパスワードファイルを簡単に適切なフォーマットで作成することができます。(htpasswd や htdigest がなくてもパスワードファイルを作成するができます。代替方法は下記を参照してください)
 
-Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
+Tracd は基本認証とダイジェスト認証の両方に対応しています。ダイジェスト認証の方がより安全です。以降の例ではダイジェスト認証を使用しています。基本認証を使用するためには、下記のコマンドライン入力時に `--auth` を `--basic-auth` に置き換えて下さい。
 
-The general format for using authentication is:
+認証を使用する際の一般的なフォーマット:
 {{{
  $ tracd -p port --auth="base_project_dir,password_file_path,realm" project_path
 }}}
-where:
- * '''base_project_dir''': the base directory of the project specified as follows:
-   * when serving multiple projects: ''relative'' to the `project_path`
-   * when serving only a single project (`-s`): the name of the project directory
- Don't use an absolute path here as this won't work. ''Note:'' This parameter is case-sensitive even for environments on Windows.
- * '''password_file_path''': path to the password file
- * '''realm''': the realm name (can be anything)
- * '''project_path''': path of the project
+オプションについて:
+ * '''base_project_dir''': 下記の通りプロジェクトのベースのディレクトリを特定する:
+   * 複数のプロジェクトを立てているとき: `project_path` への ''相対パス''
+   * 1 つのみプロジェクトを立てているとき (`-s` オプション使用): プロジェクトのディレクトリの名前
+ 絶対パスを使用しないで下さい。 ''Note:'' このパラメータは、 Windows の環境であっても大文字小文字を区別します。
+ * '''password_file_path''': パスワードファイルへのパス
+ * '''realm''': realm の名前 ( なんでも指定できます )
+ * '''project_path''': プロジェクトへのパス
 
- * **`--auth`** in the above means use Digest authentication, replace `--auth` with `--basic-auth` if you want to use Basic auth.  Although Basic authentication does not require a "realm", the command parser does, so the second comma is required, followed directly by the closing quote for an empty realm name.
+ * **`--auth`** 上記の例では、ダイジェスト認証を使用しています。基本認証を使用する際は `--auth` を `--basic-auth` に置き換えてください。基本認証は "realm" を必要としませんが、コマンドとしては、最後の引用句に空のレルム名前が直接続くことになるので、2つ目のコンマは必要になります
 
-Examples:
+例:
 
 {{{
  $ tracd -p 8080 \
    --auth="project1,/path/to/passwordfile,mycompany.com" /path/to/project1
 }}}
 
-Of course, the password file can be be shared so that it is used for more than one project:
+もちろん、パスワードファイルは 1 つ以上のプロジェクトで共有することができます。
 {{{
  $ tracd -p 8080 \
    --auth="project1,/path/to/passwordfile,mycompany.com" \
@@ -127,51 +127,51 @@ Of course, the password file can be be shared so that it is used for more than o
    /path/to/project1 /path/to/project2
 }}}
 
-Another way to share the password file is to specify "*" for the project name:
+パスワードファイルを共有するもう一つの方法として、プロジェクトの名前を指定するところで、 "*" を使用します:
 {{{
  $ tracd -p 8080 \
    --auth="*,/path/to/users.htdigest,mycompany.com" \
    /path/to/project1 /path/to/project2
 }}}
 
-=== Basic Authorization: Using a htpasswd password file ===
-This section describes how to use `tracd` with Apache .htpasswd files.
+=== 基本認証: htpasswd パスワードを使用する === #BaseicAuthorizationUsingahtpasswdpasswordfile
+このセクションでは、 `tracd` と Apache の .htpasswd ファイルの使用方法について記述します。
 
-  Note: It is necessary (at least with Python 2.6) to install the fcrypt package in order to
-  decode some htpasswd formats.  Trac source code attempt an `import crypt` first, but there
-  is no such package for Python 2.6. Only `SHA-1` passwords (since Trac 1.0) work without this module.
+  Note: htpasswd のフォーマットを解読するために、(少なくとも Python 2.6 は) fcrypt パッケージをインストールする必要があります。
+  Trac のソースコードでは、まず `import crypt` を試みますが、
+  Python 2.6 にそのようなパッケージはありません。 `SHA-1` パスワードのみ、このモジュールなしで対応します。( Trac 1.0 から)
 
-To create a .htpasswd file use Apache's `htpasswd` command (see [#GeneratingPasswordsWithoutApache below] for a method to create these files without using Apache):
+Apache の `htpasswd` コマンドを使用して、 .htpasswd ファイルを作成します。 ( Apache を使用せずにこれらのファイルを作成する方法については [#GeneratingPasswordsWithoutApache 下記] を参照して下さい):
 {{{
  $ sudo htpasswd -c /path/to/env/.htpasswd username
 }}}
-then for additional users:
+そしてユーザを追加します:
 {{{
  $ sudo htpasswd /path/to/env/.htpasswd username2
 }}}
 
-Then to start `tracd` run something like this:
+そして、 `tracd` をこのように起動します:
 {{{
  $ tracd -p 8080 --basic-auth="projectdirname,/fullpath/environmentname/.htpasswd,realmname" /fullpath/environmentname
 }}}
 
-For example:
+例:
 {{{
  $ tracd -p 8080 --basic-auth="testenv,/srv/tracenv/testenv/.htpasswd,My Test Env" /srv/tracenv/testenv
 }}}
-''Note:'' You might need to pass "-m" as a parameter to htpasswd on some platforms (OpenBSD).
+''Note:'' いくつかのプラットフォーム (OpenBSD) では、htpasswd に "-m" をパラメータで渡す必要があるかもしれません。
 
-=== Digest authentication: Using a htdigest password file ===
+=== ダイジェスト認証: htdigest パスワードファイルの設定方法 === #DigestauthentitionUsingahtdigestpasswordfile
 
-If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [http://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
+もし、 Apache がインストールされているなら、パスワードファイルを生成するのに、 htdigest コマンドを使用することができます。 'htdigest' とタイプして使用方法を見るか、詳細な使用方法を見るために Apache のマニュアルの [http://httpd.apache.org/docs/2.0/programs/htdigest.html このページ] を読んでください。ユーザを作成するたびに、パスワードを入力するように求められます。パスワードファイルの名前には好きな名前をつけることができますが、 `users.htdigest` というような名前にしておけば、ファイルに何が含まれているかを覚えておけるでしょう。このファイルは <projectname>/conf フォルダに [TracIni trac.ini] ファイルと一緒に置いておくとよいでしょう。
 
-Note that you can start tracd without the `--auth` argument, but if you click on the ''Login'' link you will get an error.
+引数 `--auth` なしで tracd をスタートできることに注意して下さい。ただし、 ''ログイン'' (英語版では ''Login'') リンクをクリックするとエラーになります。
 
-=== Generating Passwords Without Apache ===
+=== Apache 以外の環境でパスワードを生成する === #GeneratingPasswordsWithoutApache
 
-Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd ; Windows Python can grok MD5 password hashes just fine and you should use MD5.
+基本認証は [http://aspirine.org/htpasswd_en.html online HTTP Password generator] を用いて完成させることができます。これは `SHA-1` もサポートしています。生成した password-hash をシステムの .htpasswd ファイルにコピーします。Windows 版の Python は htpasswd のデフォルトのハッシュタイプである "crypt" モジュールに対応していないので注意してください。MD5 パスワードハッシュには対応しているため、MD5 を使用するとよいでしょう。
 
-You can use this simple Python script to generate a '''digest''' password file:
+簡単な Python スクリプトで '''digest''' 認証のパスワードファイルを生成できます:
 
 {{{
 #!python
@@ -199,21 +199,21 @@ if (options.username is None) or (options.password is None):
    parser.error("You must supply both the username and password")
 if (options.realm is not None):
    realm = options.realm
-   
+
 # Generate the string to enter into the htdigest file
 kd = lambda x: md5(':'.join(x)).hexdigest()
 print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
 }}}
 
-Note: If you use the above script you must set the realm in the `--auth` argument to '''`trac`'''. Example usage (assuming you saved the script as trac-digest.py):
+Note: 上記のスクリプトを使用する場合、 `--auth` の引数に '''`trac`''' を指定し、レルムを設定しなければなりません。使用例 (上記スクリプトを trac-digest.py として保存したとします):
 
 {{{
  $ python trac-digest.py -u username -p password >> c:\digest.txt
  $ tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
 
-==== Using `md5sum`
-It is possible to use `md5sum` utility to generate digest-password file:
+==== `md5sum` を使用する
+`md5sum` ユーティリティを使用するとダイジェスト認証のパスワードファイルを作成することができます:
 {{{
 user=
 realm=
@@ -222,9 +222,9 @@ path_to_file=
 echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -e 's/\s\+-//') > ${path_to_file}
 }}}
 
-== Reference ==
+== リファレンス == #Reference
 
-Here's the online help, as a reminder (`tracd --help`):
+これはリマインダとして、オンラインヘルプです。 (`tracd --help`):
 {{{
 Usage: tracd [options] [projenv] ...
 
@@ -256,41 +256,41 @@ Options:
   --user=USER           the user to run as
 }}}
 
-Use the -d option so that tracd doesn't hang if you close the terminal window where tracd was started.
+tracd を起動させたターミナルウィンドウを閉じる場合には、tracd がハングアップしないように -d オプションを使用してください。
 
-== Tips ==
+== Tips == #Tips
 
-=== Serving static content ===
+=== 静的なリソースを扱う === #Servingstaticcontent
 
-If `tracd` is the only web server used for the project, 
-it can also be used to distribute static content 
-(tarballs, Doxygen documentation, etc.)
+もし、 `tracd` が単一のプロジェクトのみを扱う Web サーバだとしたら、
+静的なリソースを割り当てるのに使用することができます。
+(tar アーカイブ, Doxygen ドキュメントなど)
 
-This static content should be put in the `$TRAC_ENV/htdocs` folder,
-and is accessed by URLs like `<project_URL>/chrome/site/...`.
+この静的なリソースは `$TRAC_ENV/htdocs` フォルダに置き、
+`<project_URL>/chrome/site/...` という URL でアクセスします。
 
-Example: given a `$TRAC_ENV/htdocs/software-0.1.tar.gz` file,
-the corresponding relative URL would be `/<project_name>/chrome/site/software-0.1.tar.gz`, 
-which in turn can be written as `htdocs:software-0.1.tar.gz` (TracLinks syntax) or `[/<project_name>/chrome/site/software-0.1.tar.gz]` (relative link syntax). 
+例: ファイル名が `$TRAC_ENV/htdocs/software-0.1.tar.gz` だったとき、
+対応する URL は `/<project_name>/chrome/site/software-0.1.tar.gz` となります。
+代わりに `htdocs:software-0.1.tar.gz` (TracLinks のシンタックス) や `[/<project_name>/chrome/site/software-0.1.tar.gz]` (相対リンクのシンタックス) で記述することができます。
 
- ''Support for `htdocs:` TracLinks syntax was added in version 0.10''
+ ''TracLinks における `htdocs:` のサポートは Trac のバージョン 0.10 で追加されました。''
 
-=== Using tracd behind a proxy
+=== tracd をプロキシの背後で使用する === #Usingtracdbehindaproxy
 
-In some situations when you choose to use tracd behind Apache or another web server.
+ある状況において tracd を Apache もしくは他のウェブサーバの背後で使用するときについてです。
 
-In this situation, you might experience issues with redirects, like being redirected to URLs with the wrong host or protocol. In this case (and only in this case), setting the `[trac] use_base_url_for_redirect` to `true` can help, as this will force Trac to use the value of `[trac] base_url` for doing the redirects.
+この状況において、間違ったホストやプロトコルにリダイレクトされてしまったなどの経験があるかもしれません。この場合 (そして、この場合に限って) `[trac] use_base_url_for_redirect` を `true` に設定することによって、リダイレクトを行なう際 Trac に `[trac] base_url` の値を強制的に使用させることができます。
 
-If you're using the AJP protocol to connect with `tracd` (which is possible if you have flup installed), then you might experience problems with double quoting. Consider adding the `--unquote` parameter.
+もし、`tracd` に接続するために AJP プロトコルを使用しているならば (flup をインストールしているならば可能です) 、ダブルクオテーションの問題にぶつかったことがあるかもしれません。その際は、 `--unquote` パラメータを追加することを考えてください。
 
-See also [trac:TracOnWindowsIisAjp], [trac:TracNginxRecipe].
+[trac:TracOnWindowsIisAjp], [trac:TracNginxRecipe] も参照してください。
 
-=== Authentication for tracd behind a proxy
-It is convenient to provide central external authentication to your tracd instances, instead of using {{{--basic-auth}}}. There is some discussion about this in #9206.
+=== プロキシ背後の tracd の認証 === #Authenticationfortracdbehindaproxy
+{{{--basic-auth}}} を使用する代わりに、tracd のインスタンスに外部認証を提供しても有効です。この方法については [trac:#9206 #9206] で議論されています。
 
-Below is example configuration based on Apache 2.2, mod_proxy, mod_authnz_ldap.
+下記は Apache 2.2 、mod_proxy、mod_authnz_ldap を使用した場合の設定例です。
 
-First we bring tracd into Apache's location namespace.
+まず Apache のネームスペースに tracd を定義します。
 
 {{{
 <Location /project/proxified>
@@ -302,7 +302,7 @@ First we bring tracd into Apache's location namespace.
 </Location>
 }}}
 
-Then we need a single file plugin to recognize HTTP_REMOTE_USER header as valid authentication source. HTTP headers like '''HTTP_FOO_BAR''' will get converted to '''Foo-Bar''' during processing. Name it something like '''remote-user-auth.py''' and drop it into '''proxified/plugins''' directory:
+HTTP_REMOTE_USER ヘッダを有効な認証ソースとして認識させるためには単一ファイルのプラグインが必要です。'''HTTP_FOO_BAR''' のような HTTP ヘッダは '''Foo-Bar''' に変換されます。'''remote-user-auth.py''' のようなファイル名をつけ、'''proxified/plugins''' ディレクトリ内に配置してください:
 {{{
 #!python
 from trac.core import *
@@ -313,18 +313,18 @@ class MyRemoteUserAuthenticator(Component):
 
     implements(IAuthenticator)
 
-    obey_remote_user_header = BoolOption('trac', 'obey_remote_user_header', 'false', 
-               """Whether the 'Remote-User:' HTTP header is to be trusted for user logins 
-                (''since ??.??').""") 
+    obey_remote_user_header = BoolOption('trac', 'obey_remote_user_header', 'false',
+               """Whether the 'Remote-User:' HTTP header is to be trusted for user logins
+                (''since ??.??').""")
 
     def authenticate(self, req):
-        if self.obey_remote_user_header and req.get_header('Remote-User'): 
-            return req.get_header('Remote-User') 
+        if self.obey_remote_user_header and req.get_header('Remote-User'):
+            return req.get_header('Remote-User')
         return None
 
 }}}
 
-Add this new parameter to your TracIni:
+TracIni にパラメータを追加します:
 {{{
 ...
 [trac]
@@ -333,14 +333,14 @@ obey_remote_user_header = true
 ...
 }}}
 
-Run tracd:
+tracd を起動します:
 {{{
 tracd -p 8101 -r -s proxified --base-path=/project/proxified
 }}}
 
-Note that if you want to install this plugin for all projects, you have to put it in your [TracPlugins#Plugindiscovery global plugins_dir] and enable it in your global trac.ini.
+もしプラグインをすべてのプロジェクトにインストールしたい場合、 [TracPlugins#Plugindiscovery 共有pluginsディレクトリ] に格納し、共有 trac.ini でプラグインのコンポーネントを有効に設定しなければいけません。
 
-Global config (e.g. `/srv/trac/conf/trac.ini`):
+共有 config (例えば `/srv/trac/conf/trac.ini`):
 {{{
 [components]
 remote-user-auth.* = enabled
@@ -350,17 +350,17 @@ plugins_dir = /srv/trac/plugins
 obey_remote_user_header = true
 }}}
 
-Environment config (e.g. `/srv/trac/envs/myenv`):
+各プロジェクトの config (例えば `/srv/trac/envs/myenv`):
 {{{
 [inherit]
 file = /srv/trac/conf/trac.ini
 }}}
 
-=== Serving a different base path than / ===
-Tracd supports serving projects with different base urls than /<project>. The parameter name to change this is
+===  / (root) とは異なるベースパスで起動する === #Servingadifferentbasepaththan
+Tracd は /<project> とは異なるベース URL でプロジェクトを提供することをサポートします。変更するためのパラメータは以下の通りです。
 {{{
  $ tracd --base-path=/some/path
 }}}
 
 ----
-See also: TracInstall, TracCgi, TracModPython, TracGuide, [trac:TracOnWindowsStandalone#RunningTracdasservice Running tracd.exe as a Windows service]
+See also: TracInstall, TracCgi, TracModPython, TracGuide, [trac:TracOnWindowsStandalone#RunningTracdasservice Windows 上での tracd.exe の実行]
