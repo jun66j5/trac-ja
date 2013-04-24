@@ -1,46 +1,46 @@
-= Custom Ticket Fields =
-Trac supports adding custom, user-defined fields to the ticket module. Using custom fields, you can add typed, site-specific properties to tickets.
+= カスタムチケット属性 = #CustomTicketFields
+Trac ではチケットにユーザ定義の属性を追加できます。カスタムチケット属性を使用すると、型付けされた、プロジェクト特有のプロパティをチケットに持たせることができます。
 
-== Configuration ==
-Configuring custom ticket fields is done in the [wiki:TracIni trac.ini] file. All field definitions should be under a section named `[ticket-custom]`.
+== 設定方法 == #Configuration
+カスタムチケット属性を設定するためには、 [wiki:TracIni trac.ini] ファイルを変更します。カスタムフィールドは、 trac.ini ファイルの `[ticket-custom]` セクションに書く必要があります。
 
-The syntax of each field definition is:
+各属性の定義は以下のように記述します:
 {{{
- FIELD_NAME = TYPE
- (FIELD_NAME.OPTION = VALUE)
+ 属性名 = タイプ
+ (属性名.オプション = 値)
  ...
 }}}
-The example below should help to explain the syntax.
+構文の詳細は以下の例を見てください。
 
-=== Available Field Types and Options ===
- * '''text''': A simple (one line) text field.
-   * label: Descriptive label.
-   * value: Default value.
-   * order: Sort order placement. (Determines relative placement in forms with respect to other custom fields.)
-   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
- * '''checkbox''': A boolean value check box.
-   * label: Descriptive label.
-   * value: Default value (0 or 1).
-   * order: Sort order placement.
- * '''select''': Drop-down select box. Uses a list of values.
-   * label: Descriptive label.
-   * options: List of values, separated by '''|''' (vertical pipe).
-   * value: Default value (one of the values from options).
-   * order: Sort order placement.
- * '''radio''': Radio buttons. Essentially the same as '''select'''.
-   * label: Descriptive label.
-   * options: List of values, separated by '''|''' (vertical pipe).
-   * value: Default value (one of the values from options).
-   * order: Sort order placement.
- * '''textarea''': Multi-line text area.
-   * label: Descriptive label.
-   * value: Default text.
-   * cols: Width in columns.
-   * rows: Height in lines.
-   * order: Sort order placement.
-   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
+=== 属性のタイプとオプション === #AvailableFieldTypesandOptions
+ * '''text''': シンプルな(1行の)テキスト。
+   * label: 説明となるラベル
+   * value: デフォルト値
+   * order: ソート時の並び順 (全てのカスタムフィールドで共通するソートの並び順)
+   * format: 通常のテキストを指す `plain` もしくは WikiFormatting として整形を行う `wiki` のいずれかを指定する。 (''0.11.3 以降'')
+ * '''checkbox''': ブーリアン値をもつチェックボックス。
+   * label: 説明となるラベル。
+   * value: デフォルト値 (0 または 1).
+   * order: ソート時の並び順
+ * '''select''': ドロップダウンするリストボックス。
+   * label: 説明となるラベル。
+   * options: リストに表示する値を '''|''' (vertical pipe) 区切りで記述。
+   * value: デフォルト値 (options の値から一つを指定)
+   * order: ソート時の並び順
+ * '''radio''': ラジオボタン。 HTML の '''select''' 要素と同じ。
+   * label: 説明となるラベル。
+   * options: リストに表示する値を '''|''' (vertical pipe) 区切りで記述。
+   * value: デフォルト値 (options の値から一つを指定)
+   * order: ソート時の並び順
+ * '''textarea''': 複数行のテキストエリア。
+   * label: 説明となるラベル。
+   * value: デフォルトで設定されるテキスト。
+   * cols: 入力領域のカラム幅。
+   * rows: 入力領域の行数。
+   * order: ソート時の並び順
+   * format: 通常のテキストを指す `plain` もしくは WikiFormatting として整形を行う `wiki` のいずれかを指定する。 (''0.11.3 以降'')
 
-=== Sample Config ===
+=== サンプル === #SampleConfig
 {{{
 [ticket-custom]
 
@@ -73,11 +73,11 @@ test_six.cols = 60
 test_six.rows = 30
 }}}
 
-''Note: To make entering an option for a `select` type field optional, specify a leading `|` in the `fieldname.options` option.''
+''Note: `select` タイプのフィールドを非必須 (optional) にしたい場合、 `フィールド名.options` オプションの先頭に `バーティカルパイプ (|)` を設定してください。''
 
-=== Reports Involving Custom Fields ===
+=== カスタム属性を含むレポート === #ReportsInvolvingCustomFields
 
-Custom ticket fields are stored in the `ticket_custom` table, not in the `ticket` table. So to display the values from custom fields in a report, you will need a join on the 2 tables. Let's use an example with a custom ticket field called `progress`.
+カスタムチケット属性は `ticket` テーブルに保存されるのではなく、 `ticket_custom` テーブルに保存されます。したがって、レポートのカスタム属性を表示するためには `ticket` と `ticket_custom` の 2 テーブルを join する必要があります。 `progress` と設定されたカスタムチケット属性の使用例を示します。
 
 {{{
 #!sql
@@ -88,9 +88,9 @@ SELECT p.value AS __color__,
 AND p.name = t.priority AND p.type = 'priority'
   ORDER BY p.value
 }}}
-'''Note''' that this will only show tickets that have progress set in them, which is '''not the same as showing all tickets'''. If you created this custom ticket field ''after'' you have already created some tickets, they will not have that field defined, and thus they will never show up on this ticket query. If you go back and modify those tickets, the field will be defined, and they will appear in the query. If that's all you want, you're set.
+'''Note''' この例は progress が設定されたチケットだけを表示します。'''すべてのチケットを表示するのではありません。'''既にいくつかのチケットを作成した''後で''カスタムチケット属性を定義した場合、既に作成されたチケットにはカスタムチケット属性が定義されません。そのため上記のクエリではチケットが表示されないでしょう。既に作成されたチケットにカスタム属性を設定し直せば、カスタムチケット属性は定義されます。そして、上記のクエリによって表示されるでしょう。
 
-However, if you want to show all ticket entries (with progress defined and without), you need to use a `JOIN` for every custom field that is in the query.
+しかし、すべてのチケットエントリを ( progress が定義されていないエントリーも一緒に ) 表示したいのであれば、クエリにおいてあらゆるカスタムフィールドに `JOIN` を使用する必要があります。
 {{{
 #!sql
 SELECT p.value AS __color__,
@@ -107,11 +107,11 @@ SELECT p.value AS __color__,
   ORDER BY p.value, milestone, severity, time
 }}}
 
-Note in particular the `LEFT OUTER JOIN` statement here.
+この `LEFT OUTER JOIN` ステートメントに特に注意してください。
 
-=== Updating the database ===
+=== データベースを更新する === #Updatingthedatabase
 
-As noted above, any tickets created before a custom field has been defined will not have a value for that field. Here's a bit of SQL (tested with SQLite) that you can run directly on the Trac database to set an initial value for custom ticket fields. Inserts the default value of 'None' into a custom field called 'request_source' for all tickets that have no existing value:
+上記に記述したとおり、カスタムフィールド設定以前に作成されたチケットには、該当するフィールドの値が定義されていない状態になります。以下のような SQL を Trac のデータベースで直接実行することで、カスタムフィールドの初期値を設定することができます (SQLite 向けの SQL ですので、 DBMS に応じて調整してください)。カスタムフィールド 'request_source' が存在しない、全てのチケットにデフォルト値 'None' が挿入されます:
 
 {{{
 #!sql
@@ -127,7 +127,7 @@ INSERT INTO ticket_custom
    );
 }}}
 
-If you added multiple custom fields at different points in time, you should be more specific in the subquery on table {{{ticket}}} by adding the exact custom field name to the query:
+複数のカスタムフィールドを追加している場合、 {{{ticket}}} 表への副問合わせで対象となるカスタムフィールドの名前を指定しなければなりません (訳注: 通常は上記の例ではなく、こちらを使うといいでしょう):
 
 {{{
 #!sql

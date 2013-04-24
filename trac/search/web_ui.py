@@ -44,13 +44,13 @@ class SearchModule(Component):
     RESULTS_PER_PAGE = 10
 
     min_query_length = IntOption('search', 'min_query_length', 3,
-        """Minimum length of query string allowed when performing a search.""")
+        """検索を実行するときに許容するクエリ文字列の最短の長さを設定します。""")
 
     default_disabled_filters = ListOption('search', 'default_disabled_filters',
-        doc="""Specifies which search filters should be disabled by default
-               on the search page. This will also restrict the filters for the
-               quick search function. Search filters can still be manually
-               enabled by the user on the search page. (since 0.12)""")
+        doc="""検索ページでデフォルトで無効化の対象とする検索フィルタを
+               設定します。ここに設定した値はクイックサーチの機能でも適用
+               されます。無効化した検索フィルタは、検索ページ上で、ユーザの
+               操作によって再度有効にすることができます。 (0.12 以降)""")
 
     # INavigationContributor methods
 

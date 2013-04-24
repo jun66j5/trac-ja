@@ -1,21 +1,21 @@
-= Steps to Add a New Wiki Page =
+= 新しい Wiki ページの作成手順 = #StepstoAddaNewWikiPage
 [[TracGuideToc]]
 
- 1. Choose a name for your new page. See WikiPageNames for naming conventions.
- 2. Edit an existing page (or any other resources that support WikiFormatting and add a [TracLinks link] to your new page. Save your changes.
- 3. Follow the link you created to take you to the new page. Trac will display a "describe !PageName here" message.
- 4. Click the "Edit this page" button to edit and add content to your new page. Save your changes.
- 5. All done. Your new page is published.
+ 1. 新しいページ名を考える。 WikiPageNames の命名規則を参考にしてください。
+ 2. すでに存在するページ (または WikiFormatting が利用可能なほかのリソース) を編集して、新しいページへの [TracLinks リンク] を追加し、変更を保存します。
+ 3. 作成したリンクを辿り、新しいページを開きます。 Trac は "ページ !PageName がありません。ここから作成できます。" というメッセージを表示するでしょう。
+ 4. "ページの作成" ボタンをクリックして、新しいページを編集し、内容を追加します。変更を保存します。
+ 5. 編集が完了し、「保存」すると新しいページが登録されます。
 
-You can skip the second step by entering the CamelCase name of the page in the quick-search field at the top of the page. But note that the page will effectively be "orphaned" unless you link to it from somewhere else.
+ページの上部にあるクイックサーチフィールドに CamelCase の名前を入力することによって、手順 2 を省略することができます。しかし、ページが確実に "存在しない" ページであることに注意して下さい。そうでなければ、他のところにリンクしてしまうでしょう。
 
-== Rename a page #renaming
+== ページ名を変更する #renaming
 
-While picking up good WikiPageNames is important, you can always change your mind
-and rename the page later.
+気に入った WikiPageNames を使用してたとしても、後にページ名を変更するかもしれないということを
+心に留めておいてください。
 
-You'll need to ask for the WIKI_RENAME permission in order to be allowed to do this.
-When renaming a page, you'll be offered the possibility to create a redirection page, so that links pointing to the old location will not be left dangling.
+Wiki ページの名前を変更するには、 WIKI_RENAME 権限を付与してもらうよう依頼する必要があります。
+ページ名を変更するとき、リンク切れをおこさないように旧ページにはリダイレクト用のページを残すかどうかを選択することができます。
 
 ----
 See also: TracWiki, PageTemplates, WikiFormatting, TracLinks, WikiDeletePage

@@ -31,25 +31,25 @@ class TicketNotificationSystem(Component):
 
     always_notify_owner = BoolOption('notification', 'always_notify_owner',
                                      'false',
-        """Always send notifications to the ticket owner (''since 0.9'').""")
+        """チケットの担当者 (owner) に常に通知メールを送信するかを設定します (''0.9 以降'') 。""")
 
     always_notify_reporter = BoolOption('notification', 'always_notify_reporter',
                                         'false',
-        """Always send notifications to any address in the ''reporter''
-        field.""")
+        """''報告者 (reporter)'' フィールドにあるアドレスに常に通知メールを
+        送信するかを設定します。""")
 
     always_notify_updater = BoolOption('notification', 'always_notify_updater',
                                        'true',
-        """Always send notifications to the person who causes the ticket 
-        property change and to any previous updater of that ticket.""")
+        """チケット属性が変更された場合に、それまでの全ての変更を行った人に、
+        常に通知メールを送信するかを設定します。""")
         
     ticket_subject_template = Option('notification', 'ticket_subject_template', 
                                      '$prefix #$ticket.id: $summary',
-        """A Genshi text template snippet used to get the notification subject.
+        """通知の件名 (Subject) に使用する Genshi のテキストテンプレートの一部を設定します。
 
-        By default, the subject template is `$prefix #$ticket.id: $summary`.
-        `$prefix` being the value of the `smtp_subject_prefix` option.
-        ''(since 0.11)''""")
+        デフォルトでは件名のテンプレートは `$prefix #$ticket.id: $summary` です。
+        `$prefix` の箇所は `smtp_subject_prefix` オプションの値で置き換えられます。
+        (''0.11 以降'')""")
 
 
 class TicketNotifyEmail(NotifyEmail):

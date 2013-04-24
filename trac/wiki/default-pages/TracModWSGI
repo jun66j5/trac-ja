@@ -1,10 +1,10 @@
-= Trac and mod_wsgi =
+= Trac と mod_wsgi = #Tracandmod_wsgi
 
-'''Important note:''' ''Please use either version 1.6, 2.4 or later of `mod_wsgi`. Versions prior to 2.4 in the 2.X branch have problems with some Apache configurations that use WSGI file wrapper extension. This extension is used in Trac to serve up attachments and static media files such as style sheets. If you are affected by this problem attachments will appear to be empty and formatting of HTML pages will appear not to work due to style sheet files not loading properly. See mod_wsgi tickets [http://code.google.com/p/modwsgi/issues/detail?id=100 #100] and [http://code.google.com/p/modwsgi/issues/detail?id=132 #132].''
+'''重要な Note:''' ''バージョン 1.6 または 2.4 以降の `mod_wsgi` を使用してください。 2.X ブランチの 2.4 以前のバージョンでは、 Apache の特定の設定下において WSGI の file_wrapper 拡張の扱いに問題があります。この拡張は Trac では添付ファイルおよび、スタイルシートなどの静的メディアファイルを提供する箇所で使われています。この問題の影響を受けてしまった場合、添付ファイルは空ファイルとして扱われてしまい、 HTML ページではスタイルシートがロードされないため描画が正しく行われなくなります。詳細は mod_wsgi のチケット [http://code.google.com/p/modwsgi/issues/detail?id=100 #100] と [http://code.google.com/p/modwsgi/issues/detail?id=132 #132] を確認してください。
 
-[http://code.google.com/p/modwsgi/ mod_wsgi] is an Apache module for running WSGI-compatible Python applications directly on top of Apache. The mod_wsgi adapter is written completely in C and provides significantly better performance than using existing WSGI adapters for mod_python or CGI.
+[http://code.google.com/p/modwsgi/ mod_wsgi] は WSGI 互換の Python アプリケーションを Apache 上で直接起動させることができる Apache のモジュールです。 mod_wsgi アダプターは完全に C 言語で書かれており、 mod_python や CGI に比べて非常によいパフォーマンスを提供します。
 
-Trac can be run on top of mod_wsgi with the help of the following application script, which is just a Python file, though usually saved with a .wsgi extension). This file can be created using '''trac-admin <env> deploy <dir>''' command which automatically substitutes required paths.
+Trac は mod_wsgi のトップレベルに application を定義するスクリプトだけで動作します。このスクリプトは単独の Python ファイルで、通常は .wsgi という拡張子で保存されます。このファイルを生成するためには '''trac-admin <env> deploy <dir>''' コマンドを使用します。コマンドを実行すると必要となるパスが自動的に設定されます。
 
 {{{
 #!python
@@ -17,9 +17,9 @@ import trac.web.main
 application = trac.web.main.dispatch_request
 }}}
 
-The `TRAC_ENV` variable should naturally be the directory for your Trac environment (if you have several Trac environments in a directory, you can also use `TRAC_ENV_PARENT_DIR` instead), while the `PYTHON_EGG_CACHE` should be a directory where Python can temporarily extract Python eggs.
+環境変数 `TRAC_ENV` は通常通り Trac environment のディレクトリを指定します (複数の Trac environment を含むディレクトリであれば `TRAC_ENV_PARENT_DIR` を使うこともできます)。 `PYTHON_EGG_CACHE` は Python eggs を一時的に展開するのに使用するディレクトリを指定します。
 
-'''Important note:''' If you're using multiple `.wsgi` files (for example one per Trac environment) you must ''not'' use `os.environ['TRAC_ENV']` to set the path to the Trac environment. Using this method may lead to Trac delivering the content of another Trac environment. (The variable may be filled with the path of a previously viewed Trac environment.) To solve this problem, use the following `.wsgi` file instead:
+'''重要な Note:''' 複数の `.wsgi` ファイルを使用する場合 (それぞれのファイルに別個の Trac environment を設定するケースなど) は、 `os.environ['TRAC_ENV']` には Trac environment のパスを ''設定しない'' でください。この方法を使うと、別の Trac environment の設定が Trac にロードされてしまうことがあります。 (以前にロードした Trac environment のパスが使われてしまいます。) この問題は `.wsgi` ファイルの内容を下記の通り変更することで回避できます:
 
 {{{
 #!python
@@ -33,9 +33,9 @@ def application(environ, start_response):
   return trac.web.main.dispatch_request(environ, start_response)
 }}}
 
-For clarity, you should give this file a `.wsgi` extension. You should probably put the file in it's own directory, since you will open up its directory to Apache. You can create a .wsgi files which handles all this for you by running the TracAdmin command `deploy`.
+分かりやすくするために、このファイルの拡張子は `.wsgi` とすべきです。 Apache にアクセス権を開放できるのであれば、このファイルは自分が所有権を持つディレクトリに置くこともできます。この .wsgi ファイルは TracAdmin のコマンド `deploy` を使用することで作成することができます。
 
-If you have installed trac and eggs in a path different from the standard one you should add that path by adding the following code on top of the wsgi script:
+Trac と egg ファイルをインストールしたパスが通常と異なる場合、それらのパスを以下の要領で wsgi スクリプトの先頭に記述する必要があります:
 
 {{{
 #!python
@@ -43,9 +43,9 @@ import site
 site.addsitedir('/usr/local/trac/lib/python2.4/site-packages')
 }}}
 
-Change it according to the path you installed the trac libs at.
+パスはインストールした Trac のライブラリに位置に一致するように変更してください。
 
-After you've done preparing your wsgi-script, add the following to your httpd.conf.
+wsgi-script の準備ができたら、以下のように httpd.conf に設定を追加してください。
 
 {{{
 WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
@@ -57,9 +57,9 @@ WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
 </Directory>
 }}}
 
-Here, the script is in a subdirectory of the Trac environment. In order to let Apache run the script, access to the directory in which the script resides is opened up to all of Apache. Additionally, the {{{WSGIApplicationGroup}}} directive ensures that Trac is always run in the first Python interpreter created by mod_wsgi; this is necessary because the Subversion Python bindings, which are used by Trac, don't always work in other subinterpreters and may cause requests to hang or cause Apache to crash as a result. After adding this configuration, restart Apache, and then it should work.
+Trac environment のサブディレクトリにスクリプトがある場合、 Apache がスクリプトを起動する為には、スクリプトが含まれるディレクトリまで完全に Apache がアクセスできなければなりません。 {{{WSGIApplicationGroup}}} ディレクティブを使用すると、常に mod_wsgi が作成した最初の Python インタプリタ内で Trac が起動することが保証されます; これは Trac で使用している Subversion の Python バインディングがサブインタプリタでは動作しないことがあるため必要になります。リクエストがハングし、 Apache がクラッシュしたような結果が返ります。この設定を行った後は Apache を再起動しないと反映されません。
 
-To test the setup of Apache, mod_wsgi and Python itself (ie. without involving Trac and dependencies), this simple wsgi application can be used to make sure that requests gets served (use as only content in your .wsgi script):
+Apache, mod_wsgi, Python 本体 (Trac とその依存ライブラリを除く) の設定をテストしたい場合、簡単な wsgi アプリケーションを使用するとリクエストが処理されているか確認することができます (以下に示す内容だけを持つ .wsgi スクリプトを使用してください):
 
 {{{
 def application(environ, start_response):
@@ -67,29 +67,29 @@ def application(environ, start_response):
         return ['<html><body>Hello World!</body></html>']
 }}}
 
-See also the mod_wsgi [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac installation instructions] for Trac.
+mod_wsgi の [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac インストール例] に Trac の情報が掲載されています。
 
-For troubleshooting tips, see the [TracModPython#Troubleshooting mod_python troubleshooting] section, as most Apache-related issues are quite similar, plus discussion of potential [http://code.google.com/p/modwsgi/wiki/ApplicationIssues application issues] when using mod_wsgi.
+トラブルシューティングの Tips は [TracModPython#Troubleshooting mod_python のトラブルシューティング] セクションも参考になります。 Apache に関連する問題の多くは似通っていて、多くの場合 mod_wsgi を使用する [http://code.google.com/p/modwsgi/wiki/ApplicationIssues アプリケーション側の問題] です。
 
-''Note: using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks''
+''Note: 私の環境では mod_wsgi 2.5 と Python 2.6.1 を使うと Internal Server Error が発生しました (Apache 2.2.11 および Trac 0.11.2.1)。 Python 2.6.2 にアップグレードすると解決しました。 ([http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html ここ] に書いてある通り)[[BR]]-- Graham Shanks''
 
-== Apache Basic Authentication for Trac thru mod_wsgi ==
+== mod_wsgi 使用におけるTrac での Apache 基本認証 == #ApacheBasicAuthenticationforTracthrumod_wsgi
 
-Per the mod_wsgi documentation linked to above, here is an example Apache configuration that a) serves the trac from a virtualhost subdomain and b) uses Apache basic authentication for Trac authentication.
+上記の mod_wsgi のドキュメントには、 Apache の設定例 a) trac をバーチャルホストでサブドメインを作成して動かす例と b) Trac の認証として、 Apache の基本認証を設定する例が記載されています。
 
 
-If you want your trac to be served from e.g. !http://trac.my-proj.my-site.org, then from the folder e.g. {{{/home/trac-for-my-proj}}}, if you used the command {{{trac-admin the-env initenv}}} to create a folder {{{the-env}}}, and you used {{{trac-admin the-env deploy the-deploy}}} to create a folder {{{the-deploy}}}, then:
+例えば、 trac を !http://trac.my-proj.my-site.org としてホストし、{{{/home/trac-for-my-proj}}} フォルダから起動する場合で、 {{{the-env}}} を作成するために、 {{{trac-admin the-env initenv}}} コマンドを使用し、 {{{the-deploy}}} フォルダを作成するために、 {{{trac-admin the-env deploy the-deploy}}} コマンドを使用した場合です:
 
-create the htpasswd file:
+htpasswd ファイルを作成します:
 {{{
 cd /home/trac-for-my-proj/the-env
 htpasswd -c htpasswd firstuser
 ### and add more users to it as needed:
 htpasswd htpasswd seconduser
 }}}
-(for security keep the file above your document root)
+( セキュリティ面より、このファイルはドキュメントルートにおきます)
 
-create this file e.g. (ubuntu) {{{/etc/apache2/sites-enabled/trac.my-proj.my-site.org.conf}}} with these contents:
+以下の設定を含んだファイルを作成します。例 {{{/etc/apache2/sites-enabled/trac.my-proj.my-site.org.conf}}} (ubuntu):
 
 {{{
 <Directory /home/trac-for-my-proj/the-deploy/cgi-bin/trac.wsgi>
@@ -113,27 +113,27 @@ create this file e.g. (ubuntu) {{{/etc/apache2/sites-enabled/trac.my-proj.my-sit
 }}}
 
 
-(for subdomains to work you would probably also need to alter /etc/hosts and add A-Records to your host's DNS.)
+(サブドメインが適切に動くにようにするには、 /etc/hosts ファイルの変更や、ホストサーバの DNS の A レコードにサブドメインを追加する必要があります)
 
-== Trac with PostgreSQL ==
+== Trac と PostgreSQL == #TracwithPostgreSQL
 
-When using the mod_wsgi adapter with multiple Trac instances and PostgreSQL (or MySQL?) as a database back-end the server can get a lot of open database connections. (and thus PostgreSQL processes)
+mod_wsgi アダプタを使用し、 Trac のインスタンスを複数ホストしている場合に、 PostgreSQL (もしかすると MySQL も?) をデータベースバックエンドとして使用していると、大量のデータベース接続が生成され (PostgreSQL のプロセスも大量に発生し) てしまいます。
 
-A workable solution is to disabled connection pooling in Trac. This is done by setting poolable = False in trac.db.postgres_backend on the PostgreSQLConnection class.
+さしあたり動く解決方法として、 Trac が持つコネクションプールを無効化する方法があります。これは trac.db.postgres_backend の PostgreSQLConnection クラスで定義されている poolable を False に設定することで適用できます。
 
-But it's not necessary to edit the source of trac, the following lines in trac.wsgi will also work:
+この方法を適用するために、 Trac のソースを変更する必要はありません。以下に示す行を trac.wsgi に追加してください:
 
 {{{
 import trac.db.postgres_backend
 trac.db.postgres_backend.PostgreSQLConnection.poolable = False
 }}}
 
-Now Trac drops the connection after serving a page and the connection count on the database will be kept minimal.
+この設定で Trac ページを生成した後にコネクションを捨てるようになり、データベースへの接続数は最小に保たれます。
 
-== Getting Trac to work nicely with SSPI and 'Require Group' ==
-If like me you've set Trac up on Apache, Win32 and configured SSPI, but added a 'Require group' option to your apache configuration, then the SSPIOmitDomain option is probably not working.  If its not working your usernames in trac are probably looking like 'DOMAIN\user' rather than 'user'.
+== SSPI および 'Require Group' 使用時に Trac を動かす方法 == #GettingTractoworknicelywithSSPIandRequireGroup
+Trac を Win32 上の Apache で起動し、 SSPI 設定して 'Require group' オプションを構成している場合、 'SSPIOmitDomain' オプションはおそらく動作しません。 Trac にユーザ名が認識されない場合は、 'user' が 'DOMAIN\user' のように見えている可能性があります。
 
-This WSGI script 'fixes' things, hope it helps:
+このような場合、以下のように WSGI スクリプトを修正すると解決すると思います:
 {{{
 import os
 import trac.web.main
@@ -147,4 +147,4 @@ def application(environ, start_response):
     return trac.web.main.dispatch_request(environ, start_response)
 }}}
 ----
-See also:  TracGuide, TracInstall, [wiki:TracFastCgi FastCGI], [wiki:TracModPython ModPython], [trac:TracNginxRecipe TracNginxRecipe]
+See also:  TracGuide, TracInstall, [wiki:TracFastCgi FastCGI], [wiki:TracModPython ModPython], [http://trac.edgewall.org/wiki/TracNginxRecipe TracNginxRecipe]

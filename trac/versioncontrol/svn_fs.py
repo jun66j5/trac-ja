@@ -245,18 +245,17 @@ class SubversionConnector(Component):
     implements(ISystemInfoProvider, IRepositoryConnector)
 
     branches = ListOption('svn', 'branches', 'trunk,branches/*', doc=
-        """Comma separated list of paths categorized as branches.
-        If a path ends with '*', then all the directory entries found below 
-        that path will be included. 
-        Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`
+        """ブランチとして分類するパスのカンマ区切りリスト。
+        パスが '*' で終わっている場合、そのパスに含まれる全ての
+        ディレクトリエントリが含まれます。
+        例: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`
         """)
 
     tags = ListOption('svn', 'tags', 'tags/*', doc=
-        """Comma separated list of paths categorized as tags.
-        
-        If a path ends with '*', then all the directory entries found below
-        that path will be included.
-        Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`
+        """タグとして分類するパスのカンマ区切りリスト。
+        パスが '*' で終わっている場合、そのパスに含まれる全ての
+        ディレクトリエントリが含まれます。
+        例: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`
         """)
 
     error = None

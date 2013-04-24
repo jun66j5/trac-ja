@@ -1,95 +1,95 @@
-= Trac Links =
+= Trac リンク = #TracLinks
 [[TracGuideToc]]
 
-TracLinks are a fundamental feature of Trac, because they allow easy hyperlinking between the various entities in the system—such as tickets, reports, changesets, Wiki pages, milestones, and source files—from anywhere WikiFormatting is used.
+TracLinks は Trac の基礎となる機能です。というのも、 TracLinks によってシステムのエントリ間 - チケット、レポート、チェンジセット、Wikiページ、マイルストーン、ソースファイルなど - で簡単にハイパーリンクすることができるからです。
 
-TracLinks are generally of the form '''type:id''' (where ''id'' represents the
-number, name or path of the item) though some frequently used kinds of items
-also have short-hand notations.
+TracLinks は通常、 '''type:id''' (''id'' はアイテムの
+番号や名前、パス) の形式で記述しますが、よく使われるコンポーネントについては、
+下の例のように表記を省略することもできます。
 
-== Where to use TracLinks ==
-You can use TracLinks in:
+== TracLinks が使えるところ == #WheretouseTracLinks
+TracLinks が使えるのは:
 
- * Source code (Subversion) commit messages
- * Wiki pages
- * Full descriptions for tickets, reports and milestones
+ * ソースコード (Subverison) のコミットメッセージ
+ * Wikiページ
+ * チケット、レポート、マイルストーンでの説明記述箇所
 
-and any other text fields explicitly marked as supporting WikiFormatting.
+その他、 WikiFormatting を利用可能なことが明示されているすべてのテキストフィールド。
 
-== Overview ==
+== 概要 == #Overview
 
-||= Wiki Markup =||= Display =||
+||= Wiki マークアップ =||= 表示 =||
 {{{#!td
- Wiki pages :: `CamelCase` or `wiki:CamelCase`
- Parent page :: `[..]`
- Tickets :: `#1` or `ticket:1`
- Ticket comments :: `comment:1:ticket:2`
- Reports :: `{1}` or `report:1`
- Milestones :: `milestone:1.0`
- Attachment :: `attachment:example.tgz` (for current page attachment), `attachment:attachment.1073.diff:ticket:944` (absolute path)
- Changesets :: `r1`, `[1]`, `changeset:1` or (restricted) `[1/trunk]`, `changeset:1/trunk`
- Revision log :: `r1:3`, `[1:3]` or `log:@1:3`, `log:trunk@1:3`, `[2:5/trunk]`
- Diffs :: `diff:@1:3`, `diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default` 
-          or `diff:trunk/trac@3538//sandbox/vc-refactoring@3539`
- Files :: `source:trunk/COPYING`, `source:/trunk/COPYING@200` (at version 200), `source:/trunk/COPYING@200#L25` (at version 200, line 25)
+ Wiki ページ :: `CamelCase`, `wiki:CamelCase`
+ 親ページ :: `[..]`
+ チケット :: `#1`, `ticket:1`
+ チケットのコメント :: `comment:1:ticket:2`
+ レポート :: `{1}`, `report:1`
+ マイルストーン :: `milestone:1.0`
+ 添付ファイル :: `attachment:example.tgz` (現在のページの添付ファイル), `attachment:attachment.1073.diff:ticket:944` (絶対パス)
+ チェンジセット :: `r1`, `[1]`, `changeset:1`, (特定パス配下) `[1/trunk]`, `changeset:1/trunk`
+ リビジョンログ :: `r1:3`, `[1:3]`, `log:@1:3`, `log:trunk@1:3`, `[2:5/trunk]`
+ diff :: `diff:@1:3`, `diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default` 
+          または `diff:trunk/trac@3538//sandbox/vc-refactoring@3539`
+ ファイル :: `source:trunk/COPYING`, `source:/trunk/COPYING@200` (バージョン 200 における), `source:/trunk/COPYING@200#L25` (バージョン 200 における, 25 行目)
 }}}
 {{{#!td
- Wiki pages :: CamelCase or wiki:CamelCase
- Parent page :: [..]
- Tickets :: #1 or ticket:1
- Ticket comments :: comment:1:ticket:2 
- Reports :: {1} or report:1
- Milestones :: milestone:1.0
- Attachment :: attachment:example.tgz (for current page attachment), attachment:attachment.1073.diff:ticket:944 (absolute path)
- Changesets :: r1, [1], changeset:1 or (restricted) [1/trunk], changeset:1/trunk
- Revision log :: r1:3, [1:3] or log:@1:3, log:trunk@1:3, [2:5/trunk]
- Diffs :: diff:@1:3, diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default 
-          or diff:trunk/trac@3538//sandbox/vc-refactoring@3539
- Files :: source:trunk/COPYING, source:/trunk/COPYING@200 (at version 200), source:/trunk/COPYING@200#L25 (at version 200, line 25)
+ Wiki ページ :: CamelCase, wiki:CamelCase
+ 親ページ :: [..]
+ チケット :: #1, ticket:1
+ チケットのコメント :: comment:1:ticket:2
+ レポート :: {1}, report:1
+ マイルストーン :: `milestone:1.0`
+ 添付ファイル :: `attachment:example.tgz` (現在のページの添付ファイル), `attachment:attachment.1073.diff:ticket:944` (絶対パス)
+ チェンジセット :: `r1`, `[1]`, `changeset:1`, (特定パス配下) `[1/trunk]`, `changeset:1/trunk`
+ リビジョンログ :: r1:3, [1:3], log:@1:3, log:trunk@1:3, [2:5/trunk]
+ diff :: diff:@1:3, diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default 
+          または diff:trunk/trac@3538//sandbox/vc-refactoring@3539
+ ファイル :: `source:trunk/COPYING`, `source:/trunk/COPYING@200` (バージョン 200 における), `source:/trunk/COPYING@200#L25` (バージョン 200 における, 25 行目)
 }}}
 
-'''Note:''' The wiki:CamelCase form is rarely used, but it can be convenient to refer to
-pages whose names do not follow WikiPageNames rules, i.e., single words,
-non-alphabetic characters, etc. See WikiPageNames for more about features specific
-to links to Wiki page names.
+'''Note:''' wiki:CamelCase の書式が使われることはほとんどありませんが、
+ページ名が WikiPageNames のルールに従っていないページ (一文字、
+アルファベット以外の文字、etc.) をリンクしたい場合には便利です。
+WikiPageNames に Wiki ページ名へのリンクに関する特記事項が書いてあるので見て下さい。
 
 
 {{{#!table class=""
-|||| Trac links using the full (non-shorthand) notation can also be given a custom link title like this: ||
+|||| 完全表記の (簡略形でない) Trac リンクでは、次のようにしてリンクタイトルをカスタマイズすることもできます: ||
 {{{#!td
 {{{
-[ticket:1 This is a link to ticket number one] or
-[[ticket:1|This is another link to ticket number one]].
+[ticket:1 これは1番目のチケットへのリンクです] または
+[[ticket:1|これは1番目のチケットへのリンクです]]。
 }}}
 }}}
 {{{#!td
-[ticket:1 This is a link to ticket number one] or
-[[ticket:1|This is another link to ticket number one]].
+[ticket:1 これは1番目のチケットへのリンクです] または
+[[ticket:1|これは1番目のチケットへのリンクです]]。
 }}}
 |--------------------------------------------------------------------------------------
-|||| If the title is omitted, only the id (the part after the colon) is displayed:  ||
+|||| タイトルが省略された場合、 ID のみ (コロンの後ろ側) が表示されます: ||
 {{{#!td
 {{{
-[ticket:1] or [[ticket:2]]
+[ticket:1] または [[ticket:2]]
 }}}
 }}}
 {{{#!td
-[ticket:1] or [[ticket:2]]
+[ticket:1] または [[ticket:2]]
 }}}
 |--------------------------------------------------------------------------------------
-|||| `wiki` is the default if the namespace part of a full link is omitted:  || 
+|||| 完全表記から名前空間が省略されている場合、デフォルト値として `wiki` が使用されます: || 
 {{{#!td
 {{{
-[SandBox the sandbox] or
-[[SandBox|the sandbox]]
+[SandBox サンドボックス] または
+[[SandBox|サンドボックス]]
 }}}
 }}}
 {{{#!td
-[SandBox the sandbox] or
-[[SandBox|the sandbox]]
+[SandBox サンドボックス] または
+[[SandBox|サンドボックス]]
 }}}
 |--------------------------------------------------------------------------------------
-|||| The short form ''realm:target'' can also be wrapped within a <...> pair, [[br]] which allow for arbitrary characters (i.e. anything but >)  ||
+|||| ''realm:target'' 形式のリンクで特殊な文字を使用したい場合は、 <...> で囲んでください。 [[br]] (ただし > は使用できません) [[br]] 訳注: target 該当箇所を "" で囲む形式との違いは、バージョンに展開される `@` などのような特殊文字も解釈されずに、そのまま target として使用されることにあります。 ||
 {{{#!td
 {{{
 <wiki:Strange(page@!)>
@@ -100,248 +100,249 @@ to links to Wiki page names.
 }}}
 }}}
 
-TracLinks are a very simple idea, but actually allow quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+TracLinks はとてもシンプルなアイディアですが、実際にはとても複雑な情報網になっています。実際、使う分にはとても直感的で簡単ですし、 "リンクを追跡する" ことによってプロジェクトでおこったことやなぜある事象が起こったのかを理解するのにとても役に立ちます。
 
 
-== Advanced use of TracLinks ==
+== TracLinks の高度な利用 == #AdvanceduseofTracLinks
 
-=== Relative links ===
+=== 相対リンク === #Relativelinks
 
-To create a link to a specific anchor in a page, use '#':
+ページ内の特定アンカーにリンクするには '#' を使用します:
 {{{
- [#Relativelinks relative links] or [[#Relativelinks|relative links]]
+ [#Relativelinks 相対リンク] または [[#Relativelinks|相対リンク]]
 }}}
-Displays:
-  [#Relativelinks relative links] or [[#Relativelinks|relative links]]
+表示:
+  [#Relativelinks 相対リンク] または [[#Relativelinks|相対リンク]]
 
-Hint: when you move your mouse over the title of a section, a '¶' character will be displayed. This is a link to that specific section and you can use this to copy the `#...` part inside a relative link to an anchor.
+Hint: セクションのタイトルにマウスオーバしたときに、文字 '¶' が表示されます。これはそのセクションへのリンクですので、 `#...` の部分をコピーすれば、相対リンクのアンカーとして使用できます。
 
-To create a link to a [trac:SubWiki SubWiki]-page just use a '/':
+[http://trac.edgewall.org/wiki/SubWiki SubWiki] ページにリンクするには '/' を使用します:
 {{{
- WikiPage/SubWikiPage or ./SubWikiPage
-}}}
-
-To link from a [trac:SubWiki SubWiki] page to a parent, simply use a '..':
-{{{
-  [..] or [[..]]
-}}}
-  [..] or [[..]]
-
-To link from a [trac:SubWiki SubWiki] page to a [=#sibling sibling] page, use a '../':
-{{{
-  [../Sibling see next sibling] or [[../Sibling|see next sibling]]
-}}}
-  [../Sibling see next sibling] or [[../Sibling|see next sibling]]
-
-But in practice you often won't need to add the `../` prefix to link to a sibling page.
-For resolving the location of a wiki link, it's the target page closest in the hierarchy
-to the page where the link is written which will be selected. So for example, within 
-a sub-hierarchy, a sibling page will be targeted in preference to a toplevel page.
-This makes it easy to copy or move pages to a sub-hierarchy by [[WikiNewPage#renaming|renaming]] without having to adapt the links.
-
-In order to link explicitly to a [=#toplevel toplevel] Wiki page,
-use the `wiki:/` prefix.
-Be careful **not** to use the `/` prefix alone, as this corresponds to the
-[#Server-relativelinks] syntax and with such a link you will lack the `/wiki/` 
-part in the resulting URL.
-
-''(Changed in 0.11)'' Note that in Trac 0.10, using e.g. `[../newticket]`  may have worked for linking to the `/newticket` top-level URL, but since 0.11, such a link will stay in the wiki namespace and therefore link to a sibling page. 
-See [#Server-relativelinks] for the new syntax.
-
-=== InterWiki links ===
-
-Other prefixes can be defined freely and made to point to resources in other Web applications. The definition of those prefixes as well as the URLs of the corresponding Web applications is defined in a special Wiki page, the InterMapTxt page. Note that while this could be used to create links to other Trac environments, there's a more specialized way to register other Trac environments which offers greater flexibility.
-
-=== InterTrac links ===
-
-This can be seen as a kind of InterWiki link specialized for targeting other Trac projects.
-
-Any type of Trac link can be written in one Trac environment and actually refer to resources in another Trac environment. All that is required is to prefix the Trac link with the name of the other Trac environment followed by a colon. The other Trac environment must be registered on the InterTrac page. 
-
-A distinctive advantage of InterTrac links over InterWiki links is that the shorthand form of Trac links (e.g. `{}`, `r`, `#`) can also be used. For example if T was set as an alias for Trac, links to Trac tickets can be written #T234, links to Trac changesets can be written [trac 1508].
-See InterTrac for the complete details. 
-
-=== Server-relative links ===
-
-It is often useful to be able to link to objects in your project that
-have no built-in Trac linking mechanism, such as static resources, `newticket`,
-a shared `/register` page on the server, etc.
-
-To link to resources inside the project, use either an absolute path from the project root, 
-or a relative link from the URL of the current page (''Changed in 0.11''):
-
-{{{
-[/newticket Create a new ticket] or [[//newticket|Create a new ticket]]
-[/ home] or [[/|home]]
+ WikiPage/SubWikiPage または ./SubWikiPage
 }}}
 
-Display: [/newticket Create a new ticket] or [[//newticket|Create a new ticket]]
-[/ home] or [[/|home]]
+[http://trac.edgewall.org/wiki/SubWiki SubWiki] ページから親ページにリンクするには、 '..' を使用します:
+{{{
+  [..] または [[..]]
+}}}
+  [..] または [[..]]
 
-To link to another location on the server (possibly outside the project but on the same host), use the `//` prefix (''Changed in 0.11''):
+[http://trac.edgewall.org/wiki/SubWiki SubWiki] ページから [=#sibling 兄弟の位置にある] ページにリンクするには、 '../' を使用します:
+{{{
+  [../Sibling 次の兄弟ページ] または [[../Sibling|次の兄弟ページ]]
+}}}
+  [../Sibling 次の兄弟ページ] または [[../Sibling|次の兄弟ページ]]
+
+しかし、兄弟の位置にあるページにリンクするために `../` プレフィックスを使用しない方がいい場合もあります。
+Wiki リンクのロケーションを解決するとき、相対リンクではリンクを記述するページから階層内での近い位置にあるページが選択されます。
+つまり、階層化されているページの場合、トップレベルにあるページよりも、兄弟の位置にあるページが優先されます。
+プレフィックスを使用しない場合は [[WikiNewPage#renaming|ページ名変更]] による下位の階層へのページのコピーや移動の際に、
+リンクを書き換える必要がなくなるので、簡単にできるようになります。
+
+明示的に [=#toplevel トップレベル] の Wiki ページへのリンクを記述する場合は、
+`wiki:/` プレフィックスを使用してください。
+ただし、 `/` プレフィックスを単独で使う場合 **Wiki ページへのリンクになりません**。
+`/` で始まるリンクは [#Server-relativelinks サーバ相対リンク] のシンタックスとして解釈されるため、
+`/wiki/` が付与されない、不完全な URL になってしまいます。
+
+''(0.11 で変更された箇所です)'' Trac 0.10 では `[../newticket]` のように書くと、トップレベル URL の `/newticket` にリンクする動作でした。しかし 0.11 では Wiki の名前空間にとどまり、兄弟の位置にあるページにリンクします。
+新しいシンタックスについては [#Server-relativelinks サーバ相対リンク] を参照してください。
+
+=== InterWiki リンク === #InterWikilinks
+
+他に、プレフィックスを自由に定義して、他の Web アプリケーションのリソースをポイントさせることができます。プレフィックスと対応する Web アプリケーションの URL の定義は特殊な Wiki ページである InterMapTxt ページで定義されます。他の TracEnvironment へのリンクを作ることもできますが、より柔軟に他の TracEnvironment を指す特別な方法があることを覚えておいてください。
+
+=== InterTrac リンク === #InterTraclinks
+
+InterWiki リンクと同じ要領で使用できますが、リンクする対象を他の Trac プロジェクトに特化した機能です。
+
+ある Trac Environment に記述される、どんな形式の Trac リンクであっても、他の Trac Environment のリソースを参照することができます。他の Trac Environment のリソースを指すためには、 Trac リンクのプレフィックスとして、リンク先の Trac Environment の名前とコロンを付与してください。このリンク先の Trac Environment は、名前そのものかエイリアスを、あらかじめ InterTrac に登録しておく必要があります。
+
+InterWiki リンクに対する InterTrac リンクの利点は、 Trac リンクの短縮書式 (`{}`, `r`, `#` など) を使えることにあります。例えば、 Trac プロジェクトへのエイリアスとして T が設定されている場合、 Trac プロジェクトへのチケットへのリンクは `#T234` と書くことができ、 Trac プロジェクトへのチェンジセットへのリンクは `[trac 1508]` と書くことができます。
+完全な詳細は InterTrac を参照してください。
+
+=== サーバ相対リンク === #Server-relativelinks
+
+静的リソースや `newticket` のような固定リンク、 `/register` ページのような
+サーバ内で共有するリソースなど、 Trac のリンク機構にビルトインされていない
+リソースに対して Project 内でリンクする機能は時折、有用になります。
+
+Project 内のリソースにリンクするためには、 Project root からの絶対パスか、
+現在のページの URL からの相対リンクを使用します (''0.11 で変更された箇所です''):
 
 {{{
-[//register Register Here] or [[//register|Register Here]]
+[/newticket 新規チケット作成] または [[//newticket|新規チケット作成]]
+[/ home] または [[/|home]]
 }}}
 
-Display: [//register Register Here] or [[//register|Register Here]]
+表示: [/newticket 新規チケット作成] または [[//newticket|新規チケット作成]]
+[/ home] または [[/|home]]
 
-=== Quoting space in TracLinks ===
+サーバ上の他のロケーション (Project の外部だが同じ FQDN にホストされているリソース) にリンクするためには、 '//' リンクシンタックスを使用します (''0.11 で変更された箇所です''):
 
-Immediately after a TracLinks prefix, targets containing space characters should
-be enclosed in a pair of quotes or double quotes.
-Examples:
+{{{
+[//register ここで登録します] または [[//register|ここで登録します]]
+}}}
+
+表示: [//register ここで登録します] または [[//register|ここで登録します]]
+
+=== Trac リンクで空白文字をエスケープする === #QuotingspaceinTracLinks
+
+TracLinks のプレフィックスの後ろにスペースを含んだターゲットがある場合、
+シングルクォーテーションかダブルクォーテーションで囲みます。
+例:
  * !wiki:"The whitespace convention"
- * !attachment:'the file.txt' or
+ * !attachment:'the file.txt' もしくは
  * !attachment:"the file.txt" 
  * !attachment:"the file.txt:ticket:123" 
 
-Note that by using [trac:WikiCreole] style links, it's quite natural to write links containing spaces:
+[http://trac.edgewall.org/wiki/WikiCreole WikiCreole] 形式のリンクを使用する場合、空白文字はそのまま解釈されます (訳注: WikiMacros の書式と重複しているので、マクロ名と同じページ名では使用できません):
  * ![[The whitespace convention]]
  * ![[attachment:the file.txt]]
 
-=== Escaping Links ===
+=== リンクの無効化 === #EscapingLinks
 
-To prevent parsing of a !TracLink, you can escape it by preceding it with a '!' (exclamation mark).
+!TracLinks を無効化するには、先頭に '!' (エクスクラメーションマーク) を付けます。
 {{{
  !NoLinkHere.
  ![42] is not a link either.
 }}}
 
-Display:
+表示:
  !NoLinkHere.
  ![42] is not a link either.
 
 
-=== Parameterized Trac links ===
+=== パラメータつきの Trac リンク === #ParameterizedTraclinks
 
-Many Trac resources have more than one way to be rendered, depending on some extra parameters. For example, a Wiki page can accept a `version` or a `format` parameter, a report can make use of dynamic variables, etc.
+Trac リンクの対象となる Trac リソースの多くは複数の表示形式を持ち、パラメータで制御することができます。例えば、 Wiki ページでは `version` や `format` パラメータを使用でき、レポートでは動的変数の使用ができます。
 
-Trac links can support an arbitrary set of parameters, written in the same way as they would be for the corresponding URL. Some examples:
+Trac リンクは、 URL のクエリパラメータに相当する方法で記述できる。任意の組み合わせのパラメータを持っています。例えば:
  - `wiki:WikiStart?format=txt`
  - `ticket:1?version=1`
- - `[/newticket?component=module1 create a ticket for module1]`
- - `[/newticket?summary=Add+short+description+here create a ticket with URL with spaces]`
+ - `[/newticket?component=module1 module1 についてのチケットを新規登録]`
+ - `[/newticket?summary=Add+short+description+here 空白文字を含む場合]`
 
 
-== TracLinks Reference ==
-The following sections describe the individual link types in detail, as well as notes on advanced usage of links.
+== TracLinks リファレンス ==　#TracLinksReference
+以下に示すセクションは特定のリンクの種類の詳細について記述しています。 TracLinks の上級者向けの使用方法も同時に記述します。
 
-=== attachment: links ===
+=== attachment: リンク === #attachment:links
 
-The link syntax for attachments is as follows:
- * !attachment:the_file.txt creates a link to the attachment the_file.txt of the current object
- * !attachment:the_file.txt:wiki:MyPage creates a link to the attachment the_file.txt of the !MyPage wiki page
- * !attachment:the_file.txt:ticket:753 creates a link to the attachment the_file.txt of the ticket 753
+添付ファイルへのリンクのシンタックスは次に示すとおりです:
+ * !attachment:the_file.txt は、現在のオブジェクトに添付されたファイル the_file.txt へのリンクを生成します。
+ * !attachment:the_file.txt:wiki:MyPage は、 Wiki ページ !MyPage に添付されたファイル the_file.txt へのリンクを生成します。
+ * !attachment:the_file.txt:ticket:753 は、チケット 753 に添付されたファイル the_file.txt へのリンクを生成します。
 
-Note that the older way, putting the filename at the end, is still supported: !attachment:ticket:753:the_file.txt.
+Note: 古い記法ではファイル名を最後に書いていました。この記法はまだ使うことができます: !attachment:ticket:753:the_file.txt
 
-If you'd like to create a direct link to the content of the attached file instead of a link to the attachment page, simply use `raw-attachment:` instead of `attachment:`.
+添付ファイルページではなく、添付ファイルの内容に直接リンクしたい場合は `attachment:` の代わりに `raw-attachment:` を使用してください。
 
-This can be useful for pointing directly to an HTML document, for example. Note that for this use case, you'd have to allow the web browser to render the content by setting `[attachment] render_unsafe_content = yes` (see TracIni#attachment-section). Caveat: only do that in environments for which you're 100% confident you can trust the people who are able to attach files, as otherwise this would open up your site to [wikipedia:Cross-site_scripting cross-site scripting] attacks.
+このリンクは HTML ドキュメントなどを直接指す目的では使いやすいですが、この方法を使うためには `[attachment] render_unsafe_content = yes` (See TracIni#attachment-section) を設定し、 Web ブラウザに内容を表示できるように設定しなければなりません。注意: この設定を行うのはファイルを添付するユーザのことを 100% 信頼できる場合だけにしてください。そうでない場合、サイトが [http://ja.wikipedia.org/wiki/クロスサイトスクリプティング クロスサイトスクリプティング] 攻撃に晒されることになります。
 
 See also [#export:links].
 
-=== comment: links ===
+=== comment: リンク === #comment:links
 
-When you're inside a given ticket, you can simply write e.g. !comment:3 to link to the third change comment.
-It is possible to link to a comment of a specific ticket from anywhere using one of the following syntax:
+該当するチケットの内部では、 !comment:3 と書くと 3 番目の更新のコメントにリンクします。
+それ以外の場所であっても、チケットを特定することで、どこからでもコメントへのリンクが可能です:
  - `comment:3:ticket:123` 
- - `ticket:123#comment:3` (note that you can't write `#123#!comment:3`!)
-It is also possible to link to the ticket's description using one of the following syntax:
- - `comment:description` (within the ticket)
+ - `ticket:123#comment:3` (Note: `#123#!comment:3` という書き方は間違っています!)
+チケットの説明 (英語版では description) にリンクしたい場合、以下のように記述してください:
+ - `comment:description` (該当するチケットの内部)
  - `comment:description:ticket:123`
  - `ticket:123#comment:description`
 
-=== query: links ===
+=== query: リンク === #query:links
 
-See TracQuery#UsingTracLinks and [#ticket:links].
+TracQuery#UsingTracLinks と [#ticket:links] を参照してください。
 
-=== search: links ===
+=== search: リンク === #search:links
 
-See TracSearch#SearchLinks 
+TracSearch#SearchLinks を参照してください。
 
-=== ticket: links ===
- ''alias:'' `bug:`
+=== ticket: リンク === #ticket:links
+ ''エイリアス:'' `bug:`
 
-Besides the obvious `ticket:id` form, it is also possible to specify a list of tickets or even a range of tickets instead of the `id`. This generates a link to a custom query view containing this fixed set of tickets.
+通常使用される `ticket:id` 形式のほか、 `id` の代わりにチケットのリストやチケットの範囲を指定できます。これはカスタムクエリの検索結果ビューへのリンクを生成します。検索結果は指定したチケット固定です。
 
-Example: 
+例: 
  - `ticket:5000-6000`
  - `ticket:1,150`
 
-''(since Trac 0.11)''
+''(Trac 0.11 以降)''
 
-=== timeline: links ===
+=== timeline: リンク === #timeline:links
 
-Links to the timeline can be created by specifying a date in the ISO:8601 format. The date can be optionally followed by a time specification. The time is interpreted as being UTC time, but alternatively you can specify your local time, followed by your timezone if you don't want to compute the UTC time.
+タイムラインへのリンクは ISO:8601 形式で日付を指定して生成できます。日付の指定には、任意で時刻の指定を続けることもできます。この時刻は UTC 時刻で解釈されますが、 UTC 時刻を使用したくない場合はタイムゾーンを続けて指定することで、ローカルタイムを使用できます。
 
-Examples:
+例:
  - `timeline:2008-01-29`
  - `timeline:2008-01-29T15:48`
  - `timeline:2008-01-29T15:48Z`
  - `timeline:2008-01-29T16:48+01`
 
-''(since Trac 0.11)''
+''(Trac 0.11 以降)''
 
-=== wiki: links ===
+=== wiki: リンク === #wiki:links
 
-See WikiPageNames and [#QuotingspaceinTracLinks quoting space in TracLinks] above.
+WikiPageNames と、このページの [#QuotingspaceinTracLinks Trac リンクで空白文字をエスケープする] を参照してください。
 
-=== Version Control related links ===
+=== バージョン管理に関連するリンク === #VersionControlrelatedlinks
 
-It should be noted that multiple repository support works by creating a kind of virtual namespace for versioned files in which the toplevel folders correspond to the repository names. Therefore, in presence of multiple repositories, a ''/path'' specification in the syntax of links detailed below should start with the name of the repository. If omitted, the default repository is used. In case a toplevel folder of the default repository has the same name as a repository, the latter "wins". One can always access such folder by fully qualifying it (the default repository can be an alias of a named repository, or conversely, it is always possible to create an alias for the default repository, ask your Trac administrator).
+複数リポジトリのサポートは、リポジトリ名称に対応したトップレベルのフォルダ配下のバージョン管理されたファイルへの仮想の名前空間を作ることによって動作します。それゆえ、下記に詳細を示しますが、複数リポジトリが存在する中での Trac リンクのシンタックス、 ''/path'' の指定では、リポジトリの名前から始める必要があります。省略された場合は、デフォルトリポジトリが使用されます。デフォルトリポジトリのトップレベルのフォルダにリポジトリと同じ名前のものが存在する場合は、フォルダ名称が使用されます。これらのフォルダには、完全修飾名でいつでもアクセスすることができます。( デフォルトリポジトリは、名前付きのリポジトリのエイリアスの一つなので、逆に言えばデフォルトリポジトリのエイリアスはいつでも作成することができます。 Trac の管理者に尋ねて下さい )
 
-For example, `source:/trunk/COPYING` targets the path `/trunk/COPYING` in the default repository, whereas `source:/projectA/trunk/COPYING` targets the path `/trunk/COPYING` in the repository named `projectA`. This can be the same file if `'projectA'` is an alias to the default repository or if `''` (the default repository) is an alias to `'projectA'`.
+例として、 `source:/trunk/COPYING` はデフォルトリポジトリの `/trunk/COPYING` へのパスを指します。一方で、 `source:/projectA/trunk/COPYING` は `projectA` という名前のリポジトリの `/trunk/COPYING` へのパスを示します。もし、 `'projectA'` がデフォルトリポジトリへのエイリアスであるか、 `''` (デフォルトリポジトリ) が `'projectA'` リポジトリへのエイリアスであるならば、同じファイルを指していることになります。
 
-==== source: links ====
+==== source: リンク ==== #source:links
  ''aliases:'' `browser:`, `repos:`
 
-The default behavior for a source:/some/path link is to open the browser in that directory directory 
-if the path points to a directory or to show the latest content of the file.
+source:/some/path 形式のリンクは、パスがディレクトリを指している場合は、そのディレクトリを開き、
+それ以外の場合は最新のリビジョンのファイルの内容を表示します。
 
-It's also possible to link directly to a specific revision of a file like this:
- - `source:/some/file@123` - link to the file's revision 123
- - `source:/some/file@head` - link explicitly to the latest revision of the file
+特定のリビジョンを指定してリンクすることもできます :
+ - `source:/some/file@123` - file のリビジョン 123 にリンクします。
+ - `source:/some/file@head` - file の最新リビジョンにリンクします。
+ディレクトリブラウザを開き、それ以外の場合はリビジョンログを表示します。
 
-If the revision is specified, one can even link to a specific line number:
+リビジョンを指定した場合はさらに特定の行番号にリンクすることさえできます :
  - `source:/some/file@123#L10`
  - `source:/tag/0.10@head#L10`
 
-Finally, one can also highlight an arbitrary set of lines:
- - `source:/some/file@123:10-20,100,103#L99` - highlight lines 10 to 20, and lines 100 and 103.
-   ''(since 0.11)''
+さらに、特定の行をハイライト表示することもできます :
+ - `source:/some/file@123:10-20,100,103#L99` - 10 行目から 20 行目、 100 行目、 103 行目をハイライトします。
+   ''(0.11 以降)''
 
-Note that in presence of multiple repositories, the name of the repository is simply integrated in the path you specify for `source:` (e.g. `source:reponame/trunk/README`). ''(since 0.12)''
+マルチリポジトリ使用時は、リポジトリの名前が `source:` 以降のパスに統合されるので、 `source:reponame/trunk/README` のように記述するとリンクします。 ''(0.12 以降)''
 
-==== export: links ====
+==== export: リンク ==== #export:links
 
-To force the download of a file in the repository, as opposed to displaying it in the browser, use the `export` link.  Several forms are available:
- * `export:/some/file` - get the HEAD revision of the specified file
- * `export:123:/some/file` - get revision 123 of the specified file
- * `export:/some/file@123` - get revision 123 of the specified file
+ブラウザでリンクをクリックしたときに、リポジトリ内をブラウザに表示するのではなく、ダウンロードを強制するためには `export` リンクを使用します。いくつかの形式が使用できます :
+ * `export:/some/file` - file の最新リビジョンをダウンロードします。
+ * `export:123:/some/file` - file の リビジョン 123 をダウンロードします。
+ * `export:/some/file@123` - file の リビジョン 123 をダウンロードします。
 
-This can be very useful for displaying XML or HTML documentation with correct stylesheets and images, in case that has been checked in into the repository. Note that for this use case, you'd have to allow the web browser to render the content by setting `[browser] render_unsafe_content = yes` (see TracIni#browser-section), otherwise Trac will force the files to be downloaded as attachments for security concerns. 
+リポジトリにチェックインされている XML や HTML 文書を、正しいスタイルシートと画像で表示する場合などには非常に使いやすいですが、この方法を使うためには `[browser] render_unsafe_content = yes` (See TracIni#browser-section) を設定し、 Web ブラウザに内容を表示できるように設定しなければなりません。設定されていない場合、セキュリティを確保するため、そのファイルを Web ブラウザ上で表示せず、添付ファイルと同じようにダウンロードさせます。
 
-If the path is to a directory in the repository instead of a specific file, the source browser will be used to display the directory (identical to the result of `source:/some/dir`).
+特定のファイルの代わりにリポジトリのディレクトリのパスが指定されると、ソースブラウザはディレクトリを表示します (`source:/some/dir` と同じ) 。
 
-==== log: links ====
+==== log: リンク ==== #log:links
 
-The `log:` links are used to display revision ranges. In its simplest form, it can link to the latest revisions of the specified path, but it can also support displaying an arbitrary set of revisions.
- - `log:/` - the latest revisions starting at the root of the repository
- - `log:/trunk/tools` - the latest revisions in `trunk/tools`
- - `log:/trunk/tools@10000` - the revisions in `trunk/tools` starting from  revision 10000
- - `log:@20788,20791:20795` - list revision 20788 and the revisions from 20791 to 20795 
- - `log:/trunk/tools@20788,20791:20795` - list revision 20788 and the revisions from 20791 to 20795 which affect the given path
+`log:` リンクはリビジョンの範囲を表示するために使用します。最も単純な形式では、特定パスの最新のリビジョン群へのリンクを生成します。リビジョンを指定することで、最新以外の任意のリビジョンを表示することもできます。
+ - `log:/` - リポジトリのルートディレクトリでの最新のリビジョン群
+ - `log:/trunk/tools` - `trunk/tools` での最新のリビジョン群
+ - `log:/trunk/tools@10000` - `trunk/tools` での 10000 から始まるリビジョン群 (訳注: 10000 以前のリビジョン)
+ - `log:@20788,20791:20795` - リビジョン 20788 と 20791 から 20795 までの範囲のリビジョンを表示する
+ - `log:/trunk/tools@20788,20791:20795` - リビジョン 20788 と 20791 から 20795 までの範囲のリビジョンのうち、 `/trunk/tools` に影響したものを表示する
 
-There are short forms for revision ranges as well:
+リビジョン範囲の短縮形式は以下の通りです:
  - `[20788,20791:20795]`
  - `[20788,20791:20795/trunk/tools]`
- - `r20791:20795` (but not `r20788,20791:20795` nor `r20791:20795/trunk`)
+ - `r20791:20795` (ただし `r20788,20791:20795` や `r20791:20795/trunk` は使用できません)
 
-Finally, note that in all of the above, a revision range can be written either as `x:y` or `x-y`.
+最後に、上記のすべてについて、リビジョン範囲の書式は `x:y` と `x-y` のどちらでも使用することができます。
 
-In the presence of multiple repositories, the name of the repository should be specified as the first part of the path, e.g. `log:repos/branches` or `[20-40/repos]`.
+マルチリポジトリ使用時は、リポジトリの名前が `source:` 以降のパスに統合されるので、 `log:repos/branches` や `[20-40/repos]` のように記述するとリンクします。
 
 ----
 See also: WikiFormatting, TracWiki, WikiPageNames, InterTrac, InterWiki

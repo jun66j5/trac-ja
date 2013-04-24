@@ -799,24 +799,24 @@ class QueryModule(Component):
                IContentConverter)
                
     default_query = Option('query', 'default_query',
-        default='status!=closed&owner=$USER', 
-        doc="""The default query for authenticated users. The query is either
-            in [TracQuery#QueryLanguage query language] syntax, or a URL query
-            string starting with `?` as used in `query:`
-            [TracQuery#UsingTracLinks Trac links].
-            (''since 0.11.2'')""") 
+        default='status!=closed&owner=$USER',
+        doc="""認証されたユーザへのデフォルトのクエリ。このクエリは
+            [TracQuery#QueryLanguage クエリ言語] のシンタックスか、 `query:`
+            の [TracQuery#UsingTracLinks Trac リンク] でも使われる `?` で始まる
+            URL クエリ文字列で記述します
+            (''0.11.2 以降'')。""")
     
-    default_anonymous_query = Option('query', 'default_anonymous_query',  
-        default='status!=closed&cc~=$USER', 
-        doc="""The default query for anonymous users. The query is either
-            in [TracQuery#QueryLanguage query language] syntax, or a URL query
-            string starting with `?` as used in `query:`
-            [TracQuery#UsingTracLinks Trac links].
-            (''since 0.11.2'')""") 
+    default_anonymous_query = Option('query', 'default_anonymous_query',
+        default='status!=closed&cc~=$USER',
+        doc="""認証されていないユーザへのデフォルトのクエリ。このクエリは
+            [TracQuery#QueryLanguage クエリ言語] のシンタックスか、 `query:`
+            の [TracQuery#UsingTracLinks Trac リンク] でも使われる `?` で始まる
+            URL クエリ文字列で記述します
+            (''0.11.2 以降'')。""")
 
     items_per_page = IntOption('query', 'items_per_page', 100,
-        """Number of tickets displayed per page in ticket queries,
-        by default (''since 0.11'')""")
+        """カスタムクエリの検索結果で 1 ページあたり表示するチケット数の
+        デフォルト値 (''0.11 以降'')""")
 
     # IContentConverter methods
 
@@ -1159,59 +1159,57 @@ class QueryModule(Component):
 
 
 class TicketQueryMacro(WikiMacroBase):
-    """Wiki macro listing tickets that match certain criteria.
+    """指定された条件にマッチするチケットを一覧表示します。
     
-    This macro accepts a comma-separated list of keyed parameters,
-    in the form "key=value".
+    このマクロの引数はカンマ区切りのリストにした、 "key=value" 形式の
+    キー付きパラメータを使用します。
 
-    If the key is the name of a field, the value must use the syntax 
-    of a filter specifier as defined in TracQuery#QueryLanguage.
-    Note that this is ''not'' the same as the simplified URL syntax 
-    used for `query:` links starting with a `?` character. Commas (`,`)
-    can be included in field values by escaping them with a backslash (`\`).
+    key がフィールド名であった場合、 value は TracQuery#QueryLanguage で
+    定義されているような、フィルタを指定するシンタックスでなければなりません。
+    `?` の文字で始まる `query:` リンク向けの簡素化した URL シンタックス
+    とは ''異なります'' 。フィールドの値としてカンマ (`,`) そのものを含む場合は
+    バックスラッシュ (`,`) でエスケープする必要があります。
 
-    Groups of field constraints to be OR-ed together can be separated by a
-    litteral `or` argument.
+    引数 `or` で区切られたフィルタのグループは、 OR 条件で結合されます。
     
-    In addition to filters, several other named parameters can be used
-    to control how the results are presented. All of them are optional.
+    このほか、フィルタとしていくつか名前付きパラメータを使用できます。
+    これらは検索結果をどのように表示するかを制御できます。すべて非必須です。
 
-    The `format` parameter determines how the list of tickets is
-    presented: 
-     - '''list''' -- the default presentation is to list the ticket ID next
-       to the summary, with each ticket on a separate line.
-     - '''compact''' -- the tickets are presented as a comma-separated
-       list of ticket IDs. 
-     - '''count''' -- only the count of matching tickets is displayed
-     - '''table'''  -- a view similar to the custom query view (but without
-       the controls)
+    `format` はチケットのリストがどのように表示されるかを決定します:
+     - '''list''' -- デフォルトの表示形式です。チケット ID と概要 (Summary) を
+       一覧表示します。 1 行ごとに 1 つのチケットを表示します。
+     - '''compact''' -- チケット ID の一覧をカンマ区切りで
+       表示します。
+     - '''count''' -- 条件に当てはまるチケットの件数のみが表示されます。
+     - '''table'''  -- カスタムクエリービューと似た形式で表示されます (ただし
+       コントロールは表示されません)。
 
-    The `max` parameter can be used to limit the number of tickets shown
-    (defaults to '''0''', i.e. no maximum).
+    `max` は表示されるチケット数の上限値を指定します
+    (デフォルトは '''0''' です。これは無制限を意味します)。
 
-    The `order` parameter sets the field used for ordering tickets
-    (defaults to '''id''').
+    `order` はチケットを整列する列を指定します
+    (デフォルトは '''id''' となっています)。
 
-    The `desc` parameter indicates whether the order of the tickets
-    should be reversed (defaults to '''false''').
+    `desc` はチケットの整列を逆順に行うか指定します。
+    (デフォルトは '''false''' です)。
 
-    The `group` parameter sets the field used for grouping tickets
-    (defaults to not being set).
+    `group` はチケットをグループ化を指定します
+    (デフォルトは何も設定されていません)。 
 
-    The `groupdesc` parameter indicates whether the natural display
-    order of the groups should be reversed (defaults to '''false''').
+    `groupdesc` はグループの表示を逆順とするかを指定します
+    (デフォルトは '''false''' となっています)。
 
-    The `verbose` parameter can be set to a true value in order to
-    get the description for the listed tickets. For '''table''' format only.
-    ''deprecated in favor of the `rows` parameter''
+    `verbose` を true に設定すると、リストされたチケットの
+    各行にチケットの説明を表示します。これは '''table''' format 専用です。
+    ''このパラメータは廃止予定です。代わりに `rows` を使用してください。''
     
-    The `rows` parameter can be used to specify which field(s) should 
-    be viewed as a row, e.g. `rows=description|summary`
+    `rows` パラメータは1行使って表示するフィールドを指定します。
+    `rows=description|summary` のように使用します。
 
-    For compatibility with Trac 0.10, if there's a last positional parameter
-    given to the macro, it will be used to specify the `format`.
-    Also, using "&" as a field separator still works (except for `order`)
-    but is deprecated.
+    Trac 0.10 との互換性のため、マクロは最終引数にキーなし引数が与えられた場合
+    `format` として解釈します。
+    また、フィールドセパレータに使用する "&" は (`order` を除いて)
+    現時点では動作しますが、この機能は廃止予定です。
     """
 
     _comma_splitter = re.compile(r'(?<!\\),')

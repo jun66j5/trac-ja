@@ -166,52 +166,52 @@ class TicketSystem(Component):
     action_controllers = OrderedExtensionsOption('ticket', 'workflow',
         ITicketActionController, default='ConfigurableTicketWorkflow',
         include_missing=False,
-        doc="""Ordered list of workflow controllers to use for ticket actions
-            (''since 0.11'').""")
+        doc="""チケットのアクションに使用するワークフローコントローラを順にリスト形式で設定します。
+            (''0.11 以降'')。""")
 
     restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
-        """Make the owner field of tickets use a drop-down menu.
-        Be sure to understand the performance implications before activating
-        this option. See
-        [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
-        (''since 0.9'').""")
+        """チケットの担当者のフィールドでドロップダウンメニューを使用するかを設定します。
+        このオプションを有効にする前に、性能への影響について理解しておいて
+        ください。
+        [TracTickets#Assign-toasDrop-DownList 担当者をドロップダウンリストにする] を参照して下さい
+        (''0.9 以降'')。""")
 
     default_version = Option('ticket', 'default_version', '',
-        """Default version for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定するバージョン。""")
 
     default_type = Option('ticket', 'default_type', 'defect',
-        """Default type for newly created tickets (''since 0.9'').""")
+        """新規登録チケットにデフォルトで設定するチケット分類 (''0.9 以降'')。""")
 
     default_priority = Option('ticket', 'default_priority', 'major',
-        """Default priority for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定する優先度。""")
 
     default_milestone = Option('ticket', 'default_milestone', '',
-        """Default milestone for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定するマイルストーン。""")
 
     default_component = Option('ticket', 'default_component', '',
-        """Default component for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定するコンポーネント。""")
 
     default_severity = Option('ticket', 'default_severity', '',
-        """Default severity for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定する重要度。""")
 
     default_summary = Option('ticket', 'default_summary', '',
-        """Default summary (title) for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定する概要 (タイトル)。""")
 
     default_description = Option('ticket', 'default_description', '',
-        """Default description for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定する説明。""")
 
     default_keywords = Option('ticket', 'default_keywords', '',
-        """Default keywords for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定するキーワード。""")
 
     default_owner = Option('ticket', 'default_owner', '',
-        """Default owner for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定する担当者。""")
 
     default_cc = Option('ticket', 'default_cc', '',
-        """Default cc: list for newly created tickets.""")
+        """新規登録チケットにデフォルトで設定する関係者リスト。""")
 
     default_resolution = Option('ticket', 'default_resolution', 'fixed',
-        """Default resolution for resolving (closing) tickets
-        (''since 0.11'').""")
+        """チケットを解決にする (閉じる) ときに、デフォルトで設定する解決方法
+        (''0.11 以降'')。""")
 
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' % 

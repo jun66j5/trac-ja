@@ -63,38 +63,38 @@ class TicketModule(Component):
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
-        """Enable the display of all ticket changes in the timeline, not only
-        open / close operations (''since 0.9'').""")
+        """タイムラインにオープン/クローズだけでなく、すべてのチケットの変更を
+        表示するかを設定します
+        (''0.9 以降'')。""")
 
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
-        """Don't accept tickets with a too big description.
-        (''since 0.11'').""")
+        """チケットの記述 (description) の最大サイズを設定します
+        (''0.11 以降'')。""")
 
     max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
-        """Don't accept tickets with a too big comment.
-        (''since 0.11.2'')""")
+        """チケットのコメント (comment) の最大サイズを設定します
+        (''0.11.2 以降'')。""")
 
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
-        """Which formatter flavor (e.g. 'html' or 'oneliner') should be
-        used when presenting the description for new tickets.
-        If 'oneliner', the [timeline] abbreviated_messages option applies.
-        (''since 0.11'').""")
+        """新規登録チケットの記述 (description) を表示するときに使用する
+        フォーマッタの flavor (例えば 'html' や 'oneliner')を設定します。
+        'oneliner' を設定した場合、 [timeline] の abbreviated_messages オプションが適用されます
+        (''0.11 以降'')。""")
 
     preserve_newlines = Option('ticket', 'preserve_newlines', 'default',
-        """Whether Wiki formatter should respect the new lines present
-        in the Wiki text.
-        If set to 'default', this is equivalent to 'yes' for new environments
-        but keeps the old behavior for upgraded environments (i.e. 'no').
-        (''since 0.11'').""")
+        """Wiki フォーマッタが Wiki テキスト中の改行を文字を考慮するかを
+        設定します。
+        'default' に設定されている場合、新規作成した Environment では 'yes' と同じ意味になりますが、
+        アップグレードした Environemnt では、以前のふるまいを踏襲します ('no' に相当)
+        (''0.11 以降'')。""")
 
     ticketlink_query = Option('query', 'ticketlink_query',
         default='?status=!closed', 
-        doc="""The base query to be used when linkifying values of ticket
-            fields. The query is a URL query
-            string starting with `?` as used in `query:`
-            [TracQuery#UsingTracLinks Trac links].
-            (''since 0.12'')""")
+        doc="""チケットの属性値からのリンクを生成する際に使用されるベースとなるクエリ。
+            このクエリは `query:` [TracQuery#UsingTracLinks Trac リンク]
+            でも使われる `?` で始まる URL クエリ文字列で記述します。
+            (''0.12 以降'')""")
 
     def __init__(self):
         self._warn_for_default_attr = set()
