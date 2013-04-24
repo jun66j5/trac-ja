@@ -55,6 +55,18 @@ def cell_value(v):
     """
     return '0' if v is 0 else unicode(v) if v else ''
 
+def iso_time(t):
+    return format_time(from_utimestamp(t), 'iso8601')
+
+def iso_datetime(dt):
+    return format_datetime(from_utimestamp(dt), 'iso8601')
+
+col_conversions = (
+    (re.compile(r'^time$'), iso_time),
+    (re.compile(r'^(?:changetime|date(?:time)?|created|modified)$'),
+     iso_datetime),
+    (re.compile(ur'.*(?:日時|時刻|日付)$'), iso_datetime),
+)
 
 _sql_re = re.compile(r'''
       --.*$                        # single line "--" comment
@@ -834,23 +846,15 @@ class ReportModule(Component):
 
     def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',
                   filename=None):
-        def iso_time(t):
-            return format_time(from_utimestamp(t), 'iso8601')
-
-        def iso_datetime(dt):
-            return format_datetime(from_utimestamp(dt), 'iso8601')
-
-        col_conversions = {
-            'time': iso_time,
-            'datetime': iso_datetime,
-            'changetime': iso_datetime,
-            'date': iso_datetime,
-            'created': iso_datetime,
-            'modified': iso_datetime,
-        }
-
-        converters = [col_conversions.get(c.strip('_'), cell_value)
-                      for c in cols]
+        converters = []
+        for c in cols:
+            c = c.strip('_')
+            for r, f in col_conversions:
+                if r.match(c):
+                    converters.append(f)
+                    break
+            else:
+                converters.append(cell_value)
 
         out = StringIO()
         out.write('\xef\xbb\xbf')       # BOM

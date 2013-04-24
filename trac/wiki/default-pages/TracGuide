@@ -1,63 +1,64 @@
-= The Trac User and Administration Guide =
+= Trac 利用者ガイドおよび Trac 管理者ガイド = #TheTracUserandAdministrationGuide
 [[TracGuideToc]]
 {{{#!span style="font-size:90%"
-//The TracGuide is meant to serve as a starting point for all documentation regarding Trac usage and development. The guide is a free document, a collaborative effort, and a part of the [http://trac.edgewall.org Trac Project] itself.//
+//TracGuide は Trac の使用法とカスタマイズ方法について、全ドキュメンテーションにリンクする目次です。このガイドはフリードキュメントです。 [http://trac.edgewall.org Trac Project] の一部として、協力者によってメンテナンスされています。//
 }}}
 
-== Introduction
+== イントロダクション == #Introduction
 
-Trac is an enhanced wiki and issue tracking system for software development projects. Trac uses a minimalistic approach to web-based software project management. It strives to help developers write great software while staying out of the way. Trac should impose as little as possible on a team's established development process and policies.
+Trac は強力な Wiki 機能を持ったソフトフェア開発プロジェクト用のバグトラッカシステムです。Trac はソフトウェア開発のプロジェクト管理を Web 上で行うための最小限のアプローチを提供します。離れた場所で作業を行っていたとしても、開発者の方々が重要なソフトウェアを開発できるようサポートします。チームで既に確立している開発プロセスや開発ポリシーへの影響は少なくなるように作成されています。
 
-It provides an interface to Subversion (and other version control systems), an integrated Wiki and convenient reporting facilities.
+Trac はサブバージョン(および他のバージョン管理システム)へのインターフェース、統合ウィキおよびレポート機能を提供しています。
 
-Trac allows wiki markup in issue descriptions and commit messages, creating links and seamless references between bugs, tasks, changesets, files and wiki pages. A timeline shows all current and past project events in order, making the acquisition of an overview of the project and tracking progress very easy. The roadmap shows the road ahead, listing the upcoming milestones.
-== User Guide
-   * Using the Wiki subsystem
-     * TracWiki — How to use the built-in Wiki.
-     * WikiFormatting — Reference to the wiki syntax used throughout.
-   * Using the Version Control subsystem
-     * TracBrowser — Browsing source code with Trac.
-     * TracChangeset — Viewing changes to source code.
-     * TracRevisionLog — Viewing change history.
-   * Using the Ticket subsystem
-     * TracTickets — Using the issue tracker.
-     * TracRoadmap — The roadmap helps tracking project progress.
-     * TracReports — Writing and using reports.
-     * TracQuery — Executing custom ticket queries.
-     * TracBatchModify - Modifying a batch of tickets in one request.
-   * Other modules and general topics
-     * TracSearch — Full text search in all content.
-     * TracTimeline — The timeline provides a historic perspective on a project.
-     * TracRss — RSS content syndication in Trac.
-     * TracAccessibility — Accessibility keys support
+Trac はバグの説明文やコミットメッセージ文に wiki マークアップ言語を使用することで、バグ・タスク・チェンジセット・ファイルおよび wiki ページ間にリンクを作成し関連性を持たせることが出来ます。タイムライン機能では、プロジェクト内で起こったイベントを最新のものから過去のものまで整理して表示されるので、プロジェクトの概括が取得でき、進捗が容易に把握できます。ロードマップ機能では、いくつかのマイルストーンを一覧表示し、プロジェクトの道筋を示します。
+== ユーザ向け (User Guide) == #UserGuide
+   * Wiki サブシステムを使う
+     * TracWiki — Wiki の使い方
+     * WikiFormatting — Wiki 文法のリファレンス
+   * バージョン管理サブシステムを使う
+     * TracBrowser — Trac で Subversion リポジトリをブラウズする方法
+     * TracChangeset — コミットによるチェンジセットを閲覧する方法
+     * TracRevisionLog — 変更履歴 ( リビジョンログ ) を見る方法
+   * チケットサブシステムを使う
+     * TracTickets — チケットトラッカ (BTS) の使い方
+     * TracRoadmap — プロジェクトの進捗管理ツール
+     * TracReports — レポートの作成方法と使用方法
+     * TracQuery — カスタムクエリによってチケットを検索する方法
+     * TracBatchModify -いくつかのチケットの属性を一度に変更する方法
+   * そのほかの要素および一般的なトピックス
+     * TracSearch — すべてのコンテンツから全文検索をする方法
+     * TracTimeline — プロジェクトに発生したイベントの履歴管理ツール
+     * TracRss — RSS 配信機能
+     * TracAccessibility — アクセスキー
 
 
-== Administrator Guide
-   * Installation and upgrade
-     * TracInstall — How to install and run Trac.
-     * TracUpgrade — How to upgrade existing installations.
-     * TracImport — Importing tickets from other bug databases.
-     * TracPlugins — Installing and managing Trac extensions.
-   * Configuration and customization
-     * TracIni — Trac configuration file reference. 
-     * TracPermissions — Access control and permissions.
-     * TracNavigation — Customize main navigation menus.
-     * TracInterfaceCustomization — Customizing the Trac interface.
-     * TracLogging — The Trac logging facility.
-   * Administering the Version Control subsystem
-     * TracRepositoryAdmin — Management of Source Code Repositories.
-   * Administering the Ticket subsystem
-     * TracTicketsCustomFields — Expanding tickets with customized fields.
-     * TracNotification — Email notification.
-     * TracWorkflow — Configurable Ticket Workflow.
-   * Reference
-     * TracEnvironment — All you need to know about Trac environments
-     * TracAdmin — Administering a Trac project via the command-line.
+== 管理者向け (Administrator Guide) == #AdministratorGuide
+   * インストール・アップグレード
+     * TracInstall — インストールと起動方法
+     * TracUpgrade — 以前のバージョンからのアップグレード方法
+     * TracImport — 他のバグデータベースから、チケットをインポートする方法
+     * TracPlugins — Trac の拡張機能のインストールと管理方法
+   * 設定・カスタマイズ
+     * TracIni — Trac 設定ファイルのリファレンス
+     * TracPermissions — アクセス制御とパーミッション
+     * TracNavigation — ナビゲーションメニューのカスタマイズ
+     * TracInterfaceCustomization — Trac のインタフェースをカスタマイズする方法
+     * TracLogging — ログ出力機能
+   * バージョン管理サブシステムの管理
+     * TracRepositoryAdmin — ソースコードリポジトリの管理方法
+   * チケットサブシステムの管理
+     * TracTicketsCustomFields — フィールドをカスタマイズすることによるチケットの拡張機能
+     * TracNotification — Email 通知機能
+     * TracWorkflow — Trac のチケットワークフローの設定について
+   * リファレンス
+     * TracEnvironment — Trac を使用する際に必要になる知識
+     * TracAdmin — コマンドラインから Trac プロジェクトを管理する方法
 
-== Support and Other Sources of Information ==
+== サポートと他のソースの情報 == #SupportandOtherSourcesofInformation
 
- * [trac:TracFaq Trac FAQ] — A collection of Frequently Asked Questions (on the project website).
- * [trac:TracDev] and [trac:TracDev/ApiDocs API docs] — Trac Developer documentation
- * TracSupport — How to get more information
+ * [trac:TracFaq Trac FAQ] — 良くある質問とその回答 (Trac プロジェクト Web サイトのコンテンツ)
+ * [trac:TracDev] 、 [trac:TracDev/ApiDocs API docs] — Trac 開発者向けドキュメント
+ * TracSupport — より詳しい情報の取得方法
+ * TracJa -- 日本語化情報
 
-If you are looking for a good place to ask a question about Trac, look no further than the [http://trac.edgewall.org/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
+もし、 Trac について質問がある場合、 [trac:MailingList メーリングリスト] を利用するとよいでしょう。メーリングリストは、 Trac のユーザと開発者達がオープンに議論をするための使いやすい環境を提供しています。

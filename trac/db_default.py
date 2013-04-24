@@ -175,40 +175,40 @@ schema = [
 
 def get_reports(db):
     return (
-('Active Tickets',
-"""\
- * List all active tickets by priority.
- * Color each row based on priority.
+(u'未解決チケット',
+u"""\
+ * 全コンポーネント、全バージョンの未解決チケットを優先度順に表示します。
+ * 優先度別の色付けを行っています。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
-   id AS ticket, summary, component, version, milestone, t.type AS type, 
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   version AS バージョン, milestone AS マイルストーン, t.type AS 分類,
+   owner AS 担当者, status AS ステータス, time AS 登録日付,
+   changetime AS _更新日付, description AS _説明,
+   reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed'
   ORDER BY """ + db.cast('p.value', 'int') + """, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
- ('Active Tickets by Version',
-"""\
-This report shows how to color results by priority,
-while grouping results by version.
+ (u'未解決チケット (バージョン別)',
+u"""\
+このレポートはバージョン別にグルーピングする時、
+優先度に色付けを行うやり方の例です。
 
-Last modification time, description and reporter are included as hidden fields
-for useful RSS export.
+最終更新日時、チケットの説明、報告者が隠しフィールドとして含まれています。
+これらのフィールドは Web ブラウザでは表示されませんが、 RSS には出力されます。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
    version AS __group__,
-   id AS ticket, summary, component, version, t.type AS type, 
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   milestone AS マイルストーン, t.type AS 分類,
+   owner AS 担当者, status AS ステータス, time AS 登録日付,
+   changetime AS _更新日付, description AS _説明,
+   reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed'
@@ -216,66 +216,68 @@ SELECT p.value AS __color__,
   """, t.type, time
 """),
 #----------------------------------------------------------------------------
-('Active Tickets by Milestone',
-"""\
-This report shows how to color results by priority,
-while grouping results by milestone.
+(u'未解決チケット (マイルストーン別)',
+u"""\
+このレポートはマイルストーン別にグルーピングする時、
+優先度に色付けを行うやり方の例です。
 
-Last modification time, description and reporter are included as hidden fields
-for useful RSS export.
+最終更新日時、チケットの説明、報告者が隠しフィールドとして含まれています。
+これらのフィールドは Web ブラウザでは表示されませんが、 RSS には出力されます。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
    %s AS __group__,
-   id AS ticket, summary, component, version, t.type AS type, 
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   version AS バージョン, t.type AS 分類,
+   owner AS 担当者, status AS ステータス, time AS 登録日付,
+   changetime AS _更新日付, description AS _説明,
+   reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 
   ORDER BY (milestone IS NULL),milestone, %s, t.type, time
-""" % (db.concat("'Milestone '", 'milestone'), db.cast('p.value', 'int'))),
+""" % (db.concat(u"'マイルストーン '", 'milestone'), db.cast('p.value', 'int'))),
 #----------------------------------------------------------------------------
-('Accepted, Active Tickets by Owner',
-"""\
-List accepted tickets, group by ticket owner, sorted by priority.
+(u'着手中の未解決チケット (担当者別)',
+u"""\
+担当者別に優先度順に並べた、着手中の未解決チケットの一覧です。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
    owner AS __group__,
-   id AS ticket, summary, component, milestone, t.type AS type, time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   milestone AS マイルストーン, t.type AS 分類, time AS 登録日付,
+   changetime AS _更新日付, description AS _説明,
+   reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status = 'accepted'
   ORDER BY owner, """ + db.cast('p.value', 'int') + """, t.type, time
 """),
 #----------------------------------------------------------------------------
-('Accepted, Active Tickets by Owner (Full Description)',
-"""\
-List tickets accepted, group by ticket owner.
-This report demonstrates the use of full-row display.
+(u'着手中の未解決チケット (担当者別, 説明文付き)',
+u"""\
+担当者別に優先度順に並べた、着手中の未解決チケットの一覧です。
+このレポートでは、全列結合表示を使用しています。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
    owner AS __group__,
-   id AS ticket, summary, component, milestone, t.type AS type, time AS created,
-   description AS _description_,
-   changetime AS _changetime, reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   milestone AS マイルストーン, t.type AS 分類, time AS 登録日付,
+   description AS _説明_,
+   changetime AS _更新日付, reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status = 'accepted'
   ORDER BY owner, """ + db.cast('p.value', 'int') + """, t.type, time
 """),
 #----------------------------------------------------------------------------
-('All Tickets By Milestone  (Including closed)',
-"""\
-A more complex example to show how to make advanced reports.
+(u'全チケット (マイルストーン別, 解決済みも含む)',
+u"""\
+高度なレポートを作成するための例です。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
    t.milestone AS __group__,
    (CASE status 
@@ -283,34 +285,35 @@ SELECT p.value AS __color__,
       ELSE 
         (CASE owner WHEN $USER THEN 'font-weight: bold' END)
     END) AS __style__,
-   id AS ticket, summary, component, status, 
-   resolution,version, t.type AS type, priority, owner,
-   changetime AS modified,
-   time AS _time,reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   status AS ステータス, resolution AS 解決方法, version AS バージョン,
+   t.type AS 分類, priority AS 優先度, owner AS 担当者,
+   changetime AS 更新日付,
+   time AS _登録日付, reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'), 
         (CASE status WHEN 'closed' THEN changetime ELSE (-1) * %s END) DESC
 """ % db.cast('p.value', 'int')),
 #----------------------------------------------------------------------------
-('My Tickets',
-"""\
-This report demonstrates the use of the automatically set 
-USER dynamic variable, replaced with the username of the
-logged in user when executed.
+(u'自分のチケット',
+u"""\
+このレポートは、実行される際のログインユーザ名で、
+動的に置き換えられる変数 USER を
+使用した例です。
 """,
-"""\
+u"""\
 SELECT DISTINCT
        p.value AS __color__,
        (CASE
-         WHEN owner = $USER AND status = 'accepted' THEN 'Accepted'
-         WHEN owner = $USER THEN 'Owned'
-         WHEN reporter = $USER THEN 'Reported'
-         ELSE 'Commented' END) AS __group__,
-       t.id AS ticket, summary, component, version, milestone,
-       t.type AS type, priority, t.time AS created,
-       t.changetime AS _changetime, description AS _description,
-       reporter AS _reporter
+         WHEN owner = $USER AND status = 'accepted' THEN '着手中'
+         WHEN owner = $USER THEN '担当中'
+         WHEN reporter = $USER THEN '報告済み'
+         ELSE 'コメント済み' END) AS __group__,
+       t.id AS ticket, summary AS 概要, component AS コンポーネント, version AS バージョン, milestone AS マイルストーン,
+       t.type AS 分類, priority AS 優先度, t.time AS 登録日付,
+       t.changetime AS _更新日付, description AS _説明,
+       reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   LEFT JOIN ticket_change tc ON tc.ticket = t.id AND tc.author = $USER
@@ -322,22 +325,23 @@ SELECT DISTINCT
            """ + db.cast('p.value', 'int') + """, milestone, t.type, t.time
 """),
 #----------------------------------------------------------------------------
-('Active Tickets, Mine first',
-"""\
- * List all active tickets by priority.
- * Show all tickets owned by the logged in user in a group first.
+(u'未解決チケット (自分のチケットを優先して表示)',
+u"""\
+ * 全ての未解決チケットを優先度順に表示します。
+ * ログインユーザが担当者になっているチケットを最初のグループで表示します。
 """,
-"""\
+u"""\
 SELECT p.value AS __color__,
-   (CASE owner 
-     WHEN $USER THEN 'My Tickets' 
-     ELSE 'Active Tickets' 
+   (CASE owner
+     WHEN $USER THEN '自分のチケット'
+     ELSE '未解決チケット'
     END) AS __group__,
-   id AS ticket, summary, component, version, milestone, t.type AS type, 
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   id AS ticket, summary AS 概要, component AS コンポーネント,
+   version AS バージョン, milestone AS マイルストーン, t.type AS 分類,
+   owner AS 担当者, status AS ステータス,
+   time AS 登録日付,
+   changetime AS _更新日付, description AS _説明,
+   reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 

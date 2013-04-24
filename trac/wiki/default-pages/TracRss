@@ -1,43 +1,43 @@
-= Using RSS with Trac =
+= RSSの使用 = #UsingRSSwithTrac
 [[TracGuideToc]]
 
-Several of the Trac modules support content syndication using the RSS (Really Simple Syndication) XML format.
-Using the RSS subscription feature in Trac, you can easily monitor progress of the project, a set of issues or even changes to a single file.
+いくつかの Trac モジュールは RSS (Really Simple Syndication) の XML フォーマットを使用したコンテンツの配信システムに対応しています。
+Trac で RSS の配信機能を使用することによって、プロジェクトの進行や記事の一覧やファイルの変更状況ですら、簡単にモニタすることができます。
 
-Trac supports RSS feeds in:
+Trac が対応する RSS フィード:
 
- * TracTimeline —  Use the RSS feed to '''subscribe to project events'''.[[br]]Monitor overall project progress in your favorite RSS reader.
- * TracTickets, TracReports, and TracQuery — Allows syndication of report and ticket query results.[[br]]Be notified about important and relevant issue tickets.
- * TracBrowser and TracRevisionLog — Syndication of file changes.[[br]]Stay up to date with changes to a specific file or directory.
+ * TracTimeline —  '''プロジェクトのイベント''' に関する RSS フィード。[[br]]好みの RSS リーダを使用して、プロジェクトの進行状況を隅から隅までモニタできます
+ * TracTickets, TracReports, TracQuery — レポートやチケットクエリの結果を配信します。[[br]]重要なチケットや、関連する課題のチケットについて知らせてくれます (訳注: 0.11 以降は、個別のチケットについても RSS 配信できるようになりました)
+ * TracBrowser, TracRevisionLog — リポジトリ上のファイルやディレクトリの変更を配信します。[[br]]特定のファイルを常に最新の状態に保つことができます
 
-== How to access RSS data ==
-Anywhere in Trac where RSS is available, you should find a small orange '''XML''' icon, typically placed at the bottom of the page. Clicking the icon will access the RSS feed for that specific resource.
+== RSS のデータへのアクセス方法 == #HowtoaccessRSSdata
+Trac 内で RSS が利用できるところであれば、小さいオレンジ色の '''XML''' のアイコンがみつかるでしょう。たいていはページの下の方に置かれています。アイコンをクリックして、特定のリソースの RSS フィードにアクセスできるでしょう。
 
-'''Note:''' Different modules provide different data in their RSS feeds. Usually, the syndicated information corresponds to the current view. For example, if you click the RSS link on a report page, the feed will be based on that report. It might be explained by thinking of the RSS feeds as an ''alternate view of the data currently displayed''.
+'''Note:''' モジュールは独自の RSS フィードを提供します。普通は配信された情報は現在のビューと一致します。例えば、レポートのページの RSS リンクをクリックしたときに、RSSフィードはそのときのレポートページを基本としています。RSSフィードは ''現在表示されているデータのかわりとなるビュー'' として考えることができるかもしれません。
 
-== Links ==
- * ''Specifications:''
-   * http://blogs.law.harvard.edu/tech/rss — RSS 2.0 Specification
+== リンク == #Links
+ * ''RSS 2.0 仕様:''
+   * http://blogs.law.harvard.edu/tech/rss — RSS 2.0 仕様
 
- * ''Multi-platform RSS readers:''
-   * http://www.rssowl.org/ — Open source, Eclipse-based, RSS reader for Linux, Mac and Windows systems that supports https and authenticated feeds.
+ * ''複数のプラットフォームで使用できる RSS リーダ:''
+   * http://www.rssowl.org/ — Eclipse ベースでオープンソースの RSS リーダ。 Linux, Mac, Windows システム対応。 https と認証が必要なフィードについても対応
 
- * ''Linux/BSD/*n*x systems:''
-   * http://liferea.sourceforge.net/ — Open source GTK2 RSS Reader for Linux
-   * [http://akregator.sourceforge.net/ Akregator] — Open source KDE RSS Reader (part of KDE-PIM)
+ * ''Linux/BSD/*n*x システム:''
+   * http://liferea.sourceforge.net/ — Linux 向け GTK2 ベースのオープンソース RSS リーダ
+   * [http://akregator.sourceforge.net/ Akregator] — KDE ベースのオープンソース RSS リーダ (KDE-PIM の一部)
 
- * ''Mac OS X systems:''
-   * http://ranchero.com/netnewswire/ — An excellent RSS reader for Mac OS X (has both free and pay versions)
-   * http://www.utsire.com/shrook/ — An RSS reader for Max OS X that supports https (even with self signed certificates) and authenticated feeds.
-   * http://vienna-rss.sourceforge.net/ — Open source Feed Reader for Mac OS X with smart folders support
-   * http://www.mesadynamics.com/Tickershock.html — Non-intrusive "news ticker" style RSS reader for Mac OS X
+ * ''Mac OS X システム:''
+   * http://ranchero.com/netnewswire/ — Mac OS X で使用できる素晴らしい RSS リーダ (無償と有償バージョンがあります)
+   * http://www.utsire.com/shrook/ — Max OS X で https (自己署名証明書を含む) と認証が必要なフィードにも対応した RSS リーダ
+   * http://vienna-rss.sourceforge.net/ — スマートフォルダに対応したオープンソースの Mac OS X 用 RSS リーダ
+   * http://www.mesadynamics.com/Tickershock.html — Mac OS X 用の 負荷が少ない "ニュースティッカー" スタイルの RSS リーダ
 
- * ''Windows systems:''
-   * http://www.rssreader.com/ — Free and powerful RSS Reader for Windows
-   * http://www.sharpreader.net/ — A free RSS Reader written in .NET for Windows
+ * ''Windows システム:''
+   * http://www.rssreader.com/ — Windows 用の フリーかつパワフルな RSS リーダ
+   * http://www.sharpreader.net/ — .NET で書かれたフリーの Windows 用 RSS リーダ
 
  * ''Firefox:''
-   * http://www.mozilla.org/products/firefox/ — Mozilla Firefox features plenty [https://addons.mozilla.org/en-US/firefox/search/?q=rss&appver=&platform= add-ons] for supporting RSS
+   * http://www.mozilla.org/products/firefox/ — Mozilla Firefox は RSS をサポートする [https://addons.mozilla.org/en-US/firefox/search/?q=rss&appver=&platform= アドオン] を数多く提供しています
 
 ----
 See also: TracGuide, TracTimeline, TracReports, TracBrowser

@@ -1,65 +1,65 @@
-= The Trac Repository Browser =
+= Trac リポジトリブラウザ = #TheTracRepositoryBrowser
 [[TracGuideToc]]
 
-The Trac repository browser can be used to browse specific revisions of directories 
-and files stored in the repositories associated with the Trac environment.
+Trac のリポジトリブラウザでは、 Environment に関連付けられたリポジトリに格納されている
+特定のリビジョンのディレクトリやファイルを閲覧することができます。
 
-''(since 0.12)'': 
-At the top-level of the repository browser is the '''Repository Index''', 
-listing all the configured repositories. 
-Each repository has a name which is used as a path prefix in a 
-"virtual" file hierarchy encompassing all the available repositories.
-One of the repositories can be configured with an empty name; this is the default repository.  When such a default repository is present, its top-level files and directories 
-are also listed, in a '''Default Repository''' section placed before the 
-repository index. If the default repository is the only repository associated 
-with the Trac environment the '''Repository Index''' will be omitted ^[#note-multirepos (1)]^.
+''(0.12 以降)'':
+リポジトリブラウザのトップレベルは、設定されている全てのリポジトリを一覧表示する
+'''リポジトリ一覧''' (英語版では '''Repository Index''') です。
+各々のリポジトリには、すべてのリポジトリを含めた階層構造の中でのファイルの
+"仮想的な" 位置を特定するために、パスのプレフィックスとして使用する名前を付与します。
+リポジトリの一つに名前を設定しないことができ、これがデフォルトのリポジトリとなります。このようなデフォルトのリポジトリが定義されている場合、
+リポジトリ一覧より先に '''デフォルトリポジトリ''' (英語版では '''Default Repository''') 欄にトップレベルのファイルやディレクトリが一覧表示されます。
+Environment に関連付けられているリポジトリがデフォルトのリポジトリのみの場合、
+'''リポジトリ一覧''' は表示されません。 (^[#note-multirepos (1)]^)
 
-Directory entries are displayed in a list with sortable columns. The list 
-entries can be sorted by ''Name'', ''Size'', ''Age'' or ''Author'' by clicking on the column
-headers. The sort order can be reversed by clicking on a given column
-header again.
+ディレクトリは列ごとにソート可能なリストとして表示されます。
+ソートを行うには、 ''名称'' (英語版では ''Name''), ''サイズ'' (英語版では ''Size''), ''時期'' (英語版では ''Age''), ''更新者'' (英語版では ''Author'') と表示されている、列名をクリックします。
+ソートの並び順は、もう一度クリックすることで
+逆順にすることができます。
 
-The browser can be used to navigate through the directory structure 
-by clicking on the directory names. 
-Clicking on a file name will show the contents of the file. 
-Clicking on the revision number of a file or directory will take 
-you to the TracRevisionLog for that file.
-Note that there's also a ''Revision Log'' navigation link that will do the 
-same for the path currently being examined.
-Clicking on the ''diff'' icon after revision number will display the changes made 
-to the files modified in that revision.
-Clicking on the ''Age'' of the file - will take you to that changeset in the timeline.
+リポジトリブラウザでは、ディレクトリ名をクリックすることで、
+ディレクトリ構造をたどることができます。
+ファイル名をクリックすると、ファイルの中身が表示されます。
+ファイルやディレクトリのリビジョン番号をクリックすると、
+そのファイルやディレクトリの TracRevisionLog を見ることができます。
+ナビゲーションリンクには、 ''更新履歴'' (英語版では ''Revision Log'') というリンクがありますが、
+これは 現在見ているパスの TracRevisionLog を表示します。
+リビジョン番号の後にある ''diff'' アイコンをクリックすると、
+そのリビジョンでファイルにどのような更新が行われたか表示されます。
+ファイルの ''時期'' (英語版では ''Age'') をクリックすると、該当するチェンジセット前後のタイムラインが表示されます。
 
-It's also possible to browse directories or files as they were in history,
-at any given repository revision. The default behavior is to display the
-latest revision but another revision number can easily be selected using
-the ''View revision'' input field at the top of the page.
+またリビジョンを指定して、
+そのディレクトリやファイルの履歴を確認することも可能です。
+最新のリビジョンで表示するのがデフォルトの動作になりますが、ページ上部の ''リビジョン指定''
+(英語版では ''View revision'') テキストボックスにリビジョン番号を指定すると、そのリビジョンでのリポジトリの状態を表示します。
 
-The color bar next to the ''Age'' column gives a visual indication of the age
-of the last change to a file or directory, following the convention that
-'''[[span(style=color:#88f,blue)]]''' is oldest and '''[[span(style=color:#f88,red)]]'''
-is newest, but this can be [TracIni#browser-section configured].
+''時期'' (英語版では ''Age'') 列に後続するカラーバーは、
+ファイルやディレクトリが最終更新されてから経過した時間を視覚的に表現したものです。
+デフォルトの設定では '''[[span(style=color:#88f,青)]]''' が古く '''[[span(style=color:#f88,赤)]]''' が新しいものを指します。
+この設定は [TracIni#browser-section コンフィグ] で変更可能です。
 
-At the top of the browser page, there's a ''Visit'' drop-down menu which you can use 
-to select some interesting places in the repository, for example branches or tags. 
-This is sometimes referred to as the ''browser quickjump'' facility.
-The precise meaning and content of this menu depends on your repository backend.
-For Subversion, this list contains by default the top-level trunk directory 
-and sub-directories of the top-level branches and tags directories 
-(`/trunk`, `/branches/*`, and `/tags/*`).  This can be [TracIni#svn-section configured] 
-for more advanced cases.
+リポジトリブラウザのページ上部には、ブランチやタグのようにリポジトリ内で有意な場所を選択するための
+''ジャンプ'' (英語版では ''Visit'') ドロップダウンメニューがあります。
+このリストは ''リポジトリブラウザへのクイックジャンプ'' の機能 (訳注: TracSearch でのクイックジャンプのことです。検索文字列がリストに一致すると、該当するパスのブラウザ画面にリダイレクトします) でも使用されます。
+正確に記述すると、このメニューの内容はバックエンドに依存しています。
+Subversion のデフォルトでは、リストにはトップレベルの trunk と
+branches、 tags ディレクトリ配下全て
+(`/trunk`, `/branches/*`, `/tags/*`) が含まれています。
+これらは [TracIni#svn-section 設定を変更する] ことでより高度なケースに対応できます。
 
-If you're using a Javascript enabled browser, you'll be able to expand and 
-collapse directories in-place by clicking on the arrow head at the right side of a 
-directory. Alternatively, the [trac:TracKeys keyboard] can also be used for this: 
- - use `'j'` and `'k'` to select the next or previous entry, starting with the first
- - `'o'` (open) to toggle between expanded and collapsed state of the selected 
-   directory or for visiting the selected file 
- - `'v'` (view, visit) and `'<Enter>'`, same as above
- - `'r'` can be used to force the reload of an already expanded directory
- - `'A'` can be used to directly visit a file in annotate (blame) mode
- - `'L'` to view the log for the selected entry
-If no row has been selected using `'j'` or `'k'` these keys will operate on the entry under the mouse.
+Web ブラウザが Javascript に対応していれば、ディレクトリの脇にある右向きの矢印をクリックすることで、
+そのページ内でディレクトリを展開したり、畳んだりできます。
+他の操作方法として [trac:TracKeys キーボード] が使用できます:
+ - `'j'` と `'k'` は、それぞれ前後のエントリに移動します
+ - `'o'` (open) は、選択されているのがフォルダであれば、展開表示と折り畳み表示を切り替えます
+   ファイルであれば、そのファイルに移動します
+ - `'v'` (view, visit) および `'<Enter>'` も上記と同じ動作です
+ - `'r'` は、既に展開したディレクトリを再読み込みするために使用します
+ - `'A'` は、アノテート表示ページに直接移動します (訳注: ファイル選択時のみ対象です)
+ - `'L'` は、選択しているエントリのログ表示に移動します
+`'j'` や `'k'` を使って選択した行がない場合、これらのキーはマウスオーバ状態にあるエントリを対象にします。
 
 {{{#!comment
 MMM: I guess that some keys are upper case and some lower to avoid conflicts with browser defined keys.
@@ -67,18 +67,18 @@ I find for example in Firefox and IE on windows that 'a' works as well as 'A' bu
  cboos: 'l' is reserved for Vim like behavior, see #7867
 }}}
 
-For the Subversion backend, some advanced additional features are available:
- - The `svn:needs-lock` property will be displayed
- - Support for the `svn:mergeinfo` property showing the merged and eligible information
- - Support for browsing the `svn:externals` property 
-   (which can be [TracIni#svn:externals-section configured])
- - The `svn:mime-type` property is used to select the syntax highlighter for rendering 
-   the file. For example, setting `svn:mime-type` to `text/html` will ensure the file is 
-   highlighted as HTML, regardless of the file extension. It also allows selecting the character 
-   encoding used in the file content. For example, if the file content is encoded in UTF-8, 
-   set `svn:mime-type` to `text/html;charset=utf-8`. The `charset=` specification overrides the 
-   default encoding defined in the `default_charset` option of the `[trac]` section 
-   of [TracIni#trac-section trac.ini].
+Subversion バックエンドでは、下記の機能も用意されています:
+ - `svn:needs-lock` プロパティ対応
+ - `svn:mergeinfo` プロパティでのマージ状態やブロック状態の表示対応
+ - `svn:externals` プロパティでの閲覧対応
+   ([TracIni#svn:externals-section 設定の変更] が必要です)
+ - `svn:mime-type` プロパティがファイルを表示する際にシンタックスハイライトの選択に使用されます。
+   例えば `svn:mime-type` が `text/html` に設定されている場合、拡張子にかかわらず、そのファイルは HTML としてハイライトされます。
+   また、ファイルで使用される文字のエンコードを指定することもできます。
+   ファイルの内容が UTF-8 で作成されている場合は、
+   `svn:mime-type` を `text/html;charset=utf-8` のように設定します。
+   この `charset=` で指定したエンコードは [TracIni#trac-section trac.ini] の `[trac]` セクションのオプション
+   `default_charset` で指定したエンコードのデフォルト値より優先されます
 {{{#!comment
 MMM: I found this section a bit hard to understand. I changed the first item as I understood that well.
 but I think the other items could be changed also
@@ -88,9 +88,9 @@ but I think the other items could be changed also
 
 ----
 {{{#!div style="font-size:85%"
-[=#note-multirepos (1)] This means that after upgrading a single-repository Trac of version 
-0.11 (or below) to a multi-repository Trac (0.12), the repository browser will look and feel 
-the same, that single repository becoming automatically the "default" repository.
+[=#note-multirepos (1)] 単独リポジトリしかサポートしない
+0.11 以前のバージョンから、マルチリポジトリをサポートする 0.12 に Trac をアップグレードした場合、リポジトリブラウザの見え方は同じようになります。
+単独のリポジトリは自動的に "デフォルトリポジトリ" として取り扱われるようになります。
 }}}
 
 See also: TracGuide, TracChangeset, TracFineGrainedPermissions

@@ -6,8 +6,8 @@ from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Priority, Ticket
 #from trac.perm import IPermissionRequestor # (TODO)
 
-revision = "$Rev$"
-url = "$URL$"
+revision = "$Rev: 6326 $"
+url = "$URL: https://svn.edgewall.org/repos/trac/trunk/sample-plugins/workflow/VoteOperation.py $"
 
 class VoteOperation(Component):
     """Provides a simplistic vote feature.

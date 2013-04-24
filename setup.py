@@ -28,7 +28,7 @@ extra = {}
 
 try:
     import babel
-    
+
     extractors = [
         ('**.py',                'trac.dist:extract_python', None),
         ('**/templates/**.html', 'genshi', None),
@@ -55,16 +55,20 @@ except ImportError:
 
 setup(
     name = 'Trac',
-    version = '1.0',
+    version = '1.0.ja1',
     description = 'Integrated SCM, wiki, issue tracker and project environment',
     long_description = """
 Trac is a minimalistic web-based software project management and bug/issue
 tracking system. It provides an interface to the Subversion revision control
 systems, an integrated wiki, flexible issue tracking and convenient report
 facilities.
+
+Japanese translated edition.
 """,
     author = 'Edgewall Software',
     author_email = 'trac-dev@googlegroups.com',
+    maintainer = 'InterAct',
+    maintainer_email = 'trac-ja@i-act.co.jp',
     license = 'BSD',
     url = 'http://trac.edgewall.org/',
     download_url = 'http://trac.edgewall.org/wiki/TracDownload',

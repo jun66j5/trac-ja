@@ -1,39 +1,40 @@
 = Welcome to Trac 1.0 =
 
-Trac is a '''minimalistic''' approach to '''web-based''' management of
-'''software projects'''. Its goal is to simplify effective tracking and handling of software issues, enhancements and overall progress.
+Trac は '''ソフトウェア開発プロジェクト''' のマネージメントにおける '''最小限の''' アプローチを提供する '''Web アプリケーション''' です。
+ソフトウェア開発の上でのチケット解決、機能追加、およびすべての工程において、効果的なトラッキングとハンドリングを簡素化することを目標としています。
 
-All aspects of Trac have been designed with the single goal to 
-'''help developers write great software''' while '''staying out of the way'''
-and imposing as little as possible on a team's established process and
-culture.
+Trac の全てのアスペクトは、一つの目標のもとに設計されています。 
+'''古びた方法でプロジェクトを運営して''' いる、 '''ソフトウェア開発者の助けとなること''' 。
+そのために、チームが既に確立している開発プロセスと開発ポリシーに
+影響をなるべく与えないこと。
 
-As all Wiki pages, this page is editable, this means that you can
-modify the contents of this page simply by using your
-web-browser. Simply click on the "Edit this page" link at the bottom
-of the page. WikiFormatting will give you a detailed description of
-available Wiki formatting commands.
+全てを Wiki ページとして -- このページも例外ではありません。
+単なる Web ブラウザからこのページのコンテンツを編集することができます。
+ページの下の方にある "このページを編集" というボタンをクリックするだけです。 
+WikiFormatting に使用できる Wiki マークアップの詳細な記述がありますので
+参考にしてください。
 
-"[wiki:TracAdmin trac-admin] ''yourenvdir'' initenv" created
-a new Trac environment, containing a default set of wiki pages and some sample
-data. This newly created environment also contains 
-[wiki:TracGuide documentation] to help you get started with your project.
+"[wiki:TracAdmin trac-admin] ''yourenvdir'' initenv" コマンドの実行によって、
+新しい Trac Environment が作成されます。これには Wiki ページのデフォルトセット他、サンプルが
+含まれています。この新しい Trac Environment にも、 [wiki:TracGuide documentation] が
+含まれていますので、あなたのプロジェクトでも導入の手引きとなるでしょう。
 
-You can use [wiki:TracAdmin trac-admin] to configure
-[http://trac.edgewall.org/ Trac] to better fit your project, especially in
-regard to ''components'', ''versions'' and ''milestones''. 
+また [wiki:TracAdmin trac-admin] を使用することによって
+特に''コンポーネント''、''バージョン''、''マイルストーン''等が、プロジェクトにフィットするように 
+[http://trac.edgewall.org/ Trac] を構成することが出来ます。
 
 
-TracGuide is a good place to start.
+まずは TracGuide から読み進めるとよいでしょう。
 
 Enjoy! [[BR]]
 ''The Trac Team''
 
-== Starting Points ==
+== スタートポイント == #StartingPoints
 
- * TracGuide --  Built-in Documentation
+ * TracGuide --  同梱ドキュメント
  * [http://trac.edgewall.org/ The Trac project] -- Trac Open Source Project
- * [http://trac.edgewall.org/wiki/TracFaq Trac FAQ] -- Frequently Asked Questions
- * TracSupport --  Trac Support
+ * [trac:TracFaq Trac FAQ] -- よくある質問とその回答
+ * TracSupport --  サポートを受けるための方法
+ * TracJa -- 日本語化情報
 
-For a complete list of local wiki pages, see TitleIndex.
+この Wiki ページの完全なリストは、 TitleIndex をご覧下さい。

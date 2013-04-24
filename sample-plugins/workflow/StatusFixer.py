@@ -4,8 +4,8 @@ from trac.core import Component, implements
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.perm import IPermissionRequestor
 
-revision = "$Rev$"
-url = "$URL$"
+revision = "$Rev: 6326 $"
+url = "$URL: https://svn.edgewall.org/repos/trac/trunk/sample-plugins/workflow/StatusFixer.py $"
 
 class StatusFixerActionController(Component):
     """Provides the admin with a way to correct a ticket's status.

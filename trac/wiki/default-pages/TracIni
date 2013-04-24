@@ -1,34 +1,32 @@
-= The Trac Configuration File =
-
- ''[Note To Editors] Please discuss documentation changes in the [#Discussion] section. Even better, send us [TracDev/SubmittingPatches documentation patches] against the ''code'' (i.e. where the configuration entries are documented), either on Trac-dev or on new tickets. ''
+= Trac 設定ファイル = #TheTracConfigurationFile
 
 [[TracGuideToc]]
 [[PageOutline]]
 
-Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
+Trac の設定は `<projectenv>/conf/` にある '''`trac.ini`''' というファイルを編集して行います。変更した内容は通常、即座に反映されますが、 `[components]` セクションや `[logging]` セクションへの変更では Web サーバを再起動する必要があります。また、グローバルな設定ファイルを新しく作成した直後も Web サーバを再起動しなければなりません。
 
-The `trac.ini` configuration file and its parent directory should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
+`trac.ini` 設定ファイルとそのファイルのあるディレクトリは Web サーバから書き込み可能でなければなりません。 Trac は現在のところ、キャッシュを破棄するために完全に Environment を再読み込みするトリガーとして利用しています。
 
-== Global Configuration ==
+== グローバルな設定 == #GlobalConfiguration
 
-In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or /etc/trac/trac.ini, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
+0.11 より前のバージョンでは、グローバルな設定ファイルは `$prefix/share/trac/conf/trac.ini` や `/etc/trac/trac.ini` などディストリビューションに依存した特定の位置に配置されていました。アップグレードする場合は、設定を継承するファイルを明示しなければなりません。以前のバージョンから 0.11 にアップグレードした場合、プロジェクトの `trac.ini` ファイルに `[inherit]` セクションを追加しなければなりません。カスタマイズしたテンプレートや画像のファイルは `$prefix/share/trac/...` から他の場所に移動することもできます。
 
-Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
+グローバルな設定は Environment 固有の設定とマージされます。ローカルの設定はグローバルの設定を上書きます。グローバルな設定ファイルは以下のように指定します:
 {{{
 [inherit]
 file = /path/to/global/trac.ini
 }}}
-Multiple files can be specified using a comma-separated list.
+カンマ区切りにすることで、複数のファイルを指定することができます。
 
-Note that you can also specify a global option file when creating a new project,  by adding the option `--inherit=/path/to/global/trac.ini` to [TracAdmin#initenv trac-admin]'s `initenv` command.  If you do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated `conf/trac.ini` file and delete the entries that will otherwise override those set in the global file.
+Note: 新しいプロジェクトを作る時に [TracAdmin#initenv trac-admin] の `initenv` コマンドに `--inherit=/path/to/global/trac.ini` オプションを追加することで、グローバル設定ファイルを指定することができます。オプションを追加せずにプロジェクトを作成した場合でも、新しく作成された `conf/trac.ini` ファイルを編集して、グローバルファイルの設定で上書きしたいエントリを削除すれば、新しい Environment でグローバル設定ファイルを使用することができます。
 
-There are two more entries in the [[#inherit-section| [inherit] ]] section, `templates_dir` for sharing global templates and `plugins_dir`, for sharing plugins. Those entries can themselves be specified in the shared configuration file, and in fact, configuration files can even be chained if you specify another `[inherit] file` there.
+[#inherit-section| [inherit]] セクションには、共有するテンプレートの配置先を指す `templates_dir` と、共有するプラグインを指す `plugins_dir` という二つのエントリもあります。これらがグローバル設定ファイルに指定することができます。この場合、他の `[inherit] file` が指定されていれば、設定ファイルは順次読み込まれます。
 
-Note that the templates found in the `templates/` directory of the TracEnvironment have precedence over those found in `[inherit] templates_dir`. In turn, the latter have precedence over the installed templates, so be careful about what you put there, notably if you override a default template be sure to refresh your modifications when you upgrade to a new version of Trac (the preferred way to perform TracInterfaceCustomization being still to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation).
+TracEnvironment の `templates/` ディレクトリ内のテンプレートは、 `[inherit] templates_dir` で見つかるテンプレートより優先されます。次に、`[inherit] templates_dir` のテンプレートはインストールされているテンプレートより優先されます。これらを設定するには注意が必要です。特に、デフォルトのテンプレートをオーバーライドする場合、 Trac を新しいバージョンにアップデートする際には必ず変更点を再読み込みして下さい。 ( TracInterfaceCustomization を行うために推奨する方法は、適切に `ITemplateStreamFilter` の変更が行えるカスタムプラグインを作成することです。)
 
-== Reference for settings
+== リファレンス == #Referenceforsettings
 
-This is a brief reference of available configuration options, and their default settings.
+現在利用できる設定項目のリファレンスとデフォルトの設定です。(訳注: 0.12 ではデフォルトの値は表示されません。)
 
 [[TracIni]]
 

@@ -436,7 +436,7 @@ class Chrome(Component):
         Only specifying `your-logo.png` is equivalent to the latter.""")
 
     logo_alt = Option('header_logo', 'alt', 
-        "(please configure the [header_logo] section in trac.ini)",
+        "(trac.ini の [header_logo] セクションを設定してください)",
         """Alternative text for the header logo.""")
 
     logo_width = IntOption('header_logo', 'width', -1,
