@@ -65,7 +65,7 @@ class InterTracDispatcher(Component):
         yield 'InterTrac'
 
     def get_macro_description(self, name): 
-        return "Provide a list of known InterTrac prefixes."
+        return "既知の InterTrac プレフィクスをリスト形式で表示します。"
 
     def expand_macro(self, formatter, name, content):
         intertracs = {}

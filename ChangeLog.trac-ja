@@ -1,0 +1,544 @@
+Trac-0.12.3.ja2 (Mar 7, 2012)
+ * リリースファイルのパーミッションを修正 
+
+Trac-0.12.3.ja1 (Mar 2, 2012)
+ * Trac-0.12.3 をマージ
+ * デフォルトのWikiページを日本語化
+   - trac/wiki/default-pages/*
+ * Wikiマクロのドキュメントを日本語化
+   - trac/wiki/intertrac.py
+   - trac/wiki/interwiki.py
+
+Trac-0.12.2.ja1 (Mar 4, 2011)
+ * Trac-0.12.2 をマージ
+ * デフォルトのWikiページを日本語化
+   - trac/wiki/default-pages/*
+ * trac.iniオプションのドキュメントを日本語化
+   - trac/ticket/api.py
+   - trac/ticket/notification.py
+   - trac/search/web_ui.py
+
+Trac-0.12.1.ja1 (Nov 1, 2010)
+ * Trac-0.12.1 をマージ
+ * デフォルトのWikiページを日本語化
+   - trac/wiki/default-pages/*
+ * trac.iniオプションのドキュメントを日本語化
+   - trac/env.py
+   - trac/versioncontrol/admin.py
+   - trac/versioncontrol/api.py
+   - trac/versioncontrol/svn_authz.py
+   - trac/versioncontrol/web_ui/browser.py
+   - trac/web/chrome.py
+   - trac/web/main.py
+   - trac/wiki/api.py
+
+Trac-0.12.ja1 (Aug 25, 2010)
+ * Based on Trac 0.12 'Babel'
+ * 本配布のドキュメントおよび、再配布向けの調整
+   - *.trac-ja
+   - setup.py
+   - trac/templates/about.html
+   - trac/templates/theme.html
+ * デフォルトのWikiページを日本語化
+   - trac/wiki/default-pages/*
+ * Wikiマクロのドキュメントを日本語化
+   - trac/admin/console.py
+   - trac/ticket/query.py
+   - trac/wiki/macros.py
+ * trac.iniオプションのドキュメントを日本語化
+   - trac/attachment.py
+   - trac/db/api.py
+   - trac/db/mysql_backend.py
+   - trac/db/postgres_backend.py
+   - trac/db/sqlite_backend.py
+   - trac/env.py
+   - trac/mimeview/api.py
+   - trac/mimeview/silvercity.py
+   - trac/notification.py
+   - trac/perm.py
+   - trac/search/web_ui.py
+   - trac/ticket/api.py
+   - trac/ticket/notification.py
+   - trac/ticket/query.py
+   - trac/ticket/report.py
+   - trac/ticket/roadmap.py
+   - trac/ticket/web_ui.py
+   - trac/timeline/web_ui.py
+   - trac/versioncontrol/api.py
+   - trac/versioncontrol/svn_authz.py
+   - trac/versioncontrol/svn_fs.py
+   - trac/versioncontrol/web_ui/browser.py
+   - trac/versioncontrol/web_ui/changeset.py
+   - trac/versioncontrol/web_ui/log.py
+   - trac/web/auth.py
+   - trac/web/chrome.py
+   - trac/web/main.py
+   - trac/wiki/api.py
+   - trac/wiki/web_ui.py
+   - tracopt/mimeview/enscript.py
+   - tracopt/mimeview/php.py
+ * データベースおよびtrac.iniのデフォルト値を日本語化
+   - trac/db_default.py
+   - trac/ticket/workflows/basic-workflow.ini
+   - trac/ticket/workflows/original-workflow.ini
+ * [Patch] デフォルトの日付書式を日本向けに変更
+   - trac/log.py
+   - trac/util/datefmt.py
+ * [Patch] デフォルトのエンコードをcp932に変更
+   - trac/mimeview/api.py
+ * [Patch] レポートにて列名に日本語を使用した際の整形処理を追加
+   - trac/ticket/report.py
+   - trac/ticket/templates/report.rss
+   - trac/ticket/templates/report_view.html
+ * [Patch] リポジトリのファイルをZipダウンロードする時に、
+   ローカル時刻が適用されないバグを修正
+   - trac/versioncontrol/web_ui/changeset.py
+ * [Patch] Unicode処理についての小パッチ
+   - trac/about.py
+
+Trac-0.11.7.ja1 (Mar 11, 2010)
+ * Merge Trac-0.11.7
+ * Fix typos
+  - trac/wiki/default-pages/InterTrac
+
+Trac-0.11.6.ja1 (Jan 24, 2010)
+ * Merge Trac-0.11.6
+ * Apply patch
+   - trac:changeset:8997
+
+Trac-0.11.5.ja1 (Jul 20, 2009)
+ * Merge Trac-0.11.5
+
+Trac-0.11.4.ja1 (Apr 1, 2009)
+ * Merge Trac-0.11.4
+ * Fixes unicode transcoding for Exception.
+   - trac/core.py
+   - trac/util/text.py
+
+Trac-0.11.3.ja1 (Mar 15, 2009)
+ * Merge Trac-0.11.3
+ * Change data type of default reports from `str` to `unicode`
+   - trac/db_default.py
+ * Fixes timezone when download zipfile from repository.
+   - trac/versioncontrol/web_ui/changeset.py
+
+Trac-0.11.2.1.ja1 (Nov 30, 2008)
+ * Merge Trac-0.11.2 and Trac-0.11.2.1
+ * Change encodings on Option's doc from unicode to UTF-8 for `pydoc`.
+   - trac/wiki/macros.py
+   - trac/attachment.py
+   - trac/db/api.py
+   - trac/env.py
+   - trac/mimeview/api.py
+   - trac/mimeview/enscript.py
+   - trac/mimeview/php.py
+   - trac/mimeview/pygments.py
+   - trac/mimeview/silvercity.py
+   - trac/notification.py
+   - trac/perm.py
+   - trac/search/web_ui.py
+   - trac/ticket/api.py
+   - trac/ticket/notification.py
+   - trac/ticket/query.py
+   - trac/ticket/report.py
+   - trac/ticket/roadmap.py
+   - trac/ticket/web_ui.py
+   - trac/timeline/web_ui.py
+   - trac/versioncontrol/api.py
+   - trac/versioncontrol/svn_authz.py
+   - trac/versioncontrol/svn_fs.py
+   - trac/versioncontrol/web_ui/browser.py
+   - trac/versioncontrol/web_ui/changeset.py
+   - trac/versioncontrol/web_ui/log.py
+   - trac/web/auth.py
+   - trac/web/chrome.py
+   - trac/web/main.py
+   - trac/wiki/api.py
+
+Trac-0.11.1.ja2 (Nov 10, 2008)
+ * Merge security fixes.
+   - http://trac.edgewall.org/changeset/7657
+   - http://trac.edgewall.org/changeset/7658
+ * Fixes datetime presentation on TracReports.
+   - trac/db_default.py
+   - trac/ticket/report.py
+   - trac/ticket/templates/report.rss
+   - trac/wiki/default-pages/TracReports
+ * Fixes unicode handlings on TracError.
+   - trac/core.py
+   - trac/ticket/web_ui.py
+
+Trac-0.11.1.ja1 (Aug 19, 2008)
+ * Merge Trac-0.11.1
+ * Fixes redundant imports.
+   * trac/wiki/intertrac.py
+   * trac/wiki/interwiki.py
+ * Fixes TracError on 'About Trac' page with show config.
+   * trac/about.py
+ * Fixes TracError on MIMEview with large file. 
+   * trac/templates/macros.html
+ * Fixes broken wiki links.
+   * trac/wiki/default-pages/TracUpgrade
+   * trac/wiki/default-pages/WikiProcessors
+
+Trac-0.11.ja1 (Jul 7, 2008)
+ * Based on Trac 0.11 'Genshi'
+ * Translate messages into Japanese.
+   * trac/util/translation.py
+   * trac/**/*.py
+   * trac/**/templates/*
+   * trac/htdocs/js/*.js
+   * trac/wiki/default-pages/*
+ * Modify date and charset locale to Japanese convention.
+   * trac/util/datefmt.py
+   * trac/util/text.py
+ * Pass all test.
+   * trac/test.py
+   * trac/**/tests/*.{py|txt}
+ * Add new files and sentences for description our work.
+   * COPYING.trac-ja
+   * README.trac-ja
+   * trac/templates/about.html
+   * trac/templates/theme.html
+   * trac/wiki/default-pages/TracJa
+ * Change parameters for our distribution.
+   * setup.py
+
+Trac-0.10.5-ja-1 (Jun 23, 2008)
+ * Merge trac-0.10.5
+ * Update to current statement.
+   * COPYING.trac-ja
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.10.4-ja-1 (Mar 5, 2007)
+ * Merge trac-0.10.4
+ * Fixes miss typing.
+   * wiki-default/CamelCase
+   * wiki-default/TracQuery
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.10.3.1-ja-1 (Mar 12, 2007)
+ * Merge trac-0.10.3.1
+ * Translate Messages into Japanese.
+   * trac/attachment.py
+   * trac/versioncontrol/web_ui/browser.py
+ * Fixes unified diff download error.
+   * trac/versioncontrol/web_ui/changeset.py
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.10.3-ja-1 (Dec 15, 2006)
+ * Merge trac-0.10.3
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+ * Fixes a invalid trac-links.
+   * wiki-default/TracModPython
+ * Fixes ununified translations for "View changes".
+   * templates/anydiff.cs
+   * templates/log.cs
+   * templates/wiki.cs
+   * wiki-default/TracTermsJa
+
+Trac-0.10.2-ja-1 (Nov 14, 2006)
+ * Merge trac-0.10.2
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.10.1-ja-1 (Nov 9, 2006)
+ * Merge trac-0.10.1
+ * Translate messages into Japanese.
+   * trac/db/api.py
+   * trac/notification.py
+ * Correct some translations.
+   * templates/timeline.cs
+   * wiki-default/TracIni
+   * trac/mimeview/silvercity.py
+ * Add link to TracJa.
+   * wiki-default/TracGuide
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+ * bdist's package name revert to `trac` from `trac-ja`,
+   because some plugins require `trac`'s package name.
+   * setup.py
+
+Trac-0.10-ja-3 (Nov 14, 2006)
+ * Merge patches against CSRF vulnerabilities.
+   * [patches]
+     * trac:changeset:4244
+     * trac:changeset:4257
+   * trac/web/api.py
+   * trac/web/clearsilver.py
+   * trac/web/main.py
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.10-ja-2 (Nov 10, 2006)
+ * Merge patches against CSRF vulnerabilities.
+   * [patches]
+     * trac:changeset:4145
+     * trac:changeset:4147
+     * trac:changeset:4153
+     * trac:changeset:4154
+     * trac:changeset:4155
+     * trac:changeset:4171
+   * trac/web/api.py
+   * trac/web/clearsilver.py
+   * trac/web/main.py
+ * Correct some translations.
+   * templates/timeline.cs
+ * Add link to TracJa.
+   * wiki-default/TracGuide
+ * bdist's package name revert to trac from trac-ja,
+   because some plugins require trac's package name.
+   * setup.py
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.10-ja-1 (Oct 17, 2006)
+ * Based on Trac 0.10 'Zengia'
+ * Translate messages into Japanese.
+   * templates/*.cs
+   * trac/**/*.py
+   * wiki-default/[A-Z]*
+   * wiki-macros/*.py
+ * Add new files or new paragraphs for description our work.
+   * COPYING.trac-ja
+   * README.trac-ja
+   * templates/footer.cs
+   * trac/About.py
+   * wiki-default/TracJa
+   * wiki-default/TracTermsJa
+ * Change parameters for our distribution.
+   * MANIFEST.in
+   * setup.py
+ * Change default datetime format.
+   * trac/Timeline.py
+   * trac/log.py
+   * trac/util/datefmt.py
+ * Change treatments for WikiMacros's Help and TracPlugins's Description as
+   not Unicode binary.
+   * trac/About.py
+   * trac/wiki/macros.py
+
+Trac-0.9.6-ja-3 (Nov 9, 2006)
+ * bdist's package name revert to `trac` from `trac-ja`,
+   because some plugins require `trac`'s package name.
+   * setup.py
+
+Trac-0.9.6-ja-2 (Oct 17, 2006)
+ * Fix Trac project URL from "projects.edgewall.com/trac" to "trac.edgewall.org" .
+   * wiki-default/TracInstall
+   * wiki-default/TracTickets
+   * wiki-default/TracImport
+   * wiki-default/WikiPageNames
+   * wiki-default/WikiRestructuredText
+   * wiki-default/TracSupport
+   * wiki-default/TracIni
+   * wiki-default/TracModPython
+   * wiki-default/TracSyntaxColoring
+   * wiki-default/TracBrowser
+   * wiki-default/TracNotification
+   * wiki-default/TracJa
+   * wiki-default/TracReports
+   * wiki-default/WikiMacros
+   * wiki-default/TracCgi
+   * wiki-default/WikiStart
+   * wiki-default/WikiProcessors
+   * wiki-default/TracPlugins
+   * wiki-default/TracUpgrade
+   * wiki-default/TracGuide
+   * trac/mimeview/rst.py
+   * trac/scripts/admin.py
+   * trac/About.py
+   * trac/web/clearsilver.py
+   * trac/web/href.py
+   * README.trac-ja
+ * Fix incorrect translation.
+   * wiki-default/TracNotification
+
+Trac-0.9.6-ja-1 (Jul 7, 2006)
+ * Merge trac-0.9.6
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.9.5-ja-1 (Apr 19, 2006)
+ * Merge trac-0.9.5
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.9.4-ja-1 (Feb 16, 2006)
+ * Merge trac-0.9.4
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.9.3-ja-1 (Jan 12, 2006)
+ * Merge trac-0.9.3
+ * Update to current statement.
+   * COPYING.trac-ja
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.9.2-ja-1 (Dec 9, 2005)
+ * Merge trac-0.9.2
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.9.1-ja-1 (Dec 5, 2005)
+ * Merge trac-0.9.1 
+ * Update to current statement.
+   * README.trac-ja
+   * wiki-default/TracJa
+
+Trac-0.9-ja-1 (Nov 25, 2005)
+ * Based on Trac 0.9 'Vodun'.
+ * Translate messages into Japanese.
+   * templates/*.cs
+   * trac/*/*.py
+   * wiki-default/[A-Z]*
+   * wiki-macros/*.py
+ * Add new files or new paragraphs for description our work.
+   * COPYING.trac-ja
+   * README.trac-ja
+   * templates/footer.cs
+   * trac/About.py
+   * wiki-default/TracJa
+   * wiki-default/TracTermsJa
+ * Change parameters for our distribution.
+   * MANIFEST.in
+   * setup.py
+
+Trac-0.8.4-ja-3 (Aug 2, 2006)
+ * Change Trac project URL from "projects.edgewall.com/trac" to "trac.edgewall.org" .
+   * wiki-default/TracTickets
+   * wiki-default/TracInstall
+   * wiki-default/WikiPageNames
+   * wiki-default/TracSupport
+   * wiki-default/TracModPython
+   * wiki-default/TracSyntaxColoring
+   * wiki-default/TracUnicode
+   * wiki-default/TracReports
+   * wiki-default/TracInstallPlatform
+   * wiki-default/WikiMacros
+   * wiki-default/WikiStart
+   * wiki-default/WikiRestructuredTextLinks
+   * wiki-default/WikiProcessors
+   * wiki-default/TracStandalone
+   * wiki-default/TracGuide
+   * templates/header.cs
+
+Trac-0.8.4-ja-2 (Sep 9, 2005)
+ * Add README.trac-ja
+
+Trac-0.8.4-ja-1 (Jun 20, 2005)
+ * Merge Trac-0.8.4.
+
+Trac-0.8.3-ja-1 (Jun 15, 2005)
+ * Merge Trac-0.8.3.
+
+Trac-0.8.2-ja-1 (Jun 6, 2005)
+ * Merge Trac-0.8.2.
+ * Correct some terms in the translations.
+
+Trac-0.8.1-ja-1 (Mar 25, 2005)
+ * Based on Trac 0.8 'Qualia'.
+ * Translate messages into Japanese.
+   * INSTALL
+   * README
+   * RELEASE
+   * templates/attachment.cs
+   * templates/brower.cs
+   * templates/changeset.cs
+   * templates/file.cs
+   * templates/footer.cs
+   * templates/header.cs
+   * templates/log.cs
+   * templates/log_rss.cs
+   * templates/macros.cs
+   * templates/milestone.cs
+   * templates/newticket.cs
+   * templates/query.cs
+   * templates/report.cs
+   * templates/report_rss.cs
+   * templates/roadmap.cs
+   * templates/search.cs
+   * templates/settings.cs
+   * templates/ticket.cs
+   * templates/timeline.cs
+   * templates/timeline_rss.cs
+   * templates/wiki.cs
+   * trac/db_default.py
+   * trac/Report.py
+   * trac/wikimacros/TracGuideToc.py
+   * trac/Roadmap.py
+   * trac/Wiki.py
+   * wiki-defaults/CamelCase
+   * wiki-defaults/RecentChanges
+   * wiki-defaults/SandBox
+   * wiki-defaults/TitleIndex
+   * wiki-defaults/TracAccessibility
+   * wiki-defaults/TracAdmin
+   * wiki-defaults/TracBackup
+   * wiki-defaults/TracBrowser
+   * wiki-defaults/TracChangeset
+   * wiki-defaults/TracEnvironment
+   * wiki-defaults/TracGuide
+   * wiki-defaults/TracImport
+   * wiki-defaults/TracIni
+   * wiki-defaults/TracInstall
+   * wiki-defaults/TracInstallPlatforms
+   * wiki-defaults/TracLinks
+   * wiki-defaults/TracLogging
+   * wiki-defaults/TracModPython
+   * wiki-defaults/TracMultipleProjects
+   * wiki-defaults/TracNotification
+   * wiki-defaults/TracPermissions
+   * wiki-defaults/TracQuery
+   * wiki-defaults/TracReports
+   * wiki-defaults/TracRoadmap
+   * wiki-defaults/TracRss
+   * wiki-defaults/TracSearch
+   * wiki-defaults/TracStandalone
+   * wiki-defaults/TracSyntaxColoring
+   * wiki-defaults/TracTickets
+   * wiki-defaults/TracTicketsCustomFields
+   * wiki-defaults/TracTimeline
+   * wiki-defaults/TracUnicode
+   * wiki-defaults/TracUpgrade
+   * wiki-defaults/TracWiki
+   * wiki-defaults/WikiFormatting
+   * wiki-defaults/WikiHtml
+   * wiki-defaults/WikiMacros
+   * wiki-defaults/WikiNewPage
+   * wiki-defaults/WikiPageNames
+   * wiki-defaults/WikiProcessors
+   * wiki-defaults/WikiRestructuredText
+   * wiki-defaults/WikiRestructuredTextLinks
+   * wiki-defaults/WikiStart
+ * Accept charset order from svn:mime-type, because
+   almostall using multiple charset in Japan.
+   * trac/Changeset.py
+ * Accept '%Y%m%d' formatted time-string, because
+   ja LC_TIME format on Linux is unuseful for Japanese.
+   * trac/Milestone.py
+   * scripts/trac-admin
+ * Force charset to UTF-8 on trac-admin for Windows CMD.EXE.
+   * scripts/trac-admin
+ * Credit on footer.
+   * templates/footer.cs
+ * Add Files for description our work.
+   * wiki-default/TracJa
+   * wiki-default/TracTermsJa
+   * ChangeLog.trac-ja  -- this file

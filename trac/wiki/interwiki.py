@@ -137,7 +137,7 @@ class InterWikiMap(Component):
         yield 'InterWiki'
 
     def get_macro_description(self, name): 
-        return "Provide a description list for the known InterWiki prefixes."
+        return "既存の InterWiki プレフィックスに関する概要のリストを表示します。"
 
     def expand_macro(self, formatter, name, content):
         interwikis = []

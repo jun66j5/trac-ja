@@ -301,19 +301,19 @@ class PermissionSystem(Component):
 
     store = ExtensionOption('trac', 'permission_store', IPermissionStore,
                             'DefaultPermissionStore',
-        """Name of the component implementing `IPermissionStore`, which is used
-        for managing user and group permissions.""")
+        """`IPermissionStore` を実装しているコンポーネント名を設定します。
+        ユーザとグループのパーミッションの管理のために使用されます。""")
 
     policies = OrderedExtensionsOption('trac', 'permission_policies',
         IPermissionPolicy,
         'DefaultPermissionPolicy, LegacyAttachmentPolicy',
         False,
-        """List of components implementing `IPermissionPolicy`, in the order in
-        which they will be applied. These components manage fine-grained access
-        control to Trac resources.
-        Defaults to the DefaultPermissionPolicy (pre-0.11 behavior) and
-        LegacyAttachmentPolicy (map ATTACHMENT_* permissions to realm specific
-        ones)""")
+        """`IPermissionPolicy` を実装するコンポーネントのリストを設定します。設定されている
+        順に適用されます。これらのコンポーネントは、 Trac リソースへの細かい
+        アクセスコントロールを行います。
+        デフォルトは `DefaultPermissionPolicy` (0.11 より前のふるまい) と
+        `LegacyAttachmentPolicy` (ATTACHMENT_* パーミッションをレルム固有にパーミッションに
+        マップします) です。""")
 
     # Number of seconds a cached user permission set is valid for.
     CACHE_EXPIRY = 5

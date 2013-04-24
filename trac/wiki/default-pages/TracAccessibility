@@ -1,26 +1,28 @@
-= Accessibility Support in Trac =
+= アクセシビリティサポート = #AccessibilitySupportinTrac
 
-Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links, activate form controls, etc. In Trac, we work to assure users may interact with devices other than a pointing device.
+すべてのユーザがマウス等のポインティングデバイスを備えたグラフィック環境を持っている訳ではありません。そのようなユーザは、リンクを辿ったりフォームを送信したりする作業を、キーボードやその代価品あるいは音声入力に依存しています。 Trac では、ポインティングデバイス以外を利用するユーザに対しても、扱いやすいように配慮しています。
 
-The keyboard shortcuts must be enabled for a session through the [/prefs/keybindings Keyboard Shortcuts] preferences panel.
+キーボードショートカットは、 [/prefs/keybindings キーワードショートカット] 環境設定パネルを使用してセッションを有効にする必要があります。
 
-Trac supports accessibility keys for the most common operations. On Windows and Linux platforms, press any of the keys listed below in combination with the `<Alt>` key; on a Mac, use the `<ctrl>` key instead.
+Trac では、よく行われる動作に対して、アクセラレータを割り当てています。 Windows と Linux プラットフォームでは `<Alt>` (Mac では代わりに `<ctrl>`) キーと組み合わせて、以下に記載するキーを押下してください。
 
-''Note that when using Internet Explorer on Windows, you need to hit `<Enter>` after having used the access key.''[[BR]]
-''Note that when using Firefox 2.0 on Windows, you need to hit `<Shift> + <Alt> + <Key>`.''
+''Note: Internet Explorer ではアクセスキーを押下後に `<Enter>` キーを押す必要があります。''[[BR]]
+''Note: Windows 版 Firefox 2.0 では `<Shift> + <Alt> + <Key>` を押下する必要があります。''
 
-== Global Access Keys ==
+(訳注: Trac-0.11 以降の場合、アクセスキーはデフォルトで無効になっています。 `ユーザ設定` (英語版では `Prefs`) で `キーボード・ショートカット` (英語版では `Keyboard shortcut`) を有効に設定した場合にアクセスキーを使用できます)
 
- * `1` - WikiStart
- * `2` - [wiki:TracTimeline Timeline]
- * `3` - [wiki:TracRoadmap Roadmap]
- * `4` - [wiki:TracSearch Search]
- * `6` - [wiki:TracGuide Trac Guide / Documentation]
- * `7` - [wiki:TracTickets New Ticket]
- * `9` - [/about About Trac]
- * `0` - This page
- * `e` - Edit this page
- * `f` - Search
+== すべてのページに共通のアクセラレータ == #GlobalAccessKeys
+
+ * `1` - [wiki:WikiStart Wiki スタートページ]
+ * `2` - [wiki:TracTimeline タイムライン]
+ * `3` - [wiki:TracRoadmap ロードマップ]
+ * `4` - [wiki:TracSearch 検索]
+ * `6` - [wiki:TracGuide Trac ガイド / ドキュメンテーション]
+ * `7` - [wiki:TracTickets チケット登録]
+ * `9` - [/about Trac について]
+ * `0` - このページ
+ * `e` - このページを編集
+ * `f` - 検索
 
 
 ----

@@ -1,51 +1,51 @@
-= Support for InterWiki links =
+= InterWiki リンク = #SupportforInterWikilinks
 
-''(since [trac:milestone:0.10 0.10])''
+''([http://trac.edgewall.org/milestone/0.10 milestone:0.10] 以降)''
 
-== Definition ==
+== 定義 == #Definition
 
-An InterWiki link can be used for referring to a Wiki page
-located in another Wiki system, and by extension, to any object
-located in any other Web application, provided a simple URL 
-mapping can be done.
+InterWiki リンクは Trac 以外の Wiki システムにある Wiki ページを参照するために
+使用します。応用的な使用法になりますが、 Trac 以外の Web アプリケーションが
+提供するリソースのうち、シンプルな URL マッピングが行えるものであれば
+参照することができます。
 
-At the extreme, InterWiki prefixes can even be used to simply introduce
-links to new protocols, such as `tsvn:` used by [trac:TortoiseSvn TortoiseSvn].
+極端な例では、 InterWiki プレフィックスは新しいプロトコル
+([http://trac.edgewall.org/wiki/TortoiseSvn TortoiseSvn] で使用される `tsvn:`など) へのリンクを簡単に導入するために使うこともできます。
 
-== Link Syntax ==
+== リンクのシンタックス == #LinkSyntax
 
 {{{
-<target_wiki>(:<identifier>)+
+<対象の Wiki>(:<識別子>)+
 }}}
 
-The link is composed by the targeted Wiki (or system) name,
-followed by a colon (e.g. `MeatBall:`),
-followed by a page specification in the target.
-Note that, as for InterTrac prefixes, '''InterWiki prefixes are case insensitive'''.
+リンクは対象の Wiki (もしくはシステム) 名に
+コロンをつけたもの (例 `MeatBall:`)
+に続いて、詳細を指定します。
+InterTrac のプレフィックスと同様に、 '''InterWiki のプレフィックスも大文字 / 小文字を区別しない''' ことを気をつけてください。
 
-The target Wiki URL is looked up in the InterMapTxt wiki page, 
-modelled after MeatBall:InterMapTxt.
+対象の Wiki の URL は Wiki ページ InterMapTxt に記載されています。
+このページは MeatBall:InterMapTxt を参考にしています。
 
-In addition to traditional InterWiki links, where the target
-is simply ''appended'' to the URL, 
-Trac supports parametric InterWiki URLs:
-identifiers `$1`, `$2`, ... in the URL
-will be replaced by corresponding arguments.
-The argument list is formed by splitting the page identifier
-using the ":" separator.
+さらに、従来の (訳注: MeatBall:InterMapTxt の) InterWiki リンクでは、
+識別子が単に URL に ''追加'' されるだけでしたが、
+Trac ではパラメータつきの InterWiki URL が使用できます:
+(訳注: InterMapTxt に定義した) URL に含まれる `$1`, `$2` などは、
+対応する引数に置き換えられます。
+引数はリンクの識別子に ":" で区切ったリスト形式で
+指定します。
 
-== Examples ==
+== 例 == #Examples
 
-If the following is an excerpt of the InterMapTxt page:
+以下に抜粋した InterMapTxt ページの場合:
 
 {{{
 = InterMapTxt =
-== This is the place for defining InterWiki prefixes ==
+== InterWiki のプレフィックスを定義するページです ==
 
-Currently active prefixes: [[InterWiki]]
+現在利用できるプレフィックスのリスト: [[InterWiki]]
 
-This page is modelled after the MeatBall:InterMapTxt page.
-In addition, an optional comment is allowed after the mapping.
+このページは MeatBall:InterMapTxt ページをモデルとしています。
+Trac ではマッピング文字列の後ろに任意のコメントをつけることができます。
 ----
 {{{
 PEP      http://www.python.org/peps/pep-$1.html           # Python Enhancement Proposal $1 
@@ -61,11 +61,11 @@ MoinMoin http://moinmoin.wikiwikiweb.de/
 }}}
 }}}
 
-Then, 
- * `MoinMoin:InterWikiMap` should be rendered as MoinMoin:InterWikiMap
-   and the ''title'' for that link would be "!InterWikiMap in !MoinMoin"
- * `Trac-ML:4346` should be rendered as Trac-ML:4346
-   and the ''title'' for that link would be "Message 4346 in Trac Mailing List"
+以下のように使用します
+ * `MoinMoin:InterWikiMap` は MoinMoin:InterWikiMap と表示されます。
+   リンクの ''タイトル'' は "!InterWikiMap in !MoinMoin" と表示されます。
+ * `Trac-ML:4346` は Trac-ML:4346 と表示されます。
+   リンクの ''タイトル'' は "Message 4346 in Trac Mailing List" と表示されます。
 
 ----
 See also: InterTrac, InterMapTxt

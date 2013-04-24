@@ -1,97 +1,97 @@
-= Trac Changeset Module =
+= Trac チェンジセットモジュール = #TracChangeseModule
 [[TracGuideToc]]
 
-Trac has a built-in functionality for visualizing “diffs” - changes to files.
+Trac には "diffs" - ファイルの変更箇所を画面表示する機能があります。
 
-There are different kinds of ''change sets''. 
-Some can correspond to revisions made in the repositories,
-others can aggregate changes made in several revisions, 
-but in the end, any kind of differences can be shown.
+''チェンジセット'' といってもいろいろな種類があります。
+あるリビジョンにおけるファイルの変更だったり、
+異なるリビジョン間における変更を累積したものもありますが、
+結局のところどんな変更箇所でも表示することができます。
 
-The changeset view consists of two parts, the ''header'' 
-and the ''diff views''.
+チェンジセットビューは ''ヘッダ'' と 
+''diff ビュー'' の 2 つで構成されています。
 
-== Changeset Header ==
+== チェンジセットヘッダ == #ChangesetHeader
 
-The header shows an overview of the whole changeset.
-Here you will find information such as:
+ヘッダは、チェンジセット全体の概要を表示します。
+以下のような情報を得ることができます :
 
- * Timestamp — When the changeset was commited
- * Author — Who commited the changeset
- * Message — A brief description from the author (the commit log message)
- * Location — Parent directory of all files affected by this changeset
- * Files — A list of files affected by this changeset
+ * コミット日時 (英語版では Timestamp) -- チェンジセットがコミットされた日時
+ * 更新者 (英語版では Author) -- チェンジセットをコミットした人
+ * ログメッセージ (英語版では Message) -- 更新者による簡単な説明 (コミットログ)
+ * 場所 (英語版では Location) -- チェンジセットによって更新などの影響を受けた全てのファイルの親ディレクトリ
+ * ファイル (英語版では Files) -- チェンジセットによって更新などの影響を受けたファイルのリスト
 
-If more than one revision is involved in the set of changes being
-displayed, the ''Timestamp'', ''Author'' and ''Message'' fields 
-won't be shown.
+複数のリビジョンのチェンジセットが含まれる場合、
+''コミット日時'' (英語版では ''Timestamp''), ''更新者'' (英語版では ''Author''), ''ログメッセージ'' (英語版では ''Message'') フィールドは
+表示されません。
 
-In front of each listed file, you'll find  a colored rectangle. The color
-indicates how the file is affected by the changeset.
+リストされているファイル名の前に、色のついた四角が見えるでしょう。
+それぞれの色は、チェンジセットによってファイルがどのような影響を受けたかを示しています。
  
- * [[span(style=background:#bfb;border:1px solid #999,` `)]] Green: Added
- * [[span(style=background:#f88;border:1px solid #999,` `)]] Red: Removed
- * [[span(style=background:#fd8;border:1px solid #999,` `)]] Yellow: Modified
- * [[span(style=background:#88f;border:1px solid #999,` `)]] Blue: Copied
- * [[span(style=background:#ccc;border:1px solid #999,` `)]] Gray: Moved
-The color legend is located below the header as a reminder.
+ * [[span(style=background:#bfb;border:1px solid #999,` `)]] 緑: 追加
+ * [[span(style=background:#f88;border:1px solid #999,` `)]] 赤: 削除
+ * [[span(style=background:#fd8;border:1px solid #999,` `)]] 黄色: 更新
+ * [[span(style=background:#88f;border:1px solid #999,` `)]] 青: コピー
+ * [[span(style=background:#ccc;border:1px solid #999,` `)]] グレー: 移動
+色の凡例はヘッダの下に備忘録として載っています。
 
-== Diff Views ==
+== diff ビュー == #DiffViews
 
-Below the header is the main part of the changeset, the diff view. Each file is shown in a separate section, each of which will contain only the regions of the file that are affected by the changeset. There are two different styles of displaying the diffs: ''inline'' or ''side-by-side'' (you can switch between those styles using the preferences form):
+ヘッダの下がチェンジセットの主な部分となる diff ビューです。それぞれのファイルがセクションで区切って表示されています。そして、各セクションには、チェンジセットによって該当のファイルが影響を受けた部分のみが含まれています。 diff の表示には 2 種類あります: ''インラインで表示'' (英語版では ''inline'') と ''並べて表示'' (英語版では ''side-by-side'') 形式です。 (設定フォームで、 2 つのスタイルを切り替えることができます):
 
- * The ''inline'' style shows the changed regions of a file underneath each other. A region removed from the file will be colored red, an added region will be colored green. If a region was modified, the old version is displayed above the new version. Line numbers on the left side indicate the exact position of the change in both the old and the new version of the file.
- * The ''side-by-side'' style shows the old version on the left and the new version on the right (this will typically require more screen width than the inline style.) Added and removed regions will be colored in the same way as with the inline style (green and red, respectively), but modified regions will have a yellow background.
+ * ''インラインで表示'' スタイルはファイルの変更部分を一列で表示します。ファイルから削除された部分は、赤くマーキングされ、追加された部分は緑色にマーキングされます。更新された場合は、古いバージョンは新しいバージョンの上に表示されます。左側の行番号は古いバージョンと新しいバージョンのファイルのそれぞれ変更があった行番号を示しています。
+ * ''並べて表示'' スタイルは古いバージョンを左側に、新しいバージョンは右側に表示されます (インラインスタイルよりも横幅が長い画面が必要となるでしょう。) 追加または削除された部分はインラインスタイルと同様に色づけ (それぞれ緑、赤で) されます。更新された部分は黄色の背景で表示されます。
 
-In addition, various advanced options are available in the preferences form for adjusting the display of the diffs:
- * You can set how many lines are displayed before and after every change
-   (if the value ''all'' is used, then the full file will be shown)
- * You can toggle whether blank lines, case changes and white space changes are ignored, thereby letting you find the functional changes more quickly
+加えて、設定フォームで diff の表示方法を調整するためのいろいろなオプションを利用可能となっています:
+ * 差分の発生行の前後に何行表示するかを設定することができます。
+   (''all'' を使用するとファイル全体が表示されます)
+ * 空白行、大文字/小文字、空白文字の変更を無視リストに追加することができます。これらを設定することによって、より素早く機能上の変更を見ることが可能になります。
 
 
-== The Different Ways to Get a Diff ==
+== diff を見る他の方法 == #TheDifferentWaysToGetaDiff
 
-=== Examining a Changeset ===
+=== チェンジセットを見る === #ExaminingaChangeset
 
-When viewing a repository check-in, such as when following a
-changeset [wiki:TracLinks link] or a changeset event in the 
-[wiki:TracTimeline timeline], Trac will display the exact changes
-made by the check-in.
+リポジトリへのチェックインを見る (チェンジセットの [wiki:TracLinks リンク] や
+[wiki:TracTimeline タイムライン] のチェンジセットイベントを辿るなどの操作を行う)
+と、 Trac はチェックインによって発生した変更箇所を
+表示します。
 
-There will be also navigation links to the ''Previous Changeset''
-to and ''Next Changeset''.
+そのとき、ナビゲーションリンクに ''前のチェンジセット'' (英語版では ''Previous Changeset'') 
+と ''次のチェンジセット'' (英語版では ''Next Changeset'') も表示されます。
 
-=== Examining Differences Between Revisions ===
+=== リビジョン間の diff を見る === #ExaminingDifferencesBetweenRevisions
 
-Often you'll want to look at changes made on a file 
-or on a directory spanning multiple revisions. The easiest way
-to get there is from the TracRevisionLog, where you can select
-the ''old'' and the ''new'' revisions of the file or directory, and
-then click the ''View changes'' button.
+しばしばファイルやディレクトリの複数のリビジョンをまたがった変更を見たい
+ことがあるでしょう。
+もっとも簡単な方法は TracRevisionLog から取得することです。
+そして、 ファイルやディレクトリの '''旧''' リビジョンと '''新''' リビジョンを選択し、
+''更新を見る'' (英語版では ''View changes'') ボタンをクリックします。
 
-=== Examining Differences Between Branches ===
+=== ブランチ間の diff を見る === #ExaminingDifferenceBetweenBranches
 
-One of the core features of version control systems is the possibility
-to work simultaneously on different ''Lines of Developments'', commonly
-called “branches”. Trac enables you to examine the exact differences
-between such branches.
+バージョン管理システムの主となる特徴の一つとして、
+一般的に "ブランチ" と呼ばれる ''開発系統'' が同時に 2 つ以上走る可能性があるということです。
+Trac はこのような ブランチ間の diff を
+をみることを可能にしています。
 
-Using the '''View changes ...''' button in the TracBrowser allows you to enter
-''From:'' and ''To:'' path/revision pairs. The resulting set of differences consist
-of the changes that should be applied to the ''From:'' content in order
-to get to the ''To:'' content.
+TracBrowser の '''差分を表示''' (英語版では '''View changes...''') ボタンをクリックすることにより、任意の
+パスとリビジョンの ''Base (From)'' と ''Target (To)'' を選択するフォームを表示します。
+diff の一覧は ''To:'' の内容に合わせるために ''From:'' の内容に適用するべき
+変更点でできています。
 
-For convenience, it is possible to invert the roles of the ''old'' and the ''new''
-path/revision pairs by clicking the ''Reverse Diff'' link on the changeset page.
+チェンジセットのページの ''Diff を反転'' (英語版では ''Reverse Diff'') リンクをクリックすることによって、 
+'''旧''' と '''新''' のパス/リビジョンの役割を反転させることが可能です。
 
-=== Checking the Last Change ===
+=== 最終更新をみる === #CheckingtheLastChange
 
-The last possibility for examining changes is to use the ''Last Change''
-link provided by the TracBrowser.
+最後に残った操作として、
+TracBrowser が提供する ''最終更新'' (英語版では ''Last Change'') リンクがあります。
 
-This link will take you to the last change that was made on that path.
-From there, you can use the ''Previous Change'' and ''Next Change'' links
-to traverse the change history of the file or directory.
+このリンクはそのパスで起こった最後の変更を表示します。
+そこから、 ''前の更新'' (英語版では ''Previous Change'') と ''次の更新'' (英語版では ''Next Change'') リンクを使用
+することで、そのファイルやディレクトリの変更履歴を横断的に見ることができます。
 
 ----
 See also: TracGuide, TracBrowser

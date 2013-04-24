@@ -257,97 +257,97 @@ class Chrome(Component):
     stream_filters = ExtensionPoint(ITemplateStreamFilter)
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
-        """Path to the //shared templates directory//.
+        """//共有するテンプレートディレクトリ// のパスを指定します。
         
-        Templates in that directory are loaded in addition to those in the
-        environments `templates` directory, but the latter take precedence.
+        指定したパスは環境の `templates` ディレクトリに加えてロードされますが、 
+        `templates` ディレクトリが優先となります。 
         
-        (''since 0.11'')""")
+        (''0.11 以降'')""")
 
     auto_reload = BoolOption('trac', 'auto_reload', False,
-        """Automatically reload template files after modification.""")
+        """変更があった後、テンプレートファイルを自動的に再読込するかを設定します。""")
     
     genshi_cache_size = IntOption('trac', 'genshi_cache_size', 128,
-        """The maximum number of templates that the template loader will cache
-        in memory. The default value is 128. You may want to choose a higher
-        value if your site uses a larger number of templates, and you have
-        enough memory to spare, or you can reduce it if you are short on
-        memory.""")
+        """テンプレートローダーがメモリ内にキャッシュできるテンプレートの最大値
+        です。デフォルト値は 128 です。あなたのサイトがとても多くのテンプレートを使用している場合、
+        そしてあなたが十分なメモリを割くことができるならば、
+        より大きい値を選択したいかもしれません。もしメモリに余裕がなければ、値を小さくすることが
+        できます。""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
-        """Base URL for serving the core static resources below 
-        `/chrome/common/`.
+        """`/chrome/common/` 配下の静的なリソースを提供するための
+        ベース URL を指定します。
 
-        It can be left empty, and Trac will simply serve those resources
-        itself.
+        空のままにしておくこともできます。この場合、 Trac はただ単にこれらの
+        リソースをそのまま提供します。
 
-        Advanced users can use this together with
-        [TracAdmin trac-admin ... deploy <deploydir>] to allow serving the
-        static resources for Trac directly from the web server.
-        Note however that this only applies to the `<deploydir>/htdocs/common`
-        directory, the other deployed resources (i.e. those from plugins) 
-        will not be made available this way and additional rewrite 
-        rules will be needed in the web server.""")
+        アドバンスドユーザーはこのオプションを
+        [TracAdmin trac-admin ... deploy <deploydir>] と共に使用することで、 
+        Trac の静的リソースをウェブサーバーから直接提供するようにすることができます。
+        しかし、このオプションは `<deploydir>/htdocs/common` にのみ
+        適用可能であることを覚えていて下さい。デプロイされたその他のリソース ( 例 plugins ディレクトリのリソース )
+        はこの方法を使用することはできません。追加でウェブサーバーに
+        リライトルールを設定する必要があります。""")
 
     metanav_order = ListOption('trac', 'metanav',
                                'login,logout,prefs,help,about', doc=
-        """Order of the items to display in the `metanav` navigation bar,
-           listed by IDs. See also TracNavigation.""")
+        """ナビゲーションバーの `metanav` に表示する項目の順序を
+           ID のリストで設定します。詳しくは TracNavigation を参照してください。""")
 
     mainnav_order = ListOption('trac', 'mainnav',
                                'wiki,timeline,roadmap,browser,tickets,'
                                'newticket,search', doc=
-        """Order of the items to display in the `mainnav` navigation bar, 
-           listed by IDs. See also TracNavigation.""")
+        """ナビゲーションバーの `mainnav` に表示する項目の順序を
+           ID のリストで設定します。詳しくは TracNavigation を参照してください。""")
 
     logo_link = Option('header_logo', 'link', '',
-        """URL to link to, from the header logo.""")
+        """ヘッダロゴがリンクする URL を設定します。""")
 
     logo_src = Option('header_logo', 'src', 'site/your_project_logo.png',
-        """URL of the image to use as header logo.
-        It can be absolute, server relative or relative.
+        """ヘッダロゴに使用するイメージファイルの URL を設定します。
+        絶対パス、サーバー上の相対パスまたは、一般的な相対パスが使用できます。
 
-        If relative, it is relative to one of the `/chrome` locations:
-        `site/your-logo.png` if `your-logo.png` is located in the `htdocs`
-        folder within your TracEnvironment;
-        `common/your-logo.png` if `your-logo.png` is located in the
-        folder mapped to the [#trac-section htdocs_location] URL. 
-        Only specifying `your-logo.png` is equivalent to the latter.""")
+        相対パスの場合、一つはロケーション `/chrome` からの相対パスにします:
+        `your-logo.png` が TracEnvironment の `htdocs` に位置するならば、 
+        `site/your-logo.png` を設定します:
+        `your-logo.png` が [#trac-section htdocs_location] URL に
+        マッピングされたフォルダに位置しているならば、 `common/your-logo.png` を設定します。
+        単に `your-logo.png` と指定した場合は、後者の設定と同等になります。""")
 
     logo_alt = Option('header_logo', 'alt', 
-        "(please configure the [header_logo] section in trac.ini)",
-        """Alternative text for the header logo.""")
+        "(trac.ini の [header_logo] セクションを設定してください)",
+        """ヘッダロゴに使用する alt テキストを設定します。""")
 
     logo_width = IntOption('header_logo', 'width', -1,
-        """Width of the header logo image in pixels.""")
+        """ヘッダロゴの幅を pixel で設定します。""")
 
     logo_height = IntOption('header_logo', 'height', -1,
-        """Height of the header logo image in pixels.""")
+        """ヘッダロゴの高さを pixel で設定します。""")
 
     show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
-        """Show email addresses instead of usernames. If false, we obfuscate
-        email addresses. (''since 0.11'')""")
+        """ユーザ名の代わりにメールアドレスを表示します。 false の場合、
+        メールアドレスはわかりづらくなります (''0.11 以降'')。""")
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto', 
         'false',
-        """Never obfuscate `mailto:` links explicitly written in the wiki, 
-        even if `show_email_addresses` is false or the user has not the 
-        EMAIL_VIEW permission (''since 0.11.6'').""")
+        """Wiki に記載されたあいまいな `mailto:` をリンクから除外します。
+        この設定は `show_email_addresses` や EMAIL_VIEW パーミッションの
+        設定に優先します (''0.11.6 以降'')。""")
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
-        """Show IP addresses for resource edits (e.g. wiki).
-        (''since 0.11.3'')""")
+        """リソース (Wiki など) を編集した IP アドレスを表示します
+        (''0.11.3 以降'')。""")
 
     resizable_textareas = BoolOption('trac', 'resizable_textareas', 'true',
-        """Make `<textarea>` fields resizable. Requires !JavaScript.
-        (''since 0.12'')""")
+        """`<textarea>` フィールドのサイズ変更を可能にします。. !JavaScript が必要です。
+        (''0.12 以降'')""")
 
     auto_preview_timeout = FloatOption('trac', 'auto_preview_timeout', 2.0,
-        """Inactivity timeout in seconds after which the automatic wiki preview
-        triggers an update. This option can contain floating-point values. The
-        lower the setting, the more requests will be made to the server. Set
-        this to 0 to disable automatic preview. The default is 2.0 seconds.
-        (''since 0.12'')""")
+        """自動的に wiki のプレビューが更新される際の無応答に対するタイムアウト値を秒数で
+        指定します。このオプションは小数点を含む数値を指定することができます。
+        小さい値を設定した際は、サーバへより多くのリクエストが発生します。
+        このプレビューの自動更新を無効にするには、 0 を設定して下さい。デフォルト値は 2.0 秒です。
+        (''0.12 以降'')""")
 
     templates = None
 

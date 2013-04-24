@@ -170,10 +170,10 @@ class RepositoryAdminPanel(Component):
 
     allowed_repository_dir_prefixes = ListOption('versioncontrol',
         'allowed_repository_dir_prefixes', '',
-        doc="""Comma-separated list of allowed prefixes for repository
-        directories when adding and editing repositories in the repository
-        admin panel. If the list is empty, all repository directories are
-        allowed. (''since 0.12.1'')""")
+        doc="""リポジトリの管理パネルにリポジトリを追加または編集を行なう際に
+        許容するリポジトリのディレクトリのプレフィックスのカンマ区切りのリストです。
+        リストが空の場合、すべてのリポジトリのディレクトリが許容されます。
+        (''0.12.1 以降'')""")
 
     # IAdminPanelProvider methods
 

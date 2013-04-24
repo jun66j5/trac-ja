@@ -1,24 +1,24 @@
-= Importing ticket data =
+= チケットデータのインポート = #Importingticketdata
 [[PageOutline]]
 
-By means of migrating from other issue-tracking systems, perform some external actions over tickets or simply synchronize different data bases, there are some available tools, plug-ins or scripts which lets you import or up-date tickets into Trac.
+他の問題追跡システムから移行することによって、チケットを通じて外部のアクションを実行したり、様々なデータベースと簡単に同期するために、 Trac にチケットをインポート又は更新するためのツールやプラグイン、スクリプトがあります。
 
-Below, follows a collection of some of those.
+下記で、いくつか紹介します。
 
 == !TicketImportPlugin ==
 
- th:TicketImportPlugin:: mainly, but not only, this plug-in lets you import or up-date into Trac a series of tickets from a '''CSV file''' or (if the [http://pypi.python.org/pypi/xlrd xlrd library] is installed) from an '''Excel file'''. 
+ th:TicketImportPlugin:: このプラグインは '''CSV ファイル''' 及び '''Excel ファイル''' ([http://pypi.python.org/pypi/xlrd xlrd library] をインストールすれば) からチケットをインポート又は更新します。
 
 == !ExportImportXlsPlugin ==
 
- th:ExportImportXlsPlugin:: this plug-in add an admin panel for export and import tickets via '''XLS file'''.
-  * It depends on the python packages xlwt/rxld.
+ th:ExportImportXlsPlugin:: このプラグインは '''XLS ファイル''' を経由して、チケットをインポート及びエクスポートするための管理画面を追加します。
+  * Python パッケージ xlwt/rxld に依存します。
 
 == Bugzilla ==
 
- th:BugzillaIssueTrackingPlugin:: integrates Bugzilla into Trac keeping TracLinks
+ th:BugzillaIssueTrackingPlugin:: TracLinks を保持したまま Trac に Bugzilla を統合します。
 
-Ticket data can be imported from Bugzilla using the [http://trac.edgewall.org/browser/trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
+[http://trac.edgewall.org/browser/trunk/contrib/bugzilla2trac.py bugzilla2trac.py] スクリプトを使用すると、チケットのデータを Bugzilla からインポートすることができます。 bugzilla2trac.py スクリプトは Trac の配布を展開した contrib/ ディレクトリにあります。
 
 {{{
 $ bugzilla2trac.py
@@ -38,62 +38,62 @@ Available Options:
 Additional configuration options can be defined directly in the script.
 }}}
 
-Currently, the following data is imported from Bugzilla:
+現在のところ、 Bugzilla からインポートされるのは以下のデータです:
 
-  * bugs
-  * bug activity (field changes)
-  * bug attachments
-  * user names and passwords (put into a htpasswd file)
+  * バグ
+  * バグの更新 (属性の変更)
+  * バグの添付ファイル
+  * ユーザ名とパスワード (htpasswd ファイルに出力します)
 
-The script provides a number of features to ease the conversion, such as:
+bugzilla2trac.py スクリプトは変換を楽にする機能を数多く備えています。例えば:
 
-  * PRODUCT_KEYWORDS:  Trac doesn't have the concept of products, so the script provides the ability to attach a ticket keyword instead.
+  * PRODUCT_KEYWORDS:  Trac にはプロダクトという概念がありません。このため、プロダクトをチケットのキーワードとして紐づけられるようになっています。
 
-  * IGNORE_COMMENTS:  Don't import Bugzilla comments that match a certain regexp.
+  * IGNORE_COMMENTS:  特定の正規表現にマッチする Bugzilla コメントをインポートしないようにします。
 
-  * STATUS_KEYWORDS:  Attach ticket keywords for the Bugzilla statuses not available in Trac.  By default, the 'VERIFIED' and 'RELEASED' Bugzilla statuses are translated into Trac keywords.
+  * STATUS_KEYWORDS:  Trac にない Bugzilla のステータスに対してチケットのキーワードを割り当てます。デフォルトでは、 Bugzilla のステータス 'VERIFIED' と 'RELEASED' は、 Trac のキーワードに変換されます。 
 
-For more details on the available options, see the configuration section at the top of the script.
+使用できるオプションについての更なる詳細についてはスクリプトの先頭にある configuration セクションを参照してください。
 
 == Jira ==
 
- th:JiraToTracIntegration:: provides tools to import Atlassian Jira backup files into Trac. The plug-in consists of a Python 3.1 commandline tool that:
-   - Parses the Jira backup XML file
-   - Sends the imported Jira data and attachments to Trac using the [http://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin]
-   - Generates a htpasswd file containing the imported Jira users and their SHA-512 base64 encoded passwords
+ th:JiraToTracIntegration:: Atlassian が開発している Jira のバックアップファイルから Trac にインポートが行えます。このプラグインは Python 3.1 で書かれたコマンドラインツールで、下記の機能があります:
+   - Jira のバックアップ XML ファイルを解析する
+   - Jira のデータおよび添付ファイルを Trac の  [http://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin] に送信する
+   - Jira のユーザ情報と base64 エンコードされた SHA-512 パスワードから htpasswd ファイルを生成する
 
 == Mantis ==
 
- th:MantisImportScript:: script to import from Mantis into Trac the following data:
-  * bugs
-  * bug comments
-  * bug activity (field changes)
-  * attachments (as long as the files live in the mantis db, not on the filesystem) .
+ th:MantisImportScript:: 以下のデータを Mantis から Trac にインポートします:
+  * バグ
+  * バグのコメント
+  * バグの状態 (フィールドの変更)
+  * 添付ファイル (ファイルが filesystem になく mantis db にある場合)
 
 == !PlanetForge ==
 
- th:PlanetForgeImportExportPlugin:: this plugin exports Trac data (wiki, tickets, compoments, permissions, repositories, etc.) using the open format designed by the COCLICO project. It extends the webadmin panel and the 'trac admin ...' command. Still has no 'import' feature. 
+ th:PlanetForgeImportExportPlugin:: このプラグインは COCLICO プロジェクトによりデザインされたオープンフォーマットを用いて、Trac のデータ (Wiki、チケット、コンポーネント、パーミッション、リポジトリ等) をエクスポートします。webadmin パネルと'trac admin ...' コマンドを拡張します。まだ、'import' の機能はありません。
 
 == Scarab ==
 
- th:ScarabToTracScript:: script that migrates Scarab issues to Trac tickets
-    * Requires [http://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin]
+ th:ScarabToTracScript:: Scarab の Issue を Trac のチケットに移動させます。
+    * [http://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin] が必要です。
 
 == Sourceforge ==
 
- th:SfnToTracScript:: importer of !SourceForge's new backup file (originated from #Trac3521)
+ th:SfnToTracScript:: !SourceForge の新しいバックアップファイルをインポートします。 (#Trac3521より)
 
-Also, ticket data can be imported from Sourceforge using the [http://trac.edgewall.org/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
+[http://trac.edgewall.org/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] スクリプトを使用すると、 Sourceforge からチケットのデータをインポートすることができます。 sourceforge2trac.py スクリプトも Trac 配布物を展開した contrib/ ディレクトリにあります。
 
-== Other ==
+== その他 == #Other
 
-Since trac uses a SQL database to store the data, you can import from other systems by examining the database tables. Just go into [http://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import into them from your application.
+Trac は データの保存に SQL データベースを使用しているので、データベースを調査することによって他のシステムからインポートすることができます。 [http://www.sqlite.org/sqlite.html sqlite] のコマンドラインで Trac データベースのテーブルを参照し、あなたが使用しているアプリケーションからデータベースのテーブルをインポートしてください。
 
-=== Comma delimited file - CSV ===
-See [http://trac.edgewall.org/attachment/wiki/TracSynchronize/csv2trac.2.py] for details.  This approach is particularly useful if one needs to enter a large number of tickets by hand. (note that the ticket type type field, (task etc...) is also needed for this script to work with more recent Trac releases)
-Comments on script: The script has an error on line 168, ('Ticket' needs to be 'ticket').  Also, the listed values for severity and priority are swapped. 
+=== カンマ区切りファイル - CSV === #Commadelimitedfile-CSV
+詳しくは [http://trac.edgewall.org/attachment/wiki/TracSynchronize/csv2trac.2.py] を参照して下さい。 この方法は手動でたくさんのチケットを登録するようなときにとても便利です。 (最近の Trac のリリースでは、このスクリプトを使用するのにチケットの分類のフィールド (task など) が必要です)
+スクリプト上のコメント: スクリプトの 168 行目にエラーがあります。 ('Ticket' は 'ticket' としなければなりません )。また、重要度と優先度でリストされる値が逆になっています。
 
 ----
 See also: 
- * to import/export wiki pages: TracAdmin, 
- * to export tickets: TracTickets, TracQuery
+ * Wiki ページのインポート/エクスポートについて: TracAdmin, 
+ * チケットのエクスポートについて: TracTickets, TracQuery
