@@ -1,39 +1,38 @@
-= CGI として Trac をインストールする = #InstallingTracasCGI
+= CGI として Trac をインストールする #InstallingTracasCGI
 
-{{{
-#!div class=important
+{{{#!div class=important
   ''Trac を CGI 経由で使用するのは、他の方法である [TracModPython mod_python], [TracFastCgi FastCGI] や Windows 上の [trac:TracOnWindowsIisAjp IIS/AJP] よりも極めて遅いことに注意して下さい。''
 }}}
 
 CGI スクリプトは、 Web サーバがリクエストを受信した時にアプリケーションを起動するためのエントリポイントになります。下記のスクリプトで `trac.cgi` を生成できます:
-{{{
+{{{#!sh
 trac-admin /path/to/env deploy /path/to/www/trac
 }}}
 指定したパス内の `cgi-bin` フォルダに `trac.cgi` が作成されます。''`trac.cgi` が Web サーバで実行可能か確認してください''。このコマンドは指定したパスの `htdocs` ディレクトリに `静的リソース` ファイルもコピーします。
 
-== Apache web-server 設定 == #Apacheweb-serverconfiguration
+== Apache web-server 設定 #Apacheweb-serverconfiguration
 
 [http://httpd.apache.org/ Apache HTTPD] を使用している場合、 Trac で CGI を動作させる設定方法は 2 通りあります:
 
  1. `ScriptAlias` を使用し、 `trac.cgi` スクリプトを URL にマップする。(推奨)
- 2. CGI プログラムが実行可能な、 Web サーバ上のディレクトリ (通常は `cgi-bin` が使用される) に `trac.cgi` ファイルをコピーする。シンボリックリンクでも代用できますが、その場合 `cgi-bin` ディレクトリでは `FollowSymLinks` オプションを有効にして下さい
+ 1. CGI プログラムが実行可能な、 Web サーバ上のディレクトリ (通常は `cgi-bin` が使用される) に `trac.cgi` ファイルをコピーする。シンボリックリンクでも代用できますが、その場合 `cgi-bin` ディレクトリでは `FollowSymLinks` オプションを有効にして下さい
 
 `http://yourhost.example.org/trac` で Trac を実行するには、インストールしたマシンのApache の設定ファイルに、 `trac.cgi` パスに変更した上で、`ScriptAlias` ディレクティブを追加します。
-{{{
+{{{#!sh
 ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.cgi
 }}}
 
  ''このディレクティブを使用するには `mod_alias` モジュールを有効にしておく必要があります。''
 
 Trac のプロジェクトが 1 つの場合、 `TRAC_ENV` 環境変数を使用してプロジェクトへのパスを指定する必要があります:
-{{{
+{{{#!apache
 <Location "/trac">
   SetEnv TRAC_ENV "/path/to/projectenv"
 </Location>
 }}}
 
 もしくは、複数のプロジェクトを扱うために、それらの親ディレクトリを `TRAC_ENV_PARENT_DIR` を使用して設定することができます。
-{{{
+{{{#!apache
 <Location "/trac">
   SetEnv TRAC_ENV_PARENT_DIR "/path/to/project/parent/dir"
 </Location>
@@ -41,31 +40,31 @@ Trac のプロジェクトが 1 つの場合、 `TRAC_ENV` 環境変数を使用
 
  ''Note: `SetEnv` ディレクティブを使用するには `mod_env` モジュールをインストールし有効にしておく必要があります。 trac.cgi に TRAC_ENV を設定することで代用できます。 "try" と "from trac.web ..." の間に以下のコードを加えてください:''
 
-{{{
+{{{#!python
     import os
     os.environ['TRAC_ENV'] = "/path/to/projectenv"
 }}}
 
  ''もしくは、 TRAC_ENV_PARENT_DIR を設定します:''
 
-{{{
+{{{#!python
     import os
     os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
 }}}
 
-[http://httpd.apache.org/docs/suexec.html Apache suEXEC] 機能を使用している場合、 [trac:ApacheSuexec ApacheSuexec] を参照して下さい。
+[http://httpd.apache.org/docs/suexec.html Apache suEXEC] 機能を使用している場合、[trac:ApacheSuexec ApacheSuexec] を参照して下さい。
 
 システムによっては、`trac.cgi` ファイルの shebang 行を編集して、実際に Python がインストールされているパスを指すように修正する必要がある ''かもしれません''。 Windows システム上では、 Windowsが .cgi ファイルを実行できるように設定する必要があるでしょう。 (エクスプローラ -> ツール -> フォルダオプション -> ファイルの種類 -> CGI を Python と関連付ける)
 
-=== WSGI を使用する === #UsingWSGI
+=== WSGI を使用する #UsingWSGI
 
 [http://pythonweb.org/projects/webmodules/doc/0.5.3/html_multipage/lib/example-webserver-web-wsgi-simple-cgi.html CGI] 内で [http://henry.precheur.org/python/how_to_serve_cgi WSGI ハンドラー] を実行することができます。[wiki:TracModWSGI#Thetrac.wsgiscript アプリケーション機能を作成すること] もできますし、用意されている `trac.wsgi` のアプリケーションを使用することもできます。
 
-== 静的なリソースをマッピングする == #MappingStaticResources
+== 静的なリソースをマッピングする #MappingStaticResources
 
 TracInstall#MappingStaticResources を参照してください。
 
-== 認証を追加する == #AddingAuthentication
+== 認証を追加する #AddingAuthentication
 
 TracInstall#ConfiguringAuthentication を参照してください。
 

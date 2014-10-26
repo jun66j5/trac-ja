@@ -5,8 +5,10 @@
 キーボードショートカットは、 [/prefs/keybindings キーワードショートカット] 環境設定パネルを使用してセッションを有効にする必要があります。
 
 Trac では、よく行われる動作に対して、アクセスキーを割り当てています。
+アクセスキーはブラウザによって違いがあり、いくつかのブラウザでは以下のものが動作します。
+詳細は [http://en.wikipedia.org/wiki/Access_key#Access_in_different_browsers access in different browsers] を参照してください。
  - Linux プラットフォームでは、 `<Alt>` キーと組み合わせて、以下に記載するキーを押下してください
- - Mac では、 `<ctrl>` キーを使用してください
+ - Mac では、 `<ctrl>` + `<Opt>` キーを使用してください
  - Windows では、`<Shift> + <Alt> + <Key>` を押下する必要があります。 これはほとんどのブラウザに対応します (Firefox, Chrome, Safari, Internet Explorer)
 
 (訳注: Trac-0.11 以降の場合、アクセスキーはデフォルトで無効になっています。 `ユーザ設定` (英語版では `Prefs`) で `キーボード・ショートカット` (英語版では `Keyboard shortcut`) を有効に設定した場合にアクセスキーを使用できます)

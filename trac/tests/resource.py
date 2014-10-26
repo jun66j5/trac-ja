@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2007-2009 Edgewall Software
+# Copyright (C) 2007-2013 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -45,7 +45,7 @@ class ResourceTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(resource))
-    suite.addTest(unittest.makeSuite(ResourceTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ResourceTestCase))
     return suite
 
 if __name__ == '__main__':

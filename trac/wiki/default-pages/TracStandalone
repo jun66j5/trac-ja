@@ -13,7 +13,7 @@ Tracd は様々な場面で使用することができます。テストや開�
 
  * 機能が少ない: Tracd に実装されている web サーバはとてもシンプルで、 Apache httpd のように拡張性のある設定ができません
  * ネイティブで HTTPS に対応しない: 代わりに [http://www.rickk.com/sslwrap/ sslwrap] または
-   [trac:STunnelTracd stunnel -- tracd と stunnel を使うためのチュートリアル] または Apache の mod_proxy を使用します
+   [trac:wiki:STunnelTracd stunnel -- tracd と stunnel を使うためのチュートリアル] または Apache の mod_proxy を使用します
 
 == 使用例 == #Usageexamples
 
@@ -94,6 +94,9 @@ $ net start tracd
 == 認証を使用する == #UsingAuthentication
 
 Tracd は Apache を必要とせずに Trac を実行できるようになっています。しかし、tracd で認証を行う際には Apache のパスワードツール (htpasswd や htdigest) を使ってパスワードファイルを簡単に適切なフォーマットで作成することができます。(htpasswd や htdigest がなくてもパスワードファイルを作成するができます。代替方法は下記を参照してください)
+
+生成したパスワードファイルは秒以下のタイムスタンプをサポートするファイルシステムに置くようにしてください。
+Trac はそのファイルの更新日時を監視しているため、タイムスタンプの精度が荒いファイルシステム (Linux の `ext2` や `ext3` など) では変更が検出されないことがあります。
 
 Tracd は基本認証とダイジェスト認証の両方に対応しています。ダイジェスト認証の方がより安全です。以降の例ではダイジェスト認証を使用しています。基本認証を使用するためには、下記のコマンドライン入力時に `--auth` を `--basic-auth` に置き換えて下さい。
 

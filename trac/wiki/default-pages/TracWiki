@@ -1,4 +1,3 @@
-
 = Trac Wiki システム = #TheTracWikiSystem
 [[TracGuideToc]]
 
@@ -14,7 +13,8 @@ Wiki に投稿することは本質的にはハイパーリンクをビルドす
 HTML に関する一般的な助言についてもここで扱います。
 例えば、 ''[http://www.w3.org/Provider/Style オンライン・ハイパーテキストのためのスタイルガイド]'' には
 [http://www.w3.org/Provider/Style/Structure.html 作品全体の構造] についての考え方や
-情報を [http://www.w3.org/Provider/Style/WithinDocument.html 各ドキュメントに] まとめる方法について説明されています。最も重要な tip として、 “ あなたがリンクをたどっていなかったとしても、読むことができる HTML ページにしよう” ということです。
+情報を [http://www.w3.org/Provider/Style/WithinDocument.html 各ドキュメントに] まとめる方法について説明されています。
+最も重要なヒントの一つは「あなたがリンクをたどっていなかったとしても、読むことができる HTML ページにしよう」ということです。
 
 詳細について:
  * WikiFormatting のルール。WikiMacros や WikiProcessors のような上級者向けルールも含みます

@@ -1,6 +1,6 @@
 = Wiki ページテンプレート = #WikiPageTemplates
 
-  ''([http://trac.edgewall.org/milestone/0.11 0.11] 以降)''
+  ''([trac:milestone:0.11 0.11] 以降)''
 
 新しい Wiki ページのデフォルトコンテンツをページテンプレートのリストから選ぶことができます。
 

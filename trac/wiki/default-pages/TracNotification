@@ -27,41 +27,7 @@ Kerberos / Active Directory 認証に Apache と mod_kerb を使用する際、�
 === コンフィグレーション オプション === #ConfigurationOptions
 trac.ini の `[notification]` セクションで設定できるオプションです。[[BR]](訳注: 0.10 以降では `TracIni` マクロを使用することで正確なオプション一覧を取得できます。以下のリストは必要に応じて `[[TracIni(notification)]]` に置き換えて使用してください。)
 
- * '''`smtp_enabled`''': メール通知を有効にします
- * '''`smtp_from`''': 通知メールの ''Sender''-ヘッダに使用するメールアドレス
- * '''`smtp_from_name`''': 通知メールの ''Sender''-ヘッダに使用する送信者名
- * '''`smtp_from_author`''': (''1.0 以降'') 通知メールの'From:'のヘッダのメールアドレスとして更新者(新しいチケットの報告者、もしくはコメントの作成者)を使用。(default: false) もし更新者がメールアドレスを登録していなかったら、`smtp_from` と `smtp_from_name` が代わりに使用されます
- * '''`smtp_replyto`''': 通知メールの''Reply-To''-ヘッダに使用するメールアドレス
- * '''`smtp_default_domain`''': (''0.10 以降'') ドメイン名を含んでいないアドレスに特定のドメイン名を追加します。完全修飾されたアドレスは修正されません。ユーザの設定からメールアドレスが分からないときに、デフォルトドメインをすべてのユーザ名 / ログイン名に追加します
- * '''`smtp_always_cc`''': 常に通知メールを送信するメールアドレスのリスト。 ''主に専用MLにチケット更新を通知するのに使用されます''
- * '''`smtp_always_bcc`''': (''0.10 以降'') 常に通知メールを送信するメールアドレスの一覧。ただし、通知メールの他の受信者からメールアドレスが見えません
- * '''`smtp_subject_prefix`''': (''0.10.1 以降'') e-mail の subject の前に挿入されるテキスト。デフォルトは "!__default!__"
- * '''`always_notify_reporter`''': 報告者フィールドのすべてのメールアドレスに常に通知メールを送信します (default: false)
- * '''`always_notify_owner`''': (''0.9 以降'') 担当者フィールドのメールアドレスに常に通知メールを送信します (default: false)
- * '''`always_notify_updater`''': (''0.10 以降'') チケットの更新者に常に通知メールを送信します (default: false)
- * '''`use_public_cc`''': (''0.10 以降'') To: (担当者, 報告者) と CC: のアドレスのリストがすべての受信者に見えるかどうかを設定します ( デフォルトは ''Bcc:'' で見えません)
- * '''`use_short_addr`''': (''0.10 以降'') 通知メールの配信でメールアドレスがドメイン名を含むようにするかどうかを設定します (例 ''@<domain.com>'' で終わらないようにする)。このオプションは SMTP サーバがローカルアドレスをハンドリングでき、ローカルのメールボックスとユーザ名/ログイン名をマップできるような環境、イントラネット内で使用するときに便利です
- * '''`ignore_domains`''': メールアドレスの一部と見なされるべきでないドメインのカンマ区切りリスト (Kerberos ドメインのユーザ名向け)
- * '''`mime_encoding`''': (''0.10 以降'') MIME のエンコードのスキームを選択します。サポートする値:
-   * `none`: デフォルト値。テキストがプレーンな ASCII 文字コード、もしくはその他 8 ビットの文字コードであるときに、 7 ビットエンコードを使用します
-   * `base64`: どのような内容が含まれていても動作します。敏感なアンチスパム / アンチウイルスエンジンではいくつかの問題があるかもしれません
-   * `qp` または `quoted-printable`: 8 ビットエンコーディングが使用できない場合、ヨーロッパの言語に対して最適です ( base64 よりもコンパクトです )
- * '''`ticket_subject_template`''': (''0.11 以降'') 通知メールの件名 (Subject) に使用する [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi テキストテンプレート]
- * '''`email_sender`''': (''0.12 以降'') `IEmailSender` インタフェースを実装しているコンポーネント名。通知システムは、ここで設定されたコンポーネントを使用してメールを送信します。現在のところ Trac では以下のコンポーネントが提供されています:
-   * `SmtpEmailSender`: SMTP サーバに接続してメールを送信する (デフォルト)
-   * `SendmailEmailSender`: `sendmail` 互換の実行ファイルを実行してメールを送信する
-
-'''`smtp_from`''' か '''`smtp_replyto`''' の一方 (もしくは両方) が ''必ず'' 設定されていなければなりません。設定されていない場合、 Trac は通知メールの送信を拒否します。
-
-以下のオプションは SMTP でのメッセージ伝送方法を指定するために使用します。
- * '''`smtp_server`''': 通知メッセージに使用されるSMTPサーバ
- * '''`smtp_port`''': (''0.9 以降'') SMTP サーバが使用するポート番号
- * '''`smtp_user`''': (''0.9 以降'') SMTP 認証アカウントのユーザID
- * '''`smtp_password`''': (''0.9 以降'') SMTP 認証アカウントのパスワード
- * '''`use_tls`''': (''0.10 以降'') SMTP サーバ経由で通知メールを送信するときに、GMail などの [http://en.wikipedia.org/wiki/Transport_Layer_Security TLS] を使用するかどうかを切り替えます
-
-以下のオプションは `sendmail` 互換の実行ファイルを使用する場合のメッセージ伝送方法を指定するために使用します。
- * '''`sendmail_path`''': (''0.12 以降'') sendmail の実行ファイルへのパスを設定します。ここで指定する sendmail プログラムは `-i` および `-f` オプションを解釈できなければなりません
+[[TracIni(notification)]]
 
 === コンフィグレーションの例 (SMTP) === #ExampleConfigurationSMTP
 {{{
@@ -98,7 +64,7 @@ $prefix #$ticket.id: $summary
 
 === メールの内容をカスタマイズする === #Customizingthee-mailcontent
 
-通知メールの内容は `trac/templates` の `ticket_notify_email.txt` を基に生成されます。編集した `ticket_notify_email.txt` を Environment の templates ディレクトリに配置することで、カスタマイズすることができます。デフォルトはこのようになっています:
+通知メールの内容は `trac/ticket/templates` の `ticket_notify_email.txt` を基に生成されます。編集した `ticket_notify_email.txt` を Environment の templates ディレクトリに配置することで、カスタマイズすることができます。デフォルトはこのようになっています:
 
 {{{
 $ticket_body_hdr
@@ -244,17 +210,14 @@ smtp_password = password
 
 ''user'' と ''password'' の箇所は、 GMail のアカウントで置き換えてください。 ''たとえば'' [http://gmail.com] にログインするときに使用しているものです。
 
-代わりに `smtp_port = 25` を使用することもできます。 (訳注: おそらく `gmail.com` 宛のメールしか届きません)[[br]]
-しかし `smtp_port = 465` は使用できません。これは動作しないだけでなく、通知メール送信がデッドロックします。ポート番号 465 は SMTPS プロトコル (訳注: SSMTP とも言います) に使用されますが、 Trac はこれをサポートしていません。詳しくは [trac:comment:2:ticket:7107 #7107] を参照してください。
+代わりに `smtp_port = 25` を使用することもできます。[[br]]
+しかし `smtp_port = 465` は使用できません。これは動作しないだけでなく、通知メール送信がデッドロックします。
+ポート番号 465 は SMTPS プロトコルに使用されますが、Trac はこれをサポートしていません。
+詳しくは [trac:comment:2:ticket:7107 #7107] を参照してください。
 
-== 自分が変更した通知をフィルタする == #Filteringnotificationsforonesownchanges
+== 自分の変更やコメントによる通知をフィルタする == #Filteringnotificationsforonesownchangesandcomments
 Gmail では、以下のフィルタを使用できます:
 
-{{{
-from:(<smtp_from>) (("Reporter: <username>" -Changes) OR "Changes (by <username>)")
-}}}
-
-Trac 0.10 の場合は、下記のフィルタを使用してください:
 {{{
 from:(<smtp_from>) (("Reporter: <username>" -Changes -Comment) OR "Changes (by <username>)" OR "Comment (by <username>)")
 }}}
@@ -264,11 +227,8 @@ from:(<smtp_from>) (("Reporter: <username>" -Changes -Comment) OR "Changes (by <
 Thunderbird で IMAP を使用している場合は、この方法は使えません
 (http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body 参照)。
 
-最良の方法は conf/trac.ini の "always_notify_updater" を false に設定することです。
-しかし、この方法では自分が担当者 (owner) になっていたり、報告 (reporter) したチケットへのコメントが取得できなくなります。
-
 プラグインを追加することで解決するかもしれません:
-http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
+[[http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin]]、もしくは [trac:#2247] の解決に投票してください。
 
 == トラブルシューティング == #Troubleshooting
 

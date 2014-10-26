@@ -14,10 +14,10 @@
 
 TracInstall または、あなたの OS に合った方法で新しいバージョンの Trac を取得してください。
 
-`easy_install` を使って、バージョン 0.11 の Trac をインストールした場合は、 Trac のアップグレードにも `easy_install` を使うのが最も簡単な方法でしょう:
+`easy_install` を使って、バージョン 0.12 の Trac をインストールした場合は、 Trac のアップグレードにも `easy_install` を使うのが最も簡単な方法でしょう:
 
 {{{
-# easy_install --upgrade Trac==0.12
+# easy_install --upgrade Trac==1.0
 }}}
 
 手動で (OS 特有でない) アップグレードをするのであれば、インストールを実行する前に起動中の Trac サーバを停止してください。 "ホット" アップグレードは問題を生じることが多いです。特に Windows では出来ないと考えてください ([trac:#7265 本家チケット 7265])。
@@ -73,16 +73,30 @@ Remove above note once #9936 is fixed.
 }}}
 
 === 6. 特定の Trac バージョンでの特記事項 === #a6.StepsspecifictoagivenTracversion
-==== Trac 0.12 から Trac 1.0 にアップグレードする ==== #UpgradingfromTrac0.12toTrac1.0
 
-サブバージョンサポートの Trac コンポーネントはデフォルト状態では有効にならなくなりました。サブバージョンのサポートを有効にするためには、 `tracopt.versioncontrol.svn` コンポーネントを有効にしてください。例えば、 TracIni に以下のように記述してください:
+==== Trac 0.12 から Trac 1.0 にアップグレードする ==== #to1.0
+
+===== Python 2.4 はもうサポートしていません ===== #Python2.4nolongersupported
+現在 Python 2.5 以降 をサポートします。
+
+===== Subversion コンポーネントはデフォルトで有効ではありません (新規インストールの場合) #Subversioncomponentsnotenabledbydefaultfornewinstallations
+Subversion サポートの Trac コンポーネントはデフォルト状態では有効にならなくなりました。
+Subversion のサポートを有効にするためには、`tracopt.versioncontrol.svn` コンポーネントを有効にしてください。
+例えば、TracIni に以下のように記述してください:
 {{{
 [components]
 tracopt.versioncontrol.svn.* = enabled
 }}}
-明示的にサブバージョンのコンポーネントを無効に設定していない場合は、この対応をとり、 TracIni を適切に変更してください。
+明示的に Subversion のコンポーネントを無効に設定していない場合は、この対応をとり TracIni を適切に変更してください。
 
+===== 添付ファイルは新しい格納場所に移行されます #Attachmentsmigratedtonewlocation
 今回の自動アップグレードで添付ファイルが格納される場所が変わります。心配性な人は、アップグレードの前に `attachments` ディレクトリのバックアップを取りたいと思うかもしれません(本当に心配性な人は、すでに environment のフルコピーを取っているでしょうね)。 `attachments` ディレクトリに添付ファイル //以外// のファイルが格納されていると、新しいレイアウトへの移行の最後のステップで失敗してしまいます:何かファイルやフォルダが格納されていると、今バージョンから使用しない `attachments` ディレクトリを削除することができません。このエラーは無視してもかまいませんが、environment をクリーンアップするために、ファイル内容を確認し、別の場所へ移動させ、 `attachments` ディレクトリを手動で削除したほうがよいでしょう。添付ファイルは今バージョンから environment 配下の `files/attachments` ディレクトリ内に格納されます。
+
+===== `[ticket] default_owner` の挙動を変更 #Behaviorofticketdefault_ownerchanged
+1.0 以前では、新規チケットの担当者フィールドがデフォルトで常に `[ticket] default_owner` に設定されていました。
+また、この値が空だった場合は、コンポーネントの担当者に設定されていました。
+1.0 以降では、新規チケットをデフォルトでコンポーネントの担当者にするには `default_owner` を `< default >` に設定する必要があります。
+この変更により、デフォルトの担当者をなしにしたい場合には `default_owner` を空に設定できるようになります。
 
 
 ==== Trac 0.11 から Trac 0.12 にアップグレードする ==== #UpgradingfromTrac0.11toTrac0.12
@@ -182,9 +196,8 @@ Python を新しいバージョンにアップグレードすると Python パ�
 もしあなたが、 !CollabNet の Subversion のパッケージを使用しているならばアンインストールする必要があるかもしれません。というのも、 [http://alagazam.net/ Alagazam] に気軽に使える Python バインディングがあるからです。 ([trac:TracSubversion TracSubversion] 参照) いいニュースとして、調整なしに動作します。
 
 === データベースの変更=== #ChangingDatabaseBackend
-==== SQLite から PostgresSQL へ ==== #SQLitetoPostgreSQL
 
-[http://trac-hacks.org trac-hacks.org] の [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] は SQLite のデータベースを PostgreSQL に移行するためのサポートをするスクリプトです。
+[http://trac-hacks.org trac-hacks.org] にある [http://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin] は SQLite, PostgreSQL, MySQL データベース間の移行をサポートするプラグインです。
 
 === より古いバージョンからのアップグレード === #OlderVersions
 

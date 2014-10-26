@@ -44,6 +44,8 @@ Trac ではチケットにユーザ定義の属性を追加できます。カス
    * order: ソート時の並び順
    * format: 通常のテキストを指す `plain` もしくは WikiFormatting として整形を行う `wiki` のいずれかを指定する (''0.11.3 以降'')
 
+マクロは `wiki` フォーマットの `textarea` フィールドを表示する場合に展開を行いますが、`wiki` フォーマットの `text` フィールドでは展開しません。
+
 === サンプル === #SampleConfig
 {{{
 [ticket-custom]
@@ -112,6 +114,14 @@ SELECT p.value AS __color__,
 }}}
 
 この `LEFT OUTER JOIN` ステートメントに特に注意してください。
+
+設定ファイルで以下のように大文字を使っている場合には
+{{{
+[ticket-custom]
+
+Progress_Type = text
+}}}
+SQL では小文字を使うように注意してください: `AND c.name = 'progress_type'`
 
 === データベースを更新する === #Updatingthedatabase
 

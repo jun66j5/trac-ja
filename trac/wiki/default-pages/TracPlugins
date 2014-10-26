@@ -168,6 +168,7 @@ Python egg はファイル名の中で Python のバージョンをエンコー�
  * ...`[components]` セクションに必要な行数を追加したか
  * ...パッケージ / モジュール名は正しいか
  * ..."enable" や "Enable" ではなく、正しい値 "enabled" になっているかどうか
+ * ...セクション名は "component" ではなく "components" になっているかどうか
 
 === Python egg ファイルのパーミッションのチェック === #Checkthepermissionsonthe.eggfile
 

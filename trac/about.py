@@ -27,7 +27,7 @@ from trac.perm import IPermissionRequestor
 from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web import IRequestHandler
-from trac.web.chrome import INavigationContributor
+from trac.web.chrome import Chrome, INavigationContributor
 
 
 class AboutModule(Component):
@@ -63,6 +63,7 @@ class AboutModule(Component):
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
             data['systeminfo'] = self.env.get_systeminfo()
+            Chrome(self.env).add_jquery_ui(req)
 
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
             # Collect plugin information

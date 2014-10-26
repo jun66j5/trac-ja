@@ -52,20 +52,15 @@ branches、 tags ディレクトリ配下全て
 Web ブラウザが Javascript に対応していれば、ディレクトリの脇にある右向きの矢印をクリックすることで、
 そのページ内でディレクトリを展開したり、畳んだりできます。
 他の操作方法として [trac:TracKeys キーボード] が使用できます:
- - `'j'` と `'k'` は、それぞれ前後のエントリに移動します
- - `'o'` (open) は、選択されているのがフォルダであれば、展開表示と折り畳み表示を切り替えます
+ - `j` と `k` は、それぞれ前後のエントリに移動します
+ - `o` ('''o'''pen) は、選択されているのがフォルダであれば、展開表示と折り畳み表示を切り替えます。
    ファイルであれば、そのファイルに移動します
- - `'v'` (view, visit) および `'<Enter>'` も上記と同じ動作です
- - `'r'` は、既に展開したディレクトリを再読み込みするために使用します
- - `'A'` は、アノテート表示ページに直接移動します (訳注: ファイル選択時のみ対象です)
- - `'L'` は、選択しているエントリのログ表示に移動します
-`'j'` や `'k'` を使って選択した行がない場合、これらのキーはマウスオーバ状態にあるエントリを対象にします。
+ - `v` ('''v'''iew, '''v'''isit) および `<Enter>` も上記と同じ動作です
+ - `r` ('''r'''eload) は、既に展開したディレクトリを再読み込みするために使用します
+ - `a` ('''a'''nnotate) は、注釈履歴ページに直接移動します
+ - `l` ('''l'''og) は、選択しているエントリのログ表示に移動します
+`j` や `k` を使って選択した行がない場合、これらのキーはマウスオーバ状態にあるエントリを対象にします。
 
-{{{#!comment
-MMM: I guess that some keys are upper case and some lower to avoid conflicts with browser defined keys.
-I find for example in Firefox and IE on windows that 'a' works as well as 'A' but 'l' does not work for 'L'.
- cboos: 'l' is reserved for Vim like behavior, see #7867
-}}}
 
 Subversion バックエンドでは、下記の機能も用意されています:
  - `svn:needs-lock` プロパティ対応

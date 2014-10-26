@@ -89,7 +89,7 @@ Trac 0.12 以前では、HTTP リクエストが発生するたびに Trac が�
 このドキュメントを書いている時点では、 Mercurial 導入時の同期作業やフックは必要ではありません - 詳細は [trac:#9485 本家チケット 9485] を参照して下さい。
 
 === 明示的な同期 === #ExplicitSync
-これは推奨するリポジトリの同期方法です。 [wiki:TracIni#trac-section trac.ini] の `[trac]  repository_sync_per_request` オプションを empty 値に設定する必要があります。そして、各リポジトリの post-commit フック内で `trac-admin` を呼び出すようにします。さらに、リポジトリでリビジョンのメタデータを変更することが許されているならば、 post-revprop-change フックにも同様に `trac-admin` を呼び出すように設定します。
+これは推奨するリポジトリの同期方法です。[wiki:TracIni#trac-section trac.ini] の `[trac] repository_sync_per_request` オプションを empty 値に設定する必要があります。そして、各リポジトリの `post-commit` フック内で `trac-admin` を呼び出すようにします。さらに、リポジトリでリビジョンのメタデータを変更することが許されているならば、`post-revprop-change` フックにも同様に `trac-admin` を呼び出すように設定します。
 
  `changeset added <repos> <rev> [...]`::
    Trac に 1 つ以上のチェンジセットがリポジトリに発生したことを知らせる。
@@ -99,7 +99,9 @@ Trac 0.12 以前では、HTTP リクエストが発生するたびに Trac が�
 
 引数 `<repos>` にはリポジトリ名 ( デフォルトのリポジトリには "`(default)`" を使用する ) または、リポジトリへのパスを指定します。
 
-Note: もし PYTHON_EGG_CACHE のロケーションをデフォルトから変更している場合、 trac-admin を起動する前にウェブサーバと同じ値の PYTHON_EGG_CACHE を環境変数として設定しないといけないかもしれません。詳細については、 [wiki:TracPlugins Trac プラグイン] を参照して下さい。
+もし `PYTHON_EGG_CACHE` の場所をデフォルトから変更している場合、`trac-admin` を起動する前に、ウェブサーバの設定に使用したものと同じ値を `PYTHON_EGG_CACHE` 環境変数に設定する必要があるかも知れないことに注意してください。詳細については、[wiki:TracPlugins Trac プラグイン]を参照して下さい。
+
+==== Subversion ====
 
 下記は、 Subversion の完璧な post-commit と post-revprop-change スクリプトの一例です。特定の環境用に編集、そして適切な実行権を付けて 各リポジトリの `hooks` ディレクトリにおいてください。 UNIX における (`post-commit`) 例:
 {{{#!sh
@@ -107,14 +109,9 @@ Note: もし PYTHON_EGG_CACHE のロケーションをデフォルトから変�
 export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset added "$1" "$2"
 }}}
-Note: Ubuntu では /usr/bin/trac-admin を指定せずに以下のように指定ができます:
-{{{#!sh
-#!/bin/sh
-export PYTHON_EGG_CACHE="/path/to/dir"
-trac-admin /path/to/env/ changeset added "$1" "$2"
-}}}
-Windows における (`post-commit.cmd`) の例:
-{{{#!application/x-dos-batch
+`trac-admin` が `/usr/bin` 配下か、もしかすると `/usr/local/bin` 配下にあるのかを `whereis trac-admin` でチェックして、パスを合わせるようにしてください。
+Windows の場合 (`post-commit.cmd`):
+{{{#!bat
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset added "%1" "%2"
 }}}
 
@@ -124,8 +121,8 @@ Subversion の post-revprop-change フックはとても似たものになりま
 export PYTHON_EGG_CACHE="/path/to/dir"
 /usr/bin/trac-admin /path/to/env changeset modified "$1" "$2"
 }}}
-Windows における (`post-revprop-change.cmd`) の例:
-{{{#!application/x-dos-batch
+Windows の場合 (`post-revprop-change.cmd`):
+{{{#!bat
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset modified "%1" "%2"
 }}}
 
@@ -135,13 +132,33 @@ Note: Subversion のフックで `trac-admin` を呼び出すことは、クラ�
 
 より詳しい情報は、Subversion 本の [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks フックについて] を参照して下さい。他のリポジトリのタイプでは異なるフックの設定が必要です。
 
-Git フックは、 Git リポジトリの同期と同じように使用することができます。`.git/hooks/post-commit` に以下を追加します:
+==== Git ====
+
+Git フックは、 Git リポジトリの同期と同じように使用することができます。
+git リポジトリが Trac を実行しているマシン上にあり、直接 git commit している場合は、以下を git リポジトリの `hooks/post-commit` ファイルに追加します。(push でリポジトリを更新するだけの場合は、これは何もしません)
 {{{#!sh
-REV=$(git rev-parse HEAD)
-trac-admin /path/to/env changeset added <my-repository> $REV
+#!/bin/sh 
+REV=$(git rev-parse HEAD) 
+trac-admin /path/to/env changeset added <repos> $REV 
 }}}
 
+もう一つは、リポジトリを git push でしているの場合は、以下をリポジトリの `hooks/post-receive` ファイルに追加します。
+{{{#!sh
+#!/bin/sh
+while read oldrev newrev refname; do
+        git rev-list --reverse $newrev ^$oldrev  | \
+        while read rev; do
+                trac-admin /path/to/env changeset added <repos> $rev
+        done
+done
+}}}
+
+`<repos>` 引数には、リポジトリ名 (デフォルトリポジトリの場合は "`(default)`") またはリポジトリのパスを指定できます。
+
+==== Mercurial ====
+
 Mercurial では、 Trac にアクセスされるリポジトリ毎の `.hgrc` ファイルに以下を追加します。 ([trac:TracMercurial] が Trac の `plugins` ディレクトリにインストールされている場合、 [trac:source:mercurial-plugin/tracext/hg/hooks.py hooks.py] をダウンロードし、どこかアクセス可能な場所に格納してください) :
+
 {{{#!ini
 [hooks]
 ; If mercurial-plugin is installed globally

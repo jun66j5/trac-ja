@@ -1,7 +1,7 @@
 = Trac のチケットワークフローシステム = #TheTracTicketWorkflowSystem
 [[TracGuideToc]]
 
-Trac のチケットデータベースはコンフィグ可能なワークフローを提供します。
+Trac のチケットシステムは設定変更可能なワークフローを提供します。
 
 == デフォルトのワークフロー == #TheDefaultTicketWorkflow
 === 0.10 からアップグレードした Environment === #Environmentsupgradedfrom0.10
@@ -67,7 +67,7 @@ Note: チケットの "ステータス群 (Statuses or states)" は独立した�
 `trac.ini` に `[ticket-workflow]` セクションを作成します。
 `[ticket-workflow]` セクション内の各エントリはチケットが取り得るアクションです。
 `simple-workflow.ini` の `accept` を例に説明します:
-{{{
+{{{#!ini
 accept = new,accepted -> accepted
 accept.permissions = TICKET_MODIFY
 accept.operations = set_owner_to_self
@@ -77,34 +77,34 @@ accept.operations = set_owner_to_self
 3 行目は `accept` を行ったときに、同時にチケットに対して行う操作についての定義です。 `set_owner_to_self` は、チケットの所有者をログイン中のユーザに更新することを表します。同一エントリーに対して複数の定義を行う場合は、カンマ区切りのリストとして設定することが可能です。
 
 ''actionname''`.operations` で使用できる値は以下の通りです:
- - del_owner -- チケットの所有者を削除します
- - set_owner -- チケットの所有者を選択された所有者か入力された所有者に設定します
-   - ''actionname''`.set_owner` カンマ区切りのリストか1つの値を設定することができます
- - set_owner_to_self -- チケットの所有者をログインユーザに設定します
- - del_resolution -- チケットの解決方法を削除します
- - set_resolution -- チケットの解決方法を選択された解決方法か入力された解決方法に設定します
-   - ''actionname''`.set_resolution` カンマ区切りのリストか1つの値を設定することができます。 例:
-     {{{
+- **del_owner** -- チケットの所有者を削除します
+- **set_owner** -- チケットの所有者を選択された所有者か入力された所有者に設定します。デフォルトは現在のユーザです。`[ticket] restrict_owner = true` の場合は、`TICKET_MODIFY` 権限と認証済みセッションを持つユーザがドロップダウンから選択できるようになります。
+  - ''actionname''`.set_owner` には、ドロップダウンに表示するユーザをカンマ区切りで設定することができます。
+- **set_owner_to_self** -- チケットの所有者をログインユーザに設定します
+- **del_resolution** -- チケットの解決方法を削除します
+- **set_resolution** -- チケットの解決方法を選択された解決方法か入力された解決方法に設定します
+ - ''actionname''`.set_resolution` カンマ区切りのリストか1つの値を設定することができます。 例:
+ {{{#!ini
 resolve_new = new -> closed
 resolve_new.name = resolve
 resolve_new.operations = set_resolution
 resolve_new.permissions = TICKET_MODIFY
 resolve_new.set_resolution = invalid,wontfix
-     }}}
- - leave_status -- "変更しない 現在のステータス: <現在のステータス>" (英語版では "leave as <current status>") を表示してチケットへの変更を行いません
+}}}
+- **leave_status** -- "変更しない 現在のステータス: <現在のステータス>" (英語版では "leave as <current status>") を表示してチケットへの変更を行いません
 '''Note:''' `set_owner` と `del_owner` などのように相反する操作を同時に指定した場合の動作は不定です。
 
-{{{
+`.name` 属性を使用した場合の例です。この例のアクションは `resolve_accepted` ですが、 `.name` で別名を付けることによって、ユーザからは `resolve` として見えます。
+
+{{{#!ini
 resolve_accepted = accepted -> closed
 resolve_accepted.name = resolve
 resolve_accepted.permissions = TICKET_MODIFY
 resolve_accepted.operations = set_resolution
 }}}
 
-`.name` 属性を使用した場合の例です。この例のアクションは `resolve_accepted` ですが、 `.name` で別名を付けることによって、ユーザからは `resolve` として見えます。
-
 すべてのステータスで利用可能なアクションであることを表す値として、 `*` を使用することができます。分かりやすい例は `leave` です:
-{{{
+{{{#!ini
 leave = * -> *
 leave.operations = leave_status
 leave.default = 1
@@ -114,16 +114,16 @@ leave.default = 1
 
 ワークフローにはハードコードされた 2, 3 の制限があります。新しく作成されたチケットのステータスは `new` になり、チケットには `closed` のステータスが存在する必要があります。さらにデフォルトのレポート/カスタムクエリでは `closed` 以外のすべてのステータスをアクティブなチケットとして扱います。
 
-ワークフローを作成・編集するのに `contrib/workflow/workflow_parser.py` が役に立つかもしれません。 `contrib/workflow/workflow_parser.py` は [http://www.graphviz.org GraphViz] が理解でき、ワークフローを視覚化するための `.dot` ファイルを作ることができます。
+ワークフローは Wiki に[WikiMacros#Workflow-macro ワークフローマクロ]を使って描画することで視覚化できます。
 
-以下に例を示します (インストールパスは環境により異なる場合があります) 。
-{{{
+ワークフローを作成・編集するのに `contrib/workflow/workflow_parser.py` が役に立つかもしれません。
+`contrib/workflow/workflow_parser.py` は [http://www.graphviz.org GraphViz] が理解でき、ワークフローを視覚化するための `.dot` ファイルを作ることができます。 
+以下に例を示します (インストールパスは環境により異なる場合があります):
+{{{#!sh
 cd /var/local/trac_devel/contrib/workflow/
 sudo ./showworkflow /srv/trac/PlannerSuite/conf/trac.ini
 }}}
 実行結果は `trac.pdf` として出力されます。 (`trac.ini` 同じディレクトリに出力されます。)
-
-http://foss.wush.net/cgi-bin/visual-workflow.pl でワークフローのパーサのオンラインでのコピーができます。
 
 ワークフローを変更したあと、変更を適用するために Apache を再起動する必要があります。これは大切なことです。なぜならあなたがスクリプトを起動したとき、それでも変更箇所は現れますが、すべての古いワークフローがサーバの再起動がされるまで残ってしまうからです。
 
@@ -131,7 +131,7 @@ http://foss.wush.net/cgi-bin/visual-workflow.pl でワークフローのパー�
 
 trac.ini の [ticket-workflow] セクションに以下の記述を追加することで optional testing を実現できます。チケットのステータス (status) が new, accepted, needs_work の場合にチケットを testing 状態に遷移させることができます。 testing ステータスでは reject して needs_work 状態に戻すか、 pass して closed 状態に進めることができます。 pass させた場合、 closed での解決方法 (resolution) は自動的に fixed に設定されます。以前のワークフローはそのまま残っているので、このセクションで設定した内容をスキップすることもできます。 (訳注: 通常、チケットのクローズを行うためには TICKET_MODIFY 権限が必要です。このワークフローでは testing 状態からのクローズには権限が不要なので、報告者 (reporter) に修正結果をテストしてもらう場合などに有効です)
 
-{{{
+{{{#!ini
 testing = new,accepted,needs_work,assigned,reopened -> testing
 testing.name = Submit to reporter for testing
 testing.permissions = TICKET_MODIFY
@@ -161,7 +161,7 @@ pass.set_resolution = fixed
 
 新しい `reviewing` ステータスは `review` アクションに関連付けます。以下のように記述してください:
 
-{{{
+{{{#!ini
 review = new,assigned,reopened -> reviewing
 review.operations = set_owner
 review.permissions = TICKET_MODIFY
@@ -169,7 +169,7 @@ review.permissions = TICKET_MODIFY
 
 デフォルトの Trac 0.11 ワークフローに統合するために、 `reviewing` ステータスを `accept` と `resolve` アクションに追加します。以下のようになります:
 
-{{{
+{{{#!ini
 accept = new,reviewing -> assigned
 […]
 resolve = new,assigned,reopened,reviewing -> closed
@@ -177,7 +177,7 @@ resolve = new,assigned,reopened,reviewing -> closed
 
 必要に応じて `reviewing` からステータスを変更せずに、チケットの担当者 (owner) を変更するための新しいアクションを追加します。この設定を行うと、 `new` ステータスに遷移させることなくレビューの担当者を変更することができるようになります。
 
-{{{
+{{{#!ini
 reassign_reviewing = reviewing -> *
 reassign_reviewing.name = reassign review
 reassign_reviewing.operations = set_owner
@@ -186,7 +186,7 @@ reassign_reviewing.permissions = TICKET_MODIFY
 
 完全な `[ticket-workflow]` への設定は以下のようになります:
 
-{{{
+{{{#!ini
 [ticket-workflow]
 accept = new,reviewing -> assigned
 accept.operations = set_owner_to_self
@@ -214,9 +214,9 @@ reassign_reviewing.permissions = TICKET_MODIFY
 
 == 例: new チケットでの解決方法 (resolution) を制限する == #Example:Limittheresolutionoptionsforanewticket
 
-resolve_new という操作では、 new 状態のチケットで使用可能な、解決方法 (resolution) を設定しています。既に存在する resolve アクションを変更し、 `->` の前から new のステータスを削除することで、2種類の resolve アクションが使用できるようになっています。 new のチケットでは制限された解決方法 (resolution) となり、それ以外の一旦 accept されたチケットでは通常通りとなります。
+`resolve_new` という操作では、 new 状態のチケットで使用可能な、解決方法 (resolution) を設定しています。既に存在する resolve アクションを変更し、 `->` の前から new のステータスを削除することで、2種類の resolve アクションが使用できるようになっています。 new のチケットでは制限された解決方法 (resolution) となり、それ以外の一旦 accept されたチケットでは通常通りとなります。
 
-{{{
+{{{#!ini
 resolve_new = new -> closed
 resolve_new.name = resolve
 resolve_new.operations = set_resolution
@@ -238,34 +238,8 @@ resolve.permissions = TICKET_MODIFY
 
 新しいステータスをワークフローに追加した場合、マイルストーンのプログレスバーへの表示もカスタマイズできます。 [TracIni#milestone-groups-section TracIni] を参照してください。
 
-== 次のステップに向けたアイデア集 == #someideasfornextsteps
+== 次のステップに向けたアイデア集 == #Ideasfornextsteps
 
-(訳注: この項はワークフローシステムの実装に関するアイデア集です。現在実装されているものではないので、プラグインを作成するときなどに参考にしてください)
-
-New enhancement ideas for the workflow system should be filed as enhancement tickets against the `ticket system` component.  If desired, add a single-line link to that ticket here.  Also look at the [http://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin] as it provides experimental operations.
-
-If you have a response to the comments below, create an enhancement ticket, and replace the description below with a link to the ticket.
-
- * the "operation" could be on the nodes, possible operations are:
-   * '''preops''': automatic, before entering the state/activity
-   * '''postops''': automatic, when leaving the state/activity
-   * '''actions''': can be chosen by the owner in the list at the bottom, and/or drop-down/pop-up together with the default actions of leaving the node on one of the arrows.
-''This appears to add complexity without adding functionality; please provide a detailed example where these additions allow something currently impossible to implement.''
-
- * operations could be anything: sum up the time used for the activity, or just write some statistical fields like
-''A workflow plugin can add an arbitrary workflow operation, so this is already possible.''
-
- * set_actor should be an operation allowing to set the owner, e.g. as a "preop":
-   * either to a role, a person
-   * entered fix at define time, or at run time, e.g. out of a field, or select.
-''This is either duplicating the existing `set_owner` operation, or needs to be clarified.''
-
- * Actions should be selectable based on the ticket type (different Workflows for different tickets)
-''Look into the [http://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin]'s `triage` operation.''
-
- * I'd wish to have an option to perform automatic status changes. In my case, I do not want to start with "new", but with "assigned". So tickets in state "new" should automatically go into state "assigned". Or is there already a way to do this and I just missed it?
-''Have a look at [http://trac-hacks.org/wiki/TicketCreationStatusPlugin TicketCreationStatusPlugin] and [http://trac-hacks.org/wiki/TicketConditionalCreationStatusPlugin TicketConditionalCreationStatusPlugin]''
-
- * I added a 'testing' state. A tester can close the ticket or reject it. I'd like the transition from testing to rejected to set the owner to the person that put the ticket in 'testing'. The [http://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin] is close with set_owner_to_field, but we need something like set_field_to_owner.
-
- * I'd like to track the time a ticket is in each state, adding up 'disjoints' intervals in the same state.
+ワークフローシステムを拡張する新しいアイデアは、コンポーネントを `ticket system` にして enhancement チケットを登録してください。
+もしくは [trac:TracIdeas/TracWorkflow TracIdeas/TracWorkflow] ページに書いてもらっても差し支えありません。
+実験的な操作を提供する [http://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin] も見るようにしてください。

@@ -33,7 +33,7 @@ height = 100
 icon = site/my_icon.ico
 }}}
 
-Note: Internet Explorer では、ホストのルートディレクトリにある ``favicon.ico`` という名前のファイルしか許容しないため、このアイコンは無視されます。プロジェクトアイコンを IE と他のブラウザで共用したい場合、アイコンをホストのドキュメントルートに配置し、 ``trac.ini`` から以下のように参照します:
+Note: Internet Explorer では、ホストのルートディレクトリにある `favicon.ico` という名前のファイルしか許容しないため、このアイコンは無視されます。プロジェクトアイコンを IE と他のブラウザで共用したい場合、アイコンをホストのドキュメントルートに配置し、`trac.ini` から以下のように参照します:
 
 {{{
 [project]
@@ -98,7 +98,7 @@ Trac はテンプレートエンジンに [http://genshi.edgewall.org Genshi] �
 </html>
 }}}
 
-XSLT に慣れ親しんだ人であれば、 Genshi テンプレートには類似点があるのに気付くかもしれません。しかしながら Trac 固有の機能もあります。例えば `${href.chrome('site/style.css')}` は Environment に含まれる `htdocs/` にある CSS ファイルへの参照の属性に置き換えられます。 同様に、 `${chrome.htdocs_location}` は Trac インストール時に作成された共通の `htdocs/` ディレクトリを指定するために使用します。しかし [[TracIni#trac-config|[trac] htdocs_location]] のコンフィグを設定することで、ディレクトリ位置を指定しなおすことができます。
+XSLT に慣れ親しんだ人であれば、 Genshi テンプレートには類似点があるのに気付くかもしれません。しかしながら Trac 固有の機能もあります。例えば `${href.chrome('site/style.css')}` は Environment に含まれる `htdocs/` にある CSS ファイルへの参照の属性に置き換えられます。 同様に、 `${chrome.htdocs_location}` は Trac インストール時に作成された共通の `htdocs/` ディレクトリを指定するために使用します。しかし [[TracIni#trac-section|[trac] htdocs_location]] のコンフィグを設定することで、ディレクトリ位置を指定しなおすことができます。
 
 `site.html` はサイト固有のすべての変更を含んでいる一つのファイルです。通常は、特定のセクション上で `py:match` を要素 (element) または属性 (attribute) として使用することで、カスタマイズしようとしているページを
 思い通りにレンダリングすることができます。
@@ -135,7 +135,7 @@ XSLT に慣れ親しんだ人であれば、 Genshi テンプレートには類�
 </form>
 }}}
 
-また、共通のテンプレートディレクトリに、 `site.html` (その名前にも関わらず) を置くことができます - [[TracIni#inherit-section|[inherit] templates_dir]] オプションを参照してください。新しく、一個のグローバルな `site.html` ファイルに、ヘッダ, フッタ, チケット作成時の tips を組み込むことで、簡単なメンテナンス (および、大きなインストールを行った 0.10 からのバージョンアップのための移行パス) を提供しています。
+また、共有テンプレートディレクトリに、 `site.html` (その名前にも関わらず) を置くことができます - [[TracIni#inherit-section|[inherit] templates_dir]] オプションを参照してください。新しく、一個のグローバルな `site.html` ファイルに、ヘッダ, フッタ, チケット作成時の tips を組み込むことで、簡単なメンテナンス (および、大きなインストールを行った 0.10 からのバージョンアップのための移行パス) を提供しています。
 
 == プロジェクトリスト == #ProjectList
 
@@ -220,4 +220,4 @@ Trac は以下の順序で、テンプレートファイルを探します。ま
 Trac は通常、パフォーマンスを向上させるために、テンプレートをメモリ上にキャッシュします。変更したテンプレートを適用するためには、 サーバプロセスの再起動が必要です。
 
 ----
-See also: TracGuide, TracIni
+See also TracGuide, TracIni

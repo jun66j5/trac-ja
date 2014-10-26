@@ -24,6 +24,16 @@ application = trac.web.main.dispatch_request
 
 環境変数 `TRAC_ENV` は通常通り Trac environment のディレクトリを指定します (複数の Trac environment を含むディレクトリであれば `TRAC_ENV_PARENT_DIR` を使うこともできます)。 `PYTHON_EGG_CACHE` は Python eggs を一時的に展開するのに使用するディレクトリを指定します。
 
+Windows の場合:
+ - ユーザセッション配下で実行する場合、Python egg キャッシュは `%AppData%\Roaming` にあります。例えば:
+{{{#!python
+os.environ['PYTHON_EGG_CACHE'] = r'C:\Users\Administrator\AppData\Roaming\Python-Eggs'
+}}}
+ - Windows サービス配下で実行する場合、Python egg キャッシュのディレクトリを作成してください。
+{{{#!python
+os.environ['PYTHON_EGG_CACHE'] = r'C:\Trac-Python-Eggs'
+}}}
+
 === 複雑なスクリプト === #Amoreelaboratescript
 
 複数の `.wsgi` ファイルを使用する場合 (それぞれのファイルに別個の Trac environment を設定するケースなど) は、 `os.environ['TRAC_ENV']` に Trac environment のパスを ''設定しない'' でください。この方法を使うと、別の Trac environment のコンテンツが読み込まれたり、直前に表示した Trac environment のパスが使われてしまうことがあります。
@@ -72,7 +82,7 @@ WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
 
 スクリプトは Trac environment のサブディレクトリにあります。
 
-[trac:TracInstall#cgi-bin Trac cgi-bin ディレクトリを生成する] のならば、Apache の設定ファイルには以下のように記述してください:
+[TracInstall#cgi-bin Trac cgi-bin ディレクトリを生成する] のならば、Apache の設定ファイルには以下のように記述してください:
 
 {{{
 WSGIScriptAlias /trac /usr/share/trac/cgi-bin/trac.wsgi
@@ -170,6 +180,8 @@ Note: 'login'  という名のファイルやディレクトリが必要なわ�
 }}}
 
 複数の environment を持っている場合、上記に記述した方法で、同じ `LocationMatch` を使用することができます。
+
+'''※ .htaccess ファイルの中で `Location` を使うことはできません。代わりに httpd.conf ファイル中で使う必要があります。共有サーバの場合は、このレベルのものは提供されていないでしょう。'''
 
 必ず mod_auth_digest をアクティブにしてください。 Debian 4.0r1 (etch) の例:
 {{{
@@ -283,7 +295,7 @@ SSPI 認証に関する共通の問題: [trac:#1055 本家チケット 1055], [t
 
 [trac:TracOnWindows/Advanced] も参照してください。
 
-=== !AccountManagerPlugin のログインフォームを使用した Apache 認証 === #UsingApacheauthenticationwiththeAccountManagerplugin'sLoginform
+=== !AccountManagerPlugin のログインフォームを使用した Apache 認証 #UsingApacheauthenticationwiththeAccountManagerpluginsLoginform
 
 まず、!AccountManagerPlugin の [http://trac-hacks.org/wiki/AccountManagerPlugin/Modules#LoginModule Login モジュール] と [http://trac-hacks.org/wiki/AccountManagerPlugin/AuthStores#HttpAuthStore HttpAuthStore authentication モジュール] の基本的な仕様を参照してください。
 
@@ -307,9 +319,9 @@ Apache の設定ファイルはこのようになります:
    Require valid-user
 </Location>
 }}}
-'''authFile''' が存在する必要はありません。前述の !HttpAuthStore へのリンク先から、複数の Trac プロジェクトをサーバー上でホスティングした場合を説明する箇所などを参照してください。
+'''authFile''' が存在する必要はありません (Account Manager 0.4 以下を使っているのではない限り)。前述の !HttpAuthStore へのリンク先から、複数の Trac プロジェクトをサーバー上でホスティングした場合を説明する箇所などを参照してください。
 
-=== 例: バーチャルホストのルートが Trac である Apache/mod_wsgi 基本認証 === #Example:Apache/mod_wsgiwithBasicAuthentication,Trac beingattherootofavirtual host
+=== 例: バーチャルホストのルートが Trac である Apache/mod_wsgi 基本認証 #Example:Apachemod_wsgiwithBasicAuthenticationTracbeingattherootofavirtualhost
 
 上記の mod_wsgi のドキュメントには、 Apache の設定例 a) Trac のインスタンスをバーチャルホストでサブドメインを作成して動かす例と b) Trac の認証として、 Apache の基本認証を設定する例が記載されています。
 
@@ -387,14 +399,14 @@ mod_wsgi アダプタを使用し、 Trac のインスタンスを複数ホス�
 
 この方法を適用するために、 Trac のソースを変更する必要はありません。以下に示す行を `trac.wsgi` に追加してください:
 
-{{{
+{{{#!python
 import trac.db.postgres_backend
 trac.db.postgres_backend.PostgreSQLConnection.poolable = False
 }}}
 
 または
 
-{{{
+{{{#!python
 import trac.db.mysql_backend
 trac.db.mysql_backend.MySQLConnection.poolable = False
 }}}

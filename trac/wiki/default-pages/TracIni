@@ -26,9 +26,23 @@ TracEnvironment の `templates/` ディレクトリ内のテンプレートは�
 
 == リファレンス == #Referenceforsettings
 
-現在利用できる設定項目のリファレンスとデフォルトの設定です。(訳注: 0.12 ではデフォルトの値は表示されません。)
+現在利用できる設定項目のリファレンスとデフォルトの設定です。
 
+ ''[hg], [spam-filter], [translatedpages], [vote], [wikiextras], [wikiextras-symbols] セクションはこの Trac で有効にしているプラグインが追加します。つまり、デフォルトのインストールには含まれません。''
+
+{{{ 
+#!comment 
+Suggest your documentation fixes in the Discussion section at  
+the bottom of the page, or better send us patches against 
+the corresponding docstrings you'll find in the code!
+
+Please don't waste your time by editing the HTML code below, changes won't be picked up. 
+}}}
 [[TracIni]]
+
+== 議論 == 
+''ここでドキュメントの変更について議論をお願いします。ソースコードに対するドキュメントのパッチを Trac-dev に送るか新しいチケットにするともっとよいです。''
+
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

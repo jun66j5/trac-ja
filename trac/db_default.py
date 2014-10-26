@@ -303,8 +303,7 @@ u"""\
 使用した例です。
 """,
 u"""\
-SELECT DISTINCT
-       p.value AS __color__,
+SELECT p.value AS __color__,
        (CASE
          WHEN owner = $USER AND status = 'accepted' THEN '着手中'
          WHEN owner = $USER THEN '担当中'
@@ -316,12 +315,14 @@ SELECT DISTINCT
        reporter AS _報告者
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  LEFT JOIN ticket_change tc ON tc.ticket = t.id AND tc.author = $USER
-                                AND tc.field = 'comment'
-  WHERE t.status <> 'closed'
-        AND (owner = $USER OR reporter = $USER OR author = $USER)
-  ORDER BY (owner = $USER AND status = 'accepted') DESC,
-           owner = $USER DESC, reporter = $USER DESC,
+  WHERE t.status <> 'closed' AND
+        (owner = $USER OR reporter = $USER OR
+         EXISTS (SELECT * FROM ticket_change tc
+                 WHERE tc.ticket = t.id AND tc.author = $USER AND
+                       tc.field = 'comment'))
+  ORDER BY (COALESCE(owner, '') = $USER AND status = 'accepted') DESC,
+           COALESCE(owner, '') = $USER DESC,
+           COALESCE(reporter, '') = $USER DESC,
            """ + db.cast('p.value', 'int') + """, milestone, t.type, t.time
 """),
 #----------------------------------------------------------------------------

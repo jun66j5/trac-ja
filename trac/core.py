@@ -125,6 +125,8 @@ class ComponentMeta(type):
             return self
 
         # The normal case where the component is not also the component manager
+        assert len(args) >= 1 and isinstance(args[0], ComponentManager), \
+               "First argument must be a ComponentManager instance"
         compmgr = args[0]
         self = compmgr.components.get(cls)
         # Note that this check is racy, we intentionally don't use a
@@ -188,11 +190,14 @@ class ComponentManager(object):
         """Activate the component instance for the given class, or
         return the existing instance if the component has already been
         activated.
+
+        Note that `ComponentManager` components can't be activated
+        that way.
         """
         if not self.is_enabled(cls):
             return None
         component = self.components.get(cls)
-        if not component:
+        if not component and not issubclass(cls, ComponentManager):
             if cls not in ComponentMeta._components:
                 raise TracError('Component "%s" not registered' % cls.__name__)
             try:

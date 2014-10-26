@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C)2005-2009 Edgewall Software
+# Copyright (C) 2005-2009 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -14,7 +14,9 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import trac.tests.compat
 from trac.core import *
+from trac.core import ComponentManager
 
 import unittest
 
@@ -51,7 +53,7 @@ class ComponentTestCase(unittest.TestCase):
         registry.
         """
         from trac.core import ComponentMeta
-        assert Component not in ComponentMeta._components
+        self.assertNotIn(Component, ComponentMeta._components)
         self.assertRaises(TracError, self.compmgr.__getitem__, Component)
 
     def test_abstract_component_not_registered(self):
@@ -62,7 +64,7 @@ class ComponentTestCase(unittest.TestCase):
         from trac.core import ComponentMeta
         class AbstractComponent(Component):
             abstract = True
-        assert AbstractComponent not in ComponentMeta._components
+        self.assertNotIn(AbstractComponent, ComponentMeta._components)
         self.assertRaises(TracError, self.compmgr.__getitem__,
                           AbstractComponent)
 
@@ -82,8 +84,8 @@ class ComponentTestCase(unittest.TestCase):
         """
         class ComponentA(Component):
             pass
-        assert self.compmgr[ComponentA]
-        assert ComponentA(self.compmgr)
+        self.assertTrue(self.compmgr[ComponentA])
+        self.assertTrue(ComponentA(self.compmgr))
 
     def test_component_identity(self):
         """
@@ -94,9 +96,9 @@ class ComponentTestCase(unittest.TestCase):
             pass
         c1 = ComponentA(self.compmgr)
         c2 = ComponentA(self.compmgr)
-        assert c1 is c2, 'Expected same component instance'
+        self.assertIs(c1, c2, 'Expected same component instance')
         c2 = self.compmgr[ComponentA]
-        assert c1 is c2, 'Expected same component instance'
+        self.assertIs(c1, c2, 'Expected same component instance')
 
     def test_component_initializer(self):
         """
@@ -212,7 +214,7 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'x'
         tests = iter(ComponentA(self.compmgr).tests)
-        self.assertEquals('x', tests.next().test())
+        self.assertEqual('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
     def test_extension_point_with_two_extensions(self):
@@ -231,7 +233,7 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'y'
         results = [test.test() for test in ComponentA(self.compmgr).tests]
-        self.assertEquals(['x', 'y'], sorted(results))
+        self.assertEqual(['x', 'y'], sorted(results))
 
     def test_inherited_extension_point(self):
         """
@@ -246,7 +248,7 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'x'
         tests = iter(ConcreteComponent(self.compmgr).tests)
-        self.assertEquals('x', tests.next().test())
+        self.assertEqual('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
     def test_inherited_implements(self):
@@ -260,7 +262,7 @@ class ComponentTestCase(unittest.TestCase):
         class ConcreteComponent(BaseComponent):
             pass
         from trac.core import ComponentMeta
-        assert ConcreteComponent in ComponentMeta._registry.get(ITest, [])
+        self.assertIn(ConcreteComponent, ComponentMeta._registry.get(ITest, []))
 
     def test_inherited_implements_multilevel(self):
         """
@@ -276,8 +278,8 @@ class ComponentTestCase(unittest.TestCase):
         class ConcreteComponent(ChildComponent):
             pass
         from trac.core import ComponentMeta
-        assert ConcreteComponent in ComponentMeta._registry.get(ITest, [])
-        assert ConcreteComponent in ComponentMeta._registry.get(IOtherTest, [])
+        self.assertIn(ConcreteComponent, ComponentMeta._registry.get(ITest, []))
+        self.assertIn(ConcreteComponent, ComponentMeta._registry.get(IOtherTest, []))
 
     def test_component_manager_component(self):
         """
@@ -295,17 +297,41 @@ class ComponentTestCase(unittest.TestCase):
             def test(self):
                 return 'x'
         mgr = ManagerComponent('Test', 42)
-        assert id(mgr) == id(mgr[ManagerComponent])
+        self.assertEqual(id(mgr), id(mgr[ManagerComponent]))
         tests = iter(mgr.tests)
-        self.assertEquals('x', tests.next().test())
+        self.assertEqual('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
+
+    def test_component_manager_component_isolation(self):
+        """
+        Verify that a component manager that is also a component will only
+        be listed in extension points for components instantiated in
+        its scope.
+
+        See bh:comment:5:ticket:438 and #11121
+        """
+        class ManagerComponentA(ComponentManager, Component):
+            implements(ITest)
+            def test(self):
+                pass
+
+        class ManagerComponentB(ManagerComponentA):
+            pass
+
+        class Tester(Component):
+            tests = ExtensionPoint(ITest)
+
+        mgrA = ManagerComponentA()
+        mgrB = ManagerComponentB()
+
+        self.assertEqual([mgrA], Tester(mgrA).tests)
+        self.assertEqual([mgrB], Tester(mgrB).tests)
 
     def test_instantiation_doesnt_enable(self):
         """
         Make sure that a component disabled by the ComponentManager is not
         implicitly enabled by instantiating it directly.
         """
-        from trac.core import ComponentManager
         class DisablingComponentManager(ComponentManager):
             def is_component_enabled(self, cls):
                 return False
@@ -313,11 +339,21 @@ class ComponentTestCase(unittest.TestCase):
             pass
         mgr = DisablingComponentManager()
         instance = ComponentA(mgr)
-        self.assertEqual(None, mgr[ComponentA])
+        self.assertIsNone(mgr[ComponentA])
+
+    def test_invalid_argument_raises(self):
+        """
+        AssertionError is raised when first argument to initializer is not a
+        ComponentManager instance.
+        """
+        class ComponentA(Component):
+            pass
+        self.assertRaises(AssertionError, Component)
 
 
 def suite():
-    return unittest.makeSuite(ComponentTestCase, 'test')
+    return unittest.makeSuite(ComponentTestCase)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

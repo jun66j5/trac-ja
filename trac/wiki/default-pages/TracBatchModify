@@ -1,10 +1,16 @@
 = Tracのチケットを一括更新  = #TracTicketBatchModification
 [[TracGuideToc]]
 
-[wiki:TracQuery custom query] の結果から、チケットを一括して変更できます。
+[TracQuery custom query] の結果から、チケットを一括して変更できます。
 
 一括変更を実行するには、変更したいチケットを選択し、クエリ結果の下のセクションを使用して新しいフィールド値を設定してください。
 
 == リストフィールド == #Listfields
 
 `Keywords` と `Cc` フィールドはリストとして扱われます。 リスト値全体を置き換えるのに加え、追加または削除したりすることができます。 すべてのリストフィールドコントロールは多数の項目を使用できます。 (つまり、多数のキーワードあるいはccアドレス)
+
+== 対象でないフィールド #Excludedfields
+
+複数行のフィールドはサポートしていません。複数のチケットにまたがって同じ値で更新するもっともなユースケースがないためです。
+この制約は `description` フィールドと `textarea` 型の[TracTicketsCustomFields#AvailableFieldTypesandOptions カスタムフィールド]に適用されます。
+しかし Trac の将来のバージョンでは 'prepend', 'append' や search & replace ような適切な操作 ([http://trac-hacks.org/ticket/2415 th:#2415]) と連動して、変更できるようになるかも知れません。

@@ -30,8 +30,8 @@ permission_policies = AuthzSourcePolicy, DefaultPermissionPolicy, LegacyAttachme
 
 === !AuthzPolicy === #AuthzPolicy
 ==== 設定方法 ==== #Configuration
-* [http://www.voidspace.org.uk/python/configobj.html ConfigObj] をインストールする (0.12 でも必要)
-* authz_policy.py を plugins にコピーする  (Trac 0.11でのみ必要)
+* [http://www.voidspace.org.uk/python/configobj.html ConfigObj] をインストールする (0.12 以降でも必要)
+* [trac:browser:/trunk/tracopt/perm/authz_policy.py /tracopt/perm/authz_policy.py] を Environment の plugins ディレクトリにコピーする  (Trac 0.11 でのみ必要)
 * [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] ファイルを適当な場所 (望ましくは、 Web サーバ起動ユーザ以外が読み取りできないセキュアな領域) に配置する。ファイルに非ASCII文字が含まれる場合は UTF-8 で保存してください
 * `trac.ini` ファイルをアップデートする:
   1. `[trac]` セクションの [TracIni#trac-section permission_policies] を編集する
@@ -90,14 +90,13 @@ jack = WIKI_VIEW
 [wiki:WikiStart]
 }}}
 
-  例: WikiStart の 添付ファイル `wiki:WikiStart@117/attachment/FOO.JPG@*`
-  を照合する
+  例: WikiStart の 添付ファイル `wiki:WikiStart@117/attachment:FOO.JPG@*` を照合する
 {{{
 [wiki:*]
 [wiki:WikiStart*]
 [wiki:WikiStart@*]
-[wiki:WikiStart@*/attachment/*]
-[wiki:WikiStart@117/attachment/FOO.JPG]
+[wiki:WikiStart@*/attachment:*]
+[wiki:WikiStart@117/attachment:FOO.JPG]
 }}}
 
 * セクションは設定ファイルに書かれている '''順に''' 現在の Trac のリソース記述子に対して
@@ -160,10 +159,15 @@ devs = alice, bob
 john = BROWSER_VIEW, FILE_VIEW
 # John は test_repo に対して BROWSER_VIEW と FILE_VIEW の権限を持つ
 
+# デフォルトリポジトリ (Trac 1.0.2 以降が必要):
+[repository:@*]
+john = BROWSER_VIEW, FILE_VIEW
+# John はデフォルトリポジトリの全体に対して BROWSER_VIEW と FILE_VIEW の権限を持つ
+
 # すべてのリポジトリ:
 [repository:*@*]
-john = BROWSER_VIEW, FILE_VIEW
-# John はすべてのリポジトリに対して BROWSER_VIEW と FILE_VIEW の権限を持つ
+jack = BROWSER_VIEW, FILE_VIEW
+# Jack はすべてのリポジトリに対して BROWSER_VIEW と FILE_VIEW の権限を持つ
 }}}
 
 より詳細なリポジトリのアクセス許可:
@@ -304,7 +308,6 @@ tail -n 0 -f log/trac.log | egrep '\[perm\]|\[authz_policy\]'
 }}}
 
 どんなチェックが行なわれているか見ることができます。より詳細な情報については、プラグインのソースに添付されているドキュメントを参照して下さい。
-
 
 ----
 See also: TracPermissions,

@@ -42,7 +42,7 @@ InterTrac を使用するためには、設定をする必要があります。
 この設定は、 TracIni ファイルの `[intertrac]` セクションに行います。
 
 設定の例:
-{{{
+{{{#!ini
 ...
 [intertrac]
 # -- エイリアスの設定例:
@@ -66,7 +66,7 @@ trac.url = http://trac.edgewall.org
    (正確には [http://trac.edgewall.org/changeset/3526 r3526]) より前のバージョンで稼働している場合、 InterTrac リンクをどのようにディスパッチしていいのか解釈できませんので、
    ローカルの Trac で正しいリンクを生成します。
    通常使用するほとんどのリンクを生成できますが、すべてのリンクが動作するわけではありません。
-   これを互換モード (compatibility mode) と言い、デフォルトで `true` になっています
+   これを互換モード (compatibility mode) と言い、デフォルトで `false` になっています
  * リモートの Trac が InterTrac リンクをディスパッチできると分かっている (訳註: リモートの Trac のバージョンが 0.10 以降である) 場合、
    互換モードを明示的に無効化することで、 TracLinks の ''すべての''
    機能を InterTrac リンクで使用できるようになります

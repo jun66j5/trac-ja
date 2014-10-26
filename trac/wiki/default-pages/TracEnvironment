@@ -12,7 +12,11 @@ $ trac-admin /path/to/myproject initenv
 `trac-admin` はプロジェクトの名前とデータベースに接続するための文字列
 (後で説明します) を尋ねてきます。
 
-=== Tips === #SomeUsefulTips
+=== 有用なヒント #SomeUsefulTips
+
+ - Environment ディレクトリは秒以下のタイムスタンプをサポートするファイルシステムに置くようにしてください。
+   Trac は設定ファイルのタイムスタンプを監視しており、Trac が 1.0.2 以前の場合、タイムスタンプの精度が荒すぎるファイルシステムでは変更が検出されないことがあります。(TracStandalone を使う場合における認証ファイルの場所についても同じです)
+
  - Environment のディレクトリ配下は、 Web サーバの実行ユーザが書き込み可能でなければなりません。
  適切なパーミッションの付与を忘れないようにしてください。
  同じことがソースコードリポジトリにも当てはまりますが、
@@ -35,6 +39,8 @@ SQLiLte を使用します。 (ほとんどのプロジェクトは SQLite で�
 ファイルは Environment ディレクトリに保存されますので、 Environment の残りと共に容易に
 [wiki:TracBackup バックアップ] することができます。
 
+接続文字列のユーザ名やパスワードに `:`, `/`, `@` 文字がある場合は、URL エンコードする必要があるのに注意してください。
+
 === SQLite の接続文字列 === #SQLiteConnectionString
 SQLite データベースに接続するための文字列は以下の通りです:
 {{{
@@ -50,7 +56,6 @@ PostgreSQL や MySQL を代わりに使用する場合、異なる接続用文�
 {{{
 postgres://johndoe:letmein@localhost/trac
 }}}
-''"/" 及び "@" はパスワードの一部として使用出来ないので注意してください''
 
 PostgreSQL がデフォルト以外のポート番号 (例えば、 9432) で起動しているときはこのようにします:
 {{{
@@ -91,10 +96,8 @@ postgres://user:pass@server/database?schema=yourschemaname
 
 === MySQL の接続文字列 === #MySQLConnectionString
 
-MySQL を代わりに使用したい場合、違う接続文字列を使用します。
-例えば、同じマシンにある `trac` という MySQL データベースに、
-`johndoe` というユーザでパスワード `letmein` で接続する場合の
-MySQL の接続文字列は次の通りです:
+MySQL 接続文字列の書式は、PostgreSQL の例に似ていて `postgres` スキームを `mysql` に置き換えます。
+例えば、同じマシンにある `trac` という MySQL データベースに `johndoe` というユーザでパスワード `letmein` で接続する場合の MySQL 接続文字列は次の通りです:
 {{{
 mysql://johndoe:letmein@localhost:3306/trac
 }}}

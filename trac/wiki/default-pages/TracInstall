@@ -1,36 +1,36 @@
-= Trac Installation Guide for 1.0 =
+= Trac Installation Guide for 1.0
 [[TracGuideToc]]
 
 Trac は Python で書かれており、データベースとして [http://sqlite.org/ SQLite], [http://postgresql.org/ PostgreSQL], [http://mysql.com/ MySQL] のどれかが必要です。 Trac は HTML レンダリングのために [http://genshi.edgewall.org Genshi] テンプレートシステムを使用します。
 
 バージョン 0.12 以降、 Trac はローカライズされているため、自分が普段使っている言語に翻訳されているかもしれません。 Trac のインタフェースで別の言語を使用したい場合は、任意のパッケージである [#OtherPythonPackages Babel] をインストールする必要があります。[#InstallingTrac Installing Trac] セクションのローカライゼーションのサポートの手順を参照してください。 Babel がない場合、通常通り、デフォルトの英語バージョンのみ使用することができます。
 
-新しい言語での翻訳の作成や、すでにある言語での翻訳のエンハンスをコントリビュートした場合は [[trac:TracL10N]] を見てみてください。 (訳注: 日本語の翻訳はすでにコントリビュートされています)
+新しい言語の翻訳や、すでにある翻訳の改善をコントリビュートしたい場合は [trac:wiki:TracL10N TracL10N] を見てみてください。(訳注: 日本語の翻訳はすでにコントリビュートされています)
 
 Trac のインストールとセットアップに対する一般的な手順と必要な条件を以下に示します。 Trac を特定のシステムにインストールする手順は Trac Project サイトの [trac:TracInstallPlatforms TracInstallPlatforms] にありますが、 '''まず最初に以下の一般的な手順を読み通して''' タスクの関係を確実に理解してください。
 
 [[PageOutline(2-3,インストール手順,inline)]]
 
-== 依存関係 == #Dependencies
-=== 必須の依存関係 === #MandatoryDependencies
+== 依存関係 #Dependencies
+=== 必須の依存関係 #MandatoryDependencies
 Trac をインストールするためには以下のソフトウェアパッケージがインストールされていなければなりません:
 
- * [http://www.python.org/ Python], 2.5 以上 3.0 未満
+ * [http://www.python.org/ Python] 2.5 以上 3.0 未満
    (Python 2.4 のサポートは、このリリース（訳注: 1.0）で打ち切られました)
- * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], 0.6 以上, [http://pypi.python.org/pypi/distribute ディストリビュート] を使用してもかまいません
- * [http://genshi.edgewall.org/wiki/Download Genshi], 0.6 以上(リリースはされていませんが 0.7dev でも正しく動作します)
+ * [http://peak.telecommunity.com/DevCenter/setuptools setuptools] 0.6 以上
+ * [http://genshi.edgewall.org/wiki/Download Genshi] 0.6 以上
 
 また、データベースと、それに対応する Python のバインディングが必要です。
 データベースは SQLite, PostgreSQL, MySQL のいずれかが使用できます。
 
-==== SQLite の場合 ==== #ForSQLite
+==== SQLite の場合 #ForSQLite
 
-Python 2.5 、 2.6 、 2.7 には、SQLite データベースのライブラリがPython の標準ディストリビューションに( `sqlite3` モジュールとして)同梱されています。
+Python 2.5、2.6、2.7 には、SQLite データベースのライブラリがPython の標準ディストリビューションに( `sqlite3` モジュールとして)同梱されています。
 
-もちろん、最新の [[trac:Pysqlite]] をダウンロードすることも可能です。
+もちろん、最新の [[trac:PySqlite]] をダウンロードすることも可能です。
 [http://code.google.com/p/pysqlite/downloads/list google code] から Windows インストーラやソースからビルドするための
-tar.gz アーカイブがダウンロードできます。
-{{{
+`tar.gz` アーカイブがダウンロードできます。
+{{{#!sh
 $ tar xvfz <version>.tar.gz
 $ cd <version>
 $ python setup.py build_static install
@@ -40,9 +40,9 @@ $ python setup.py build_static install
 
 SQLite 2.x のサポートは終了しました。
 
-既知のバグとして、 PySqlite バージョン 2.5.2-4 では、 Trac のデータベースを
+既知のバグとして、[trac:PySqlite] バージョン 2.5.2-4 では、 Trac のデータベースを
 0.11.x から 0.12. にアップグレードすることができません。 2.5.5 以降か 2.5.1 と
-それ以前のバージョンを使用して下さい。詳細については、 [trac:#9434 本家チケット 9434] を参照して下さい。
+それ以前のバージョンを使用して下さい。詳細については [trac:#9434 #9434] を参照して下さい。
 
 [trac:PySqlite PySqlite] にさらに情報があります。
 
@@ -50,12 +50,12 @@ SQLite 2.x のサポートは終了しました。
 
 下記いずれかの データベースと、データベースに対応した Python バインディングをインストールする必要があります:
  * [http://www.postgresql.org/ PostgreSQL], バージョン 8.0 以降
- * [http://pypi.python.org/pypi/psycopg2 psycopg2]
+ * [http://pypi.python.org/pypi/psycopg2 psycopg2] バージョン 2.0 以降
 
 詳しくは [trac:DatabaseBackend#Postgresql DatabaseBackend] を参照してください。
 
 
-==== MySQL の場合 ==== #ForMySQL
+==== MySQL の場合 #ForMySQL
 
 Trac は以下のガイドラインで、 MySQL でも良好に動作するようになりました。
 
@@ -64,14 +64,14 @@ Trac は以下のガイドラインで、 MySQL でも良好に動作するよ�
 
 '''非常に''' 重要なことが記載されているので、データベースを作成する前に、[trac:MySqlDb] のページを注意深く読んで下さい。
 
-=== 任意の依存関係 === #OptionalDependencies
+=== 任意の依存関係 #OptionalDependencies
 
-==== バージョン管理システム ==== #VersionControlSystem
+==== バージョン管理システム #VersionControlSystem
 
-===== Subversion =====
+===== Subversion
  * [http://subversion.apache.org/ Subversion] 1.5.x または 1.6.x と '''''対応する''''' Python バインディング。1.0 から 1.2.4 や 1.3.2 、 1.4.2 などの古いバージョンも今のところ動作します。トラブルシューティングの情報が [trac:TracSubversion#Troubleshooting TracSubversion] のページに記載されていますので、確認してください
 
-様々なプラットフォーム向けに [http://subversion.apache.org/packages.html SWIG バインディング] が用意されています。(このリストから Windows パッケージ用のコンパイル済みの SWIG バインディングを探してください。TracSubversion には [http://alagazam.net Algazam] がよいです。私も python 2.6 の基、使用しています。)
+様々なプラットフォーム向けに [http://subversion.apache.org/packages.html SWIG バインディング] が用意されています。(このリストから Windows パッケージ用のコンパイル済みの SWIG バインディングを探してください。[trac:TracSubversion] には [http://alagazam.net Algazam] がよいです。私も python 2.6 の基、使用しています。)
 
 Note: Trac は [http://pysvn.tigris.org/ PySVN] のような新しい `ctype` 形式のバインディングでは '''動作しません'''。
 
@@ -79,18 +79,18 @@ Note: Trac は [http://pysvn.tigris.org/ PySVN] のような新しい `ctype` �
 '''重要な Note:''' Subversion を使用するなら Trac を '''同じマシン''' にインストールする必要があります。リモートリポジトリは現在 [trac:#493 サポートされていません]。
 
 
-===== その他のバージョン管理システム ===== #Others
+===== その他のバージョン管理システム #Others
 
 Subversion 以外のバージョン管理システムのサポートはサードパーティから提供されます。 [trac:PluginList] や [trac:VersionControlSystem] を参照して下さい。
 
-==== Web サーバ ==== #WebServer
+==== Web サーバ #WebServer
 Trac にはサーバ機能が組み込まれているので、 Web サーバは必須ではありません。このページに下にある [#RunningtheStandaloneServer スタンドアロンサーバの起動] セクションを参照してください。
 
 Trac は下記の環境において動作します。
  * [http://httpd.apache.org/ Apache] との組み合わせで
    - [http://code.google.com/p/modwsgi/ mod_wsgi], [wiki:TracModWSGI] と
     http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac を参照
-   - [http://modpython.org/ mod_python 3.3.1], 非奨励 (TracModPython 参照)
+   - [http://modpython.org/ mod_python 3.3.1] (非奨励: TracModPython 参照)
  * [http://www.fastcgi.com/ FastCGI] 対応 Web サーバ (TracFastCgi 参照)
  * [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP] 対応 Web
    サーバ ([trac:TracOnWindowsIisAjp TracOnWindowsIisAjp] 参照)
@@ -98,13 +98,13 @@ Trac は下記の環境において動作します。
    全く推奨されていませんので’’’ 、上記に挙げた方法を選択して下さい
 
 
-==== その他の Python パッケージ ==== #OtherPythonPackages
+==== その他の Python パッケージ #OtherPythonPackages
 
  * [http://babel.edgewall.org Babel], 0.9.5 以上
-   ローカライズの機能を使用する場合は必要(リリースはされていませんが 1.0dev でも正しく動作します)
+   ローカライズの機能を使用する場合は必要 (リリースはされていませんが 1.0dev でも正しく動作します)
  * [http://docutils.sourceforge.net/ docutils], 0.3.9 以上
    WikiRestructuredText の機能を使用する場合は必要
- * [http://pygments.pocoo.org Pygments]
+ * [http://pygments.org Pygments]
    [wiki:TracSyntaxColoring シンタックスハイライティング] の機能を使用する場合は必要
    [http://silvercity.sourceforge.net/ SilverCity] や
    [http://gnu.org/software/enscript/enscript.html Enscript] も、今のところ使用できますが、
@@ -118,42 +118,47 @@ Trac は下記の環境において動作します。
 これらのパッケージのドキュメンテーションを参照して、それらが最も上手にインストールできる方法を探してください。また [trac:TracInstallPlatforms プラットフォーム特有の説明] の多くに、これらの依存関係のインストール方法が記述されています。しかしながら [trac:TracInstallPlatforms プラットフォーム特有の説明] の情報はあなたがインストールしている Trac より古い バージョンについての説明があることを覚えておいてください (なんと Trac 0.8 に関する説明をしているページもあります)。
 
 
-== Trac のインストール == #InstallingTrac
-=== `easy_install` を使用したインストール ===#Usingeasy_install
+== Trac のインストール #InstallingTrac
+=== `easy_install` を使用したインストール #Usingeasy_install
 Trac をインストールする方法のひとつに [http://pypi.python.org/pypi/setuptools setuptools] の利用があります。
 setuptools を使用すると、 Trac を Subversion リポジトリからインストールすることもできます。
 
 例:
 
  - Trac 1.0 をインストールします:
-   {{{
+   {{{#!sh
    easy_install Trac==1.0
    }}}
-   (まだ有効になっていない場合)
- - 開発中の最新バージョン 1.0dev をインストールします:
-   {{{
+ - 開発中の最新バージョンをインストールします:
+   {{{#!sh
    easy_install Trac==dev
    }}}
    この場合、ローカライズに対応していないバージョンである可能性があります。
    リリースされているバージョンを使用するか、ソースからインストールするようにしてください
 
-=== `pip` を使用したインストール === #Usingpip
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools に関する警告:**
+setuptools のバージョンが 5.4 から 5.6 の場合、著しいパフォーマンスの低下を防ぐために環境変数 `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` を設定する必要があります。
+詳細は[#RunningtheStandaloneServer スタンドアロンサーバの起動]と[#RunningTraconaWebServer Web サーバ上での Trac の起動]にあります。
+}}}
+
+=== `pip` を使用したインストール #Usingpip
 'pip' は easy_install のリプレースであり、とても簡単に素早く Python パッケージをインストールすることができます。
 Trac を 5 分程度でインストール、起動できます:
 
 pip によってインストールされる場所を `/opt/user/trac` とした場合の例です:
 
- -
-{{{
-pip -E /opt/user/trac install trac psycopg2
+ - 
+ {{{#!sh
+pip install trac psycopg2 
 }}}
 または
- -
-{{{
-pip -E /opt/user/trac install trac mysql-python
+ - 
+ {{{#!sh
+pip install trac mysql-python 
 }}}
 
-PostgreSQL (libpq-dev) や MySQL (libmysqlclient-dev) へのバインディングも自動でビルドできるように、 pip が OS 固有のヘッダファイルを確実に利用できるようにして下さい。
+PostgreSQL (`libpq-dev`) や MySQL (`libmysqlclient-dev`) へのバインディングも自動でビルドできるように、 pip が OS 固有のヘッダファイルを確実に利用できるようにして下さい。
 
 また pip は (Genshi, Pygments などの) 依存関係を解決し、 pypi.python.org から最新のパッケージをダウンロードして、 `/opt/user/trac` の配下にインストールするところまで自動化されています。
 
@@ -163,43 +168,43 @@ PostgreSQL (libpq-dev) や MySQL (libmysqlclient-dev) へのバインディン�
 
 
 
-=== ソースからのインストール === #Fromsource
+=== ソースからのインストール #Fromsource
 もちろん、ソースディレクトリのトップに格納されている setup.py を使用してインストールすることもできます。
 
-(Trac-1.0.tar.gz など)リリースパッケージの .tar.gz や　.zip ファイル、または直接リポジトリからソースを取得することが出来ます(詳細は Trac:SubversionRepository を参照してください)。
+リリースパッケージ (例えば `Trac-1.0.tar.gz`) の .tar.gz や .zip ファイル、または直接リポジトリからソースを取得することが出来ます(詳細は [trac:SubversionRepository] を参照してください)。
 
-{{{
+{{{#!sh
 $ python ./setup.py install
 }}}
 
 ``このステップを実行するためには root 権限 (または root 権限と同等の権限) が必要です。``
 
 この操作で Python のソースコードがバイトコンパイルされ、 .egg ファイルかディレクトリが Python インストールの `site-packages` ディレクトリにインストールされます。
-.egg には htdocs や templates のようなソースファイル以外に標準の Trac が必要とするすべてのリソースが含まれています。
+.egg には `htdocs` や `templates` のようなソースファイル以外に標準の Trac が必要とするすべてのリソースが含まれています。
 
 このスクリプトは [wiki:TracStandalone tracd] スタンドアロンサーバと一緒に、 [wiki:TracEnvironment プロジェクト Environment] を作成し維持するための [wiki:TracAdmin trac-admin] コマンドラインツールをインストールします。
 
 ソースからインストールする場合や、新しい言語で Trac を国際化するためには Babel をインストールしておく必要があります。この場合も `install` を実行するだけです (Babel がインストールされていない状態で、すでに Trac をインストールしてしまった場合でも、 `install` をやり直すことで Babel サポートを有効化できます):
-{{{
+{{{#!sh
 $ python ./setup.py install
 }}}
-また、 `bdist_egg` を実行すると dist ディレクトリに作成される .egg ファイルをインストール先にコピーしたり、 (`bdist_wininst` の実行によって) Windows インストーラを作成しても構いません。
+また、`bdist_egg` を実行すると `dist/` ディレクトリに作成される .egg ファイルをインストール先にコピーしたり、 (`bdist_wininst` の実行によって) Windows インストーラを作成しても構いません。
 
-=== 高度なオプション === #AdvancedOptions
+=== 高度なオプション #AdvancedOptions
 
 Trac のインストール場所を変えるなどの高度なインストールオプションを知りたければ以下を実行してください:
-{{{
+{{{#!sh
 easy_install --help
 }}}
 
-詳細な情報は [http://docs.python.org/inst/inst.html Python モジュールをインストールする] を参照してください。
+詳細な情報は [http://docs.python.org/2/install/index.html Installing Python Modules] を参照してください。
 
 特にあなたは以下に興味を持つかもしれません:
-{{{
+{{{#!sh
 easy_install --prefix=/path/to/installdir
 }}}
-Mac OS X に Trac をインストールする場合:
-{{{
+または、Mac OS X に Trac をインストールする場合:
+{{{#!sh
 easy_install --prefix=/usr/local --install-dir=/Library/Python/2.5/site-packages
 }}}
 Note: Mac OS X 10.6 上で {{{ easy_install http://svn.edgewall.org/repos/trac/trunk }}} を使用する場合は、オプションを指定しなくても {{{ /usr/local }}} および {{{ /Library/Python/2.6/site-packages }}} にインストールされます。
@@ -207,12 +212,12 @@ Note: Mac OS X 10.6 上で {{{ easy_install http://svn.edgewall.org/repos/trac/t
 上記の例は、 `tracd` と `trac-admin` コマンドを `/usr/local/bin` に、 Trac のライブラリと依存ファイルを `/Library/Python/2.5/site-packages` にインストールします。これらのパスは Apple での Pyhton サードパーティアプリケーションの標準ロケーションです。(訳注: つまり、上記と違うパスにインストールしたい場合のみ、オプションの指定が必要になります)
 
 
-== プロジェクト Environment の作成 == #CreatingaProjectEnvironment
+== プロジェクト Environment の作成 #CreatingaProjectEnvironment
 
 [TracEnvironment Trac Environment] は Trac が Wiki ページ、チケット、レポート、設定などの情報を保存するバックエンドストレージです。基本的に人間が読み込み可能な [TracIni 構成ファイル] と他の様々なファイルやディレクトリで構成されます。
 
 新しい Environment は [wiki:TracAdmin trac-admin] を使用して作成します:
-{{{
+{{{#!sh
 $ trac-admin /path/to/myproject initenv
 }}}
 
@@ -221,35 +226,57 @@ $ trac-admin /path/to/myproject initenv
 データベース接続文字列のデフォルトは SQLite が使用されます。 SQLite がインストールされている場合は、他の設定は不要です。
 他の [trac:DatabaseBackend データベースバックエンド] を使用する場合は、あらかじめデータベースが使用可能な状態にしておかねばなりません。
 
-0.12 以降で Trac は、新しい Environment の作成時に [TracEnvironment#SourceCodeRepository ソースコードリポジトリ] を尋ねないようになりました。リポジトリを後で [TracRepositoryAdmin 追加する] までの間、バージョン管理のサポートは無効化されます。
+0.12 以降で Trac は、新しい Environment の作成時に [TracEnvironment#SourceCodeRepository ソースコードリポジトリ] を尋ねないようになりました。リポジトリを後で[TracRepositoryAdmin 追加]することができます。また、バージョン管理のサポートはデフォルトで無効になっています。
 
 また、 ここで指定した値は [TracIni conf/trac.ini] 設定ファイルを直接編集することで後から変更できます。
 
+Environment の場所を選択する際には、そのディレクトリが秒以下のタイムスタンプをサポートするファイルシステムであるようにしてください (つまり Linux の `ext2` や `ext3` **ではなく**)。`conf/trac.ini` ファイルの変更日時で Environment を再読み込みすべきかどうかそうでないかを決定しているためです。タイムスタンプの精度が荒すぎると Trac 1.0.2 以前の場合、一貫しない挙動が引き起こされることがあります。(しかし、使用している Trac のバージョンに関わらず、可能であれば秒以下の精度を持つファイルシステムを選択するのがもっともよいです)
+
 最後に、 Web のフロントエンドを実行しているユーザアカウントは、 Environment のディレクトリと、その中のすべてのファイルに対する書き込み権限が必要です。 `trac-admin ... initenv` の実行を該当するユーザで実行した場合は、この作業は不要ですが、そうでない場合、ただしユーザに権限を付与する作業が必要になります。たとえば Linux で `apache` ユーザ `apache` グループで Web サーバを起動する場合は:
-{{{
-# chown -R apache.apache /path/to/myproject
+{{{#!sh
+$ chown -R apache.apache /path/to/myproject
 }}}
+
+The actual username and groupname of the apache server may not be exactly `apache`, and are specified in the Apache configuration file by the directives `User` and `Group` (if Apache `httpd` is what you use).
 
 {{{#!div class=important
 '''Warning:''' アカウント名とプロジェクトパスには ASCII 文字のみを使用して下さい。 unicode 文字はサポートしていません。
 }}}
 
 
-== Trac の利用 == #DeployingTrac
+== Trac の利用 #DeployingTrac
 
-=== スタンドアロンサーバの起動 === #RunningtheStandaloneServer
+=== スタンドアロンサーバの起動 #RunningtheStandaloneServer
 
 Trac 環境を作成した後に、スタンドアロンサーバ [wiki:TracStandalone tracd] を実行することで簡単に Web インタフェースを試すことができます。
-{{{
+{{{#!sh
 $ tracd --port 8000 /path/to/myproject
 }}}
 
 ブラウザを起動して、 `http://localhost:8000/` にアクセスしてください。 `tracd` が認識しているすべての Environment の簡単な一覧が表示されます。作成した Environment へのリンクにアクセスすることで Trac が動作中であることを確認できます。 Trac でプロジェクトをひとつだけ管理したい場合、以下のように起動することで、スタンドアロンサーバは Environment 一覧の表示をスキップして、直接 Environment を表示します:
-{{{
+{{{#!sh
 $ tracd -s --port 8000 /path/to/myproject
 }}}
 
-=== Web サーバ上での Trac の起動 === #RunningTraconaWebServer
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools に関する警告:**
+setuptools のバージョンが 5.4 から 5.6 の場合、著しいパフォーマンスの低下を防ぐために環境変数 `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` を設定する必要があります。
+この環境変数をシステム全体、もしくは、`tracd` プロセスを実行するユーザにだけ設定します。
+ここで説明する方法以外にも OS に依存した方法がいくつかあります。
+
+システム全体に反映させるには `/etc/profile.d` に以下の `export` 文を追加をします。
+ユーザセッションに反映させるには `~/.profile` に追加します。
+{{{#!sh
+export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
+}}}
+
+あるいは、`tracd` の実行前にシェルの中で変数を設定することもできます。
+{{{#!sh
+$ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
+}}}
+}}}
+
+=== Web サーバ上での Trac の起動 #RunningTraconaWebServer
 
 Trac には "実際の" Web サーバへ接続するために、いくつかの選択肢があります:
  - [wiki:TracFastCgi FastCGI]
@@ -259,20 +286,21 @@ Trac には "実際の" Web サーバへ接続するために、いくつかの�
 
 Trac では [trac:TracOnWindowsIisAjp AJP] もサポートしており、IIS と接続したい場合に選択肢の一つとなるかもしれません。その他の選択肢もあります: [trac:TracNginxRecipe nginx], [http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] 等。
 
-==== Trac の cgi-bin ディレクトリを生成する ==== #cgi-bin
+==== Trac の cgi-bin ディレクトリを生成する #cgi-bin
 
 Trac を FastCGI などで正しく機能させるには、 FastCGI であれば `trac.fcgi` ファイル、 mod_wsgi であれば `trac.wsgi` ファイルが必要となります。これらのファイルは適切な Python コードをロードする Python スクリプトです。 [wiki:TracAdmin trac-admin] コマンドの `deploy` オプションを使用することで生成できます。
 
 若干の「卵が先か鶏が先か」問題があります。 [wiki:TracAdmin trac-admin] コマンドが機能するためには Environment が必要なのですが、 deploy には既に存在するディレクトリは使用できません。これに起因して、 Environment は depoly するディレクトリのサブディレクトリを使用することができません。この制限を回避するには次のようにします:
-{{{
+{{{#!sh
 mkdir -p /usr/share/trac/projects/my-project
 trac-admin /usr/share/trac/projects/my-project initenv
 trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
 mv /tmp/deploy/* /usr/share/trac
 }}}
+Web サーバが `/usr/share/trac/cgi-bin` ディレクトリに配置したスクリプトの実行権限を持っているかチェックするのを忘れないようにしてください。
 
 
-==== 静的なリソースをマッピングする ==== #MappingStatcResources
+==== 静的なリソースをマッピングする #MappingStatcResources
 
 特に設定することなく Trac はスタイルシートや画像のような静的なリソースを扱うことができます。tracd は唯一基本的な動作環境ですが、 Web サーバがそれら静的リソースを直接供給するように設定することより、はるかに最適になります。(CGI でセットアップした場合、'''極めて望ましくない''' し、著しい性能悪化の原因となります)
 
@@ -288,15 +316,14 @@ Note: ファイルシステムにおける静的なリソースを取得する�
  - `common/` - Trac 自身が持つ静的なリソース
  - `<plugins>/` - Environment で使用可能なプラグインによって管理される個々のリソースディレクトリ
 
-===== 例: Apache と `ScriptAlias` ===== #ScriptAlias-example
+===== 例: Apache と `ScriptAlias` #ScriptAlias-example
 
 以下のような環境を仮定すると:
-{{{
+{{{#!sh
 $ trac-admin /var/trac/env deploy /path/to/trac/htdocs/common
 }}}
-
 Apache の設定ファイル内において `ScriptAlias` や `WSGIScriptAlias` の記述(Trac アプリケーションへの他のすべてのリクエストに対するマップの記述) ''より上に'' 以下のブロックを追記します。 パスは環境に合わせ変更してください:
-{{{
+{{{#!apache
 Alias /trac/chrome/common /path/to/trac/htdocs/common
 Alias /trac/chrome/site /path/to/trac/htdocs/site
 
@@ -307,7 +334,7 @@ Alias /trac/chrome/site /path/to/trac/htdocs/site
 }}}
 
 もし mod_python を使用している場合、この設定を追加した方が良いかもしれません(使用していない場合は、このエイリアスは無視されます):
-{{{
+{{{#!apache
 <Location "/trac/chrome/common/">
   SetHandler None
 </Location>
@@ -316,7 +343,7 @@ Alias /trac/chrome/site /path/to/trac/htdocs/site
 Note: `trac.*cgi` スクリプトを `/trac` にマップしている場合、 `/trac/chrome/common` を加えたパスに対するリクエストは、静的リソースで処理するように割り込みを加えます。
 
 同様に、静的なリソースを project の `htdocs` ディレクトリで使用している場合 (テーマの中で `/trac/chrome/site` を参照しているなど)、 これらのリソースを供給するよう Apache を設定することが出来ます。(再度、.*cgi スクリプトの `ScriptAlias` や `WSGIScriptAlias` ''より上に'' 以下のブロックを記述します。インストール状況に合わせて、ファイル名やロケーションは適宜変更してください):
-{{{
+{{{#!apache
 Alias /trac/chrome/site /path/to/projectenv/htdocs
 
 <Directory "/path/to/projectenv/htdocs">
@@ -326,23 +353,23 @@ Alias /trac/chrome/site /path/to/projectenv/htdocs
 }}}
 
 一方で `/trac/chrome/common` をエイリアスとするような場合、 Trac では [wiki:TracIni#trac-section| [trac] htdocs_location] を設定することで、それらリソースに対して直接リンクを生成することができます:
-{{{
+{{{#!ini
 [trac]
 htdocs_location = http://static.example.org/trac-common/
 }}}
 Note: これは 静的なリソースを供給する専用のドメインを簡単に設定します。([http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain cookie-less])
 
 当然、Web サーバのドキュメントルートにディレクトリをコピーする(又は、リンクする)等して、特定の URL で Web サーバに接続できるよう Trac の `htdocs/common` ディレクトリを作成する必要があります。
-{{{
+{{{#!sh
 $ ln -s /path/to/trac/htdocs/common /var/www/static.example.org/trac-common
 }}}
 
 
-==== プラグインキャッシュの設定 ==== #SettingupthePluginCache
+==== プラグインキャッシュの設定 #SettingupthePluginCache
 
-Python プラグインの中にはキャッシュディレクトリを必要とするものがあります。デフォルトではキャッシュディレクトリは、現在のユーザのホームディレクトリに置かれます。 Trac を Web サーバで動作させている場合、ホームディレクトリを持たない専用ユーザであることが多く (強く推奨します)、プラグインの起動が妨げられることがあります。キャッシュディレクトリの場所を変更するには、環境変数 PYTHON_EGG_CACHE を設定してください。環境変数を設定する方法の詳細は使用しているサーバのドキュメントから参照してください。
+Python プラグインの中にはキャッシュディレクトリを必要とするものがあります。デフォルトではキャッシュディレクトリは、現在のユーザのホームディレクトリに置かれます。 Trac を Web サーバで動作させている場合、ホームディレクトリを持たない専用ユーザであることが多く (強く推奨します)、プラグインの起動が妨げられることがあります。キャッシュディレクトリの場所を変更するには、環境変数 `PYTHON_EGG_CACHE` を設定してください。環境変数を設定する方法の詳細は使用しているサーバのドキュメントから参照してください。
 
-== 認証の構成 == #ConfiguringAuthentication
+== 認証の構成 #ConfiguringAuthentication
 
 Trac は HTTP 認証を使用します。`.../login` の URL ("ログイン"(英語版では "login") ボタンの仮想パス) がリクエストされた際に、認証を要求するように Web サーバを設定する必要があります。Trac は認証情報を得た後自動的に REMOTE_USER 変数を獲得します。そのため、すべてのユーザの管理は Web サーバ の設定で行います。設定方法等の詳細な情報は、利用している Web サーバのドキュメントを参照してください。
 
@@ -353,28 +380,46 @@ Trac は HTTP 認証を使用します。`.../login` の URL ("ログイン"(英
  * Apache Web サーバ と `mod_wsgi` に代表される `mod_python` や `mod_fcgi`, `mod_fastcgi` といったフロントエンドを使用する場合は [wiki:TracModWSGI#ConfiguringAuthentication TracModWSGI#ConfiguringAuthentication]
  * Apache 以外の FCGI をサポートしている Web サーバ (Cherokee, Lighttpd, !LiteSpeed, nginx) を使用する場合 TracFastCgi
 
-== admin ユーザへの管理者権限の付与 == #Grantingadminrightstotheadminuser
+次のドキュメントにも初心者向けの有用な情報があります: [trac:TracAuthenticationIntroduction]
+
+== admin ユーザへの管理者権限の付与 #Grantingadminrightstotheadminuser
 admin ユーザに管理者権限を付与します:
-{{{
+{{{#!sh
 $ trac-admin /path/to/myproject permission add admin TRAC_ADMIN
 }}}
-このユーザは Trac プロジェクトに管理者としてアクセスするため、メニュー内に "管理"(英語版では "Admin") が表示されます。
+このユーザは Trac プロジェクトに管理者としてアクセスするため、メニュー内に「管理」が表示されます。
 
-== インストールを終えて == #Finishingtheinstall
+== インストールを終えて #Finishingtheinstall
 
-=== SVN のチェンジセットを Trac のチケットに自動リンクする方法 === #AutomaticreferencetotheSVNchangesetsinTractickets
+=== バージョン管理コンポーネントを有効にする #Enableversioncontrolcomponents
+
+バージョン管理システムのサポートは任意のコンポーネントとして提供されており、デフォルトで無効になっています //(1.0 以降)//。Subversion や Git を使用したい場合には、明示的に有効にする必要があります。詳細については TracRepositoryAdmin を参照してください。
+
+[TracIni#components-section trac.ini] の `[components]` セクションに以下のものを追加する、または、「プラグイン」管理パネルからコンポーネントを有効にすることができます。
+
+{{{#!ini
+tracopt.versioncontrol.svn.* = enabled
+}}}
+
+{{{#!ini
+tracopt.versioncontrol.git.* = enabled
+}}}
+
+コンポーネントを有効にすると、「リポジトリ」管理パネルや [TracIni#repositories-section trac.ini] を編集してリポジトリを設定できるようになります。
+
+=== SVN のチェンジセットを Trac のチケットに自動リンクする方法 #AutomaticreferencetotheSVNchangesetsinTractickets
 
 変更をリポジトリにコミットした時に、チェンジセットへのリンクをチケットのコメントに自動で追加するように SVN を設定することができます。コミットメッセージには以下に示すいずれかの書式が含まれていなければなりません:
  * '''`Refs #123`''' - このチェンジセットへのリンクをチケット `#123` に追加します
  * '''`Fixes #123`''' - このチェンジセットへのリンクをチケット `#123` に追加し、チケットを ''fixed'' でクローズします
 
-この機能を使用するためには post-commit フックを [wiki:TracRepositoryAdmin#ExplicitSync TracRepositoryAdmin] に記載したリポジトリにインストールし、  commit updater コンポーネントを有効にせねばなりません。コンポーネントの有効化は、 [wiki:TracIni#components-section trac.ini] ファイルの `[components]` セクションに下記記述を追加するか、 "プラグイン" (英語版では "Plugins") 管理パネルから設定します。
-{{{
+この機能を使用するためには post-commit フックを [wiki:TracRepositoryAdmin#ExplicitSync TracRepositoryAdmin] に記載したリポジトリにインストールし、  commit updater コンポーネントを有効にせねばなりません。コンポーネントの有効化は、 [wiki:TracIni#components-section trac.ini] ファイルの `[components]` セクションに下記記述を追加するか、「プラグイン」管理パネルから設定します。
+{{{#!ini
 tracopt.ticket.commit_updater.* = enabled
 }}}
-詳細な情報は "プラグイン" 管理パネルの `CommitTicketUpdater` コンポーネントにあるドキュメントを参照してください。
+詳細な情報は「プラグイン」管理パネルの `CommitTicketUpdater` コンポーネントにあるドキュメントを参照してください。
 
-=== Trac を使用する === #UsingTrac
+=== Trac を使用する #UsingTrac
 
 一度 Trac サイトを稼働させれば、チケットを作成したり、タイムラインを見たり、 (設定されていれば) バージョン管理のリポジトリを閲覧したりできるはずです。
 

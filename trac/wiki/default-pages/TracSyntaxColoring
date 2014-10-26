@@ -6,8 +6,8 @@ Trac では色付けを行うために、とても多くのプログラミング
 現在、 Trac は以下にあげるパッケージを 1 つ以上使用して、シンタックスハイライトを実現しています:
 
  * [http://pygments.pocoo.org/ Pygments] 最も推奨するシステムです。というのもカバーしているプログラミング言語、構造化テキストが多いこととサポート体制が活発であるからです
- * [http://www.codento.com/people/mtr/genscript/ GNU Enscript] 通常 UNIX で利用できますが、 Windows ではサポートされていません
- * [http://silvercity.sourceforge.net/ SilverCity] レガシーなシステムです。いくつかのバージョンには [trac:TracFaq#why-is-my-css-code-not-being-highlighted-even-though-i-have-silvercity-installed 問題があります]
+ * [http://www.codento.com/people/mtr/genscript/ GNU Enscript] 通常 UNIX で利用できますが Windows ではサポートされていません //(使用は非推奨です)//
+ * [http://silvercity.sourceforge.net/ SilverCity] レガシーなシステムです。いくつかのバージョンには問題があります //(使用は非推奨です)//
 
 
 シンタックスカラーリングを有効にするには、これらのパッケージのどれか 1 つまたは 1 つ以上をインストールするだけです ( 下記の [#ExtraSoftware その他のソフトウェア] を参照 )
@@ -16,7 +16,7 @@ Trac では色付けを行うために、とても多くのプログラミング
 
 === Pygments について === #AboutPygments
 
-Trac 0.11 以降で、 [http://pygments.org/ pygments] はデフォルトのハイライトパッケージとなりました。ハイライト用のライブラリがピュアな Python コードで書かれていて、とても速く、拡張しやすく [http://pygments.org/docs/ ドキュメントが豊富です] 。
+Trac 0.11 以降で [http://pygments.org/ pygments] はデフォルトのハイライトパッケージとなりました。ハイライト用のライブラリがピュアな Python コードで書かれていて、とても速く、拡張しやすく [http://pygments.org/docs/ ドキュメントが豊富です] 。
 
 Pygments のデフォルトのスタイルは、 trac.ini の [TracIni#mimeviewer-section mime-viewer] セクションで指定できます。デフォルトのスタイルは、 [/prefs/pygments 個人設定のシンタックスハイライトタブ] 上のスタイルを設定することで、オーバーライドされます。
 
@@ -35,7 +35,7 @@ Note: 高度なコンテンツはシンタックスハイライトの代わり�
 
 HTML ドキュメントは `render_unsafe_html` が TracIni で有効に設定されている場合に限り、直接レンダリングされます。 (ドキュメントがどこからくるかによって異なるセキュリティ上の懸念がある場合、これらの設定は、複数のセクションに存在します)。もし HTML ドキュメントがレンダリングを行わず、シンタックスハイライトなるよう保証したいのであれば、 MIME タイプ `text/xml` を使用してください。
 
-'svn:mime-type' 属性が 'text/plain' のように MIME タイプで設定されている場合、例え 'java' で書かれたファイルであっても色づけされません。
+'svn:mime-type' 属性が 'text/plain' のように MIME タイプで設定されている場合、例えば 'java' で書かれたファイルであっても色づけされません。
 
 === ハイライトパッケージがサポートする言語 === #language-supported
 

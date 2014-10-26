@@ -8,17 +8,15 @@ Trac はバックエンドにデータベースを使用しているため、安
 == バックアップの作成 == #CreatingaBackup
 
 稼働中の TracEnvironment をバックアップするためには、以下のコマンドを実行してください:
-{{{
-
-  $ trac-admin /path/to/projenv hotcopy /path/to/backupdir
-
+{{{#!sh
+$ trac-admin /path/to/projenv hotcopy /path/to/backupdir
 }}}
 
 [wiki:TracAdmin trac-admin] はバックアップを行っている間、データベースをロックします。''
 
 バックアップされたディレクトリは、 `tar` や `dump`/`restore` のような通常のファイルベースのバックアップツールで、安全に取り扱うことができます。
 
-Note: hotcopy コマンドはバックアップ先ディレクトリが存在していた場合、上書きを行うことが出来ないため、次のエラーで失敗します: `Command failed: [Errno 17] File exists:` この問題は [trac:#3198 本家チケット 3198] で議論されています。(訳注: 上書きを行わない動作のまま変更されない方向で議論が進んでいます。同チケットで運用回避の手順が示されています)
+`hotcopy` コマンドはバックアップ先ディレクトリが存在していた場合、上書きを行わず次のエラーで終了することに注意してください: `Command failed: [Errno 17] File exists:` この問題は [trac:ticket:3198 #3198] で議論されています。
 
 === バックアップからの復元 === #RestoringaBackup
 

@@ -13,7 +13,7 @@ Trac はシンプルなアクセス制御システムを使用しています。
 == Web Admin でのタブ == #GraphicalAdminTab
 ''この機能はバージョン 0.11 で追加されました。''
 
-このタブにアクセスするには、次のいずれかの権限が必要です: `TRAC_ADMIN`、 `PERMISSION_ADMIN`、 `PERMISSION_ADD`、 `PERMISSION_REMOVE`。これら権限は、 `trac-admin` コマンドを使用して付与することができます(`trac-admin` に関しては下記):
+このタブにアクセスするには、次のいずれかの権限が必要です: `TRAC_ADMIN`、`PERMISSION_ADMIN`、`PERMISSION_GRANT`、`PERMISSION_REVOKE`。これら権限は、`trac-admin` コマンドを使用して付与することができます (`trac-admin` に関しては下記):
 {{{
   $ trac-admin /path/to/projenv permission add bob TRAC_ADMIN
 }}}
@@ -25,6 +25,10 @@ Trac はシンプルなアクセス制御システムを使用しています。
  1. [[Image(htdocs:../common/guide/admin-permissions-TICKET_ADMIN.png)]]
 
 An easy way to quickly secure a new Trac install is to run the above command on the anonymous user, install the [http://trac-hacks.org/wiki/AccountManagerPlugin AccountManagerPlugin], create a new admin account graphically and then remove the TRAC_ADMIN permission from the anonymous user.  (訳者註: secure と書いてありますがセキュリティ的に脆弱な瞬間が発生するため、お薦めできません。コマンドを使用してください。)
+
+管理タブの GUI からは `PERMISSION_GRANT` を持つユーザが実行できる権限だけを付与することが許可されており、また、`PERMISSION_REVOKE` を持つユーサが実行できる権限だけを剥奪することが許可されています。
+例えば、`PERMISSION_GRANT` と `MILESTONE_ADMIN` を持っていない限り `MILESTONE_ADMIN` を付与することができませんし、`PERMISSION_REVOKE` と `MILESTONE_ADMIN` を持っていない限り `MILESTONE_ADMIN` を剥奪することができません。
+`PERMISSION_ADMIN` は `PERMISSION_GRANT` と `PERMISSION_REVOKE` の両方をユーザに付与します。また、`TRAC_ADMIN` を持つユーザはどの権限でも付与することも剥奪することもできます。
 
 == 付与できる権限 == #AvailablePrivileges
 
@@ -97,7 +101,7 @@ Attention: "チケットを見る" (英語版では "view tickets") ボタンは
 
 == 新しい権限の作成 == #CreatingNewPrivileges
 
-例えばカスタムワークフローで使用されるような、カスタムパーミッションを作成するには、管理 (英語版では ''Admin'') パネルの "プラグイン" (英語版では ''Plugins'') の [trac:ExtraPermissionsProvider tracopt.perm.config_perm_provider.ExtraPermissionsProvider] コンポーネントのチェックボックスを ON にし、 [wiki:TracIni#extra-permissions-section trac.ini] の `[extra-permissions]` に希望するパーミッションを書き加えます。詳細は、管理パネル内のコンポーネントのドキュメントを参照して下さい。
+例えばカスタムワークフローで使用されるような、カスタムパーミッションを作成するには、管理 (英語版では ''Admin'') パネルの "プラグイン" (英語版では ''Plugins'') の [trac:ExtraPermissionsProvider tracopt.perm.config_perm_provider.ExtraPermissionsProvider] コンポーネントのチェックボックスを ON にし、 [wiki:TracIni#extra-permissions-section trac.ini] の `[extra-permissions]` に希望するパーミッションを書き加えます。詳細は、コンポーネントを有効にした後 [wiki:TracIni#extra-permissions-section TracIni] ページのドキュメントを参照してください。
 
 == 権限の付与 == #GrantingPrivileges
 

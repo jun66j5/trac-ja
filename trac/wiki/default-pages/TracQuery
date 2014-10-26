@@ -83,7 +83,7 @@ Trac ではクエリをレポートモジュールからアクセスできる名
 表示内容:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 
-クエリにマッチした件数だけを取得したいのならば、 ``count`` パラメータを使用してください。
+クエリにマッチした件数だけを取得したいのならば、`count` パラメータを使用してください。
 
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
