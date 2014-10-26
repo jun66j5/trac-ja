@@ -2,6 +2,57 @@
 #!/usr/bin/python
 import os
 from trac.tests.functional import *
+from trac.util import create_file
+
+
+class TestErrorPage(FunctionalTwillTestCaseSetup):
+    """Validate the error page.
+    Defects reported to trac-hacks should use the Component defined in the
+    plugin's URL (#11434).
+    """
+    def runTest(self):
+        env = self._testenv.get_trac_environment()
+        env.config.set('components', 'RaiseExceptionPlugin.*', 'enabled')
+        env.config.save()
+        create_file(os.path.join(env.path, 'plugins',
+                                 'RaiseExceptionPlugin.py'),
+"""\
+from trac.core import Component, implements
+from trac.web.api import IRequestHandler
+
+url = None
+
+class RaiseExceptionPlugin(Component):
+    implements(IRequestHandler)
+
+    def match_request(self, req):
+        if req.path_info.startswith('/raise-exception'):
+            return True
+
+    def process_request(self, req):
+        print 'maybe?'
+        if req.args.get('report') == 'tho':
+            global url
+            url = 'http://trac-hacks.org/wiki/HelloWorldMacro'
+        raise Exception
+
+""")
+        self._testenv.restart()
+
+        try:
+            tc.go(self._tester.url + '/raise-exception')
+            tc.find(internal_error)
+            tc.find('<form class="newticket" method="get" '
+                    'action="http://trac.edgewall.org/newticket">')
+
+            tc.go(self._tester.url + '/raise-exception?report=tho')
+            tc.find(internal_error)
+            tc.find('<form class="newticket" method="get" '
+                    'action="http://trac-hacks.org/newticket">')
+            tc.find('<input type="hidden" name="component" '
+                    'value="HelloWorldMacro" />')
+        finally:
+            env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
@@ -171,15 +222,6 @@ See also http://bugs.python.org/issue15564.
 """)
 
 
-class ErrorPageValidation(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Validate the error page"""
-        url = self._tester.url + '/wiki/WikiStart'
-        tc.go(url + '?version=bug')
-        tc.url(url)
-        tc.find(internal_error)
-
-
 class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Regression test for non-UTF-8 PATH_INFO (#3663)
@@ -204,6 +246,7 @@ def functionalSuite():
 def suite():
     suite = functionalSuite()
 
+    suite.addTest(TestErrorPage())
     suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
@@ -211,7 +254,6 @@ def suite():
     suite.addTest(RegressionTestTicket5572())
     suite.addTest(RegressionTestTicket7209())
     suite.addTest(RegressionTestTicket9880())
-    suite.addTest(ErrorPageValidation())
     suite.addTest(RegressionTestTicket3663())
 
     import trac.versioncontrol.tests

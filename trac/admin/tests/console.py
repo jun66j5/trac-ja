@@ -42,10 +42,13 @@ import trac.search.web_ui
 import trac.timeline.web_ui
 import trac.wiki.web_ui
 
+from trac.core import Component, implements
 from trac.config import Configuration
 from trac.env import Environment
 from trac.admin import console, console_date_format
-from trac.test import InMemoryDatabase
+from trac.admin.api import IAdminCommandProvider
+from trac.admin.console import TracAdminHelpMacro
+from trac.test import EnvironmentStub, InMemoryDatabase
 from trac.util.datefmt import format_date, get_date_format_hint
 from trac.web.tests.session import _prep_session_table
 
@@ -111,6 +114,32 @@ class InMemoryEnvironment(Environment):
         self.setup_log()
 
 
+def execute_cmd(tracadmin, cmd, strip_trailing_space=True):
+    _err = sys.stderr
+    _out = sys.stdout
+    try:
+        sys.stderr = sys.stdout = out = StringIO()
+        setattr(out, 'encoding', 'utf-8') # fake output encoding
+        retval = None
+        try:
+            retval = tracadmin.onecmd(cmd)
+        except SystemExit, e:
+            pass
+        value = out.getvalue()
+        if isinstance(value, str): # reverse what print_listing did
+            value = value.decode('utf-8')
+        # DEBUG: uncomment in case of `AssertionError: 0 != 2` in tests
+        #if retval != 0:
+        #    print>>_err, value
+        if strip_trailing_space:
+            return retval, STRIP_TRAILING_SPACE.sub('', value)
+        else:
+            return retval, value
+    finally:
+        sys.stderr = _err
+        sys.stdout = _out
+
+
 class TracadminTestCase(unittest.TestCase):
     """
     Tests the output of trac-admin and is meant to be used with
@@ -135,29 +164,8 @@ class TracadminTestCase(unittest.TestCase):
         self.env = None
 
     def _execute(self, cmd, strip_trailing_space=True):
-        _err = sys.stderr
-        _out = sys.stdout
-        try:
-            sys.stderr = sys.stdout = out = StringIO()
-            setattr(out, 'encoding', 'utf-8') # fake output encoding
-            retval = None
-            try:
-                retval = self._admin.onecmd(cmd)
-            except SystemExit, e:
-                pass
-            value = out.getvalue()
-            if isinstance(value, str): # reverse what print_listing did
-                value = value.decode('utf-8')
-            # DEBUG: uncomment in case of `AssertionError: 0 != 2` in tests
-            #if retval != 0:
-            #    print>>_err, value
-            if strip_trailing_space:
-                return retval, STRIP_TRAILING_SPACE.sub('', value)
-            else:
-                return retval, value
-        finally:
-            sys.stderr = _err
-            sys.stdout = _out
+        return execute_cmd(self._admin, cmd,
+                           strip_trailing_space=strip_trailing_space)
 
     def assertEqual(self, expected_results, output):
         if not (isinstance(expected_results, basestring) and \
@@ -1235,8 +1243,66 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(self.expected_results[test_name], output)
 
 
+class TracadminNoEnvTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self._admin = console.TracAdmin()
+
+    def tearDown(self):
+        self._admin = None
+
+    def _execute(self, cmd, strip_trailing_space=True):
+        return execute_cmd(self._admin, cmd,
+                           strip_trailing_space=strip_trailing_space)
+
+    def test_help(self):
+        rv, output = self._execute('help')
+        output = output.splitlines()
+        self.assertEqual('', output[-3])
+        self.assertEqual('help     Show documentation', output[-2])
+        self.assertEqual('initenv  Create and initialize a new environment',
+                         output[-1])
+
+    def test_help_with_nocmd(self):
+        rv, output = self._execute('help nocmd')
+        output = output.splitlines()
+        self.assertEqual(["No documentation found for 'nocmd'. Use 'help' to "
+                          "see the list of commands."],
+                          output)
+
+
+class TracAdminHelpMacroTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=['%s.UnicodeHelpCommand' %
+                                           self.__module__])
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_unicode_help(self):
+        unicode_help = u'Hélp text with unicöde charàcters'
+
+        class UnicodeHelpCommand(Component):
+            implements(IAdminCommandProvider)
+            def get_admin_commands(self):
+                yield ('unicode-help', '', unicode_help,
+                       None, self._cmd)
+            def _cmd(self):
+                pass
+
+        macro = TracAdminHelpMacro(self.env)
+        help = unicode(macro.expand_macro(None, None, 'unicode-help'))
+        self.assertTrue(unicode_help in help)
+
+
 def suite():
-    return unittest.makeSuite(TracadminTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TracadminTestCase))
+    suite.addTest(unittest.makeSuite(TracadminNoEnvTestCase))
+    suite.addTest(unittest.makeSuite(TracAdminHelpMacroTestCase))
+    return suite
+
 
 if __name__ == '__main__':
     unittest.main()

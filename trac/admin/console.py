@@ -26,7 +26,7 @@ from trac.admin import AdminCommandError, AdminCommandManager
 from trac.core import TracError
 from trac.env import Environment
 from trac.ticket.model import *
-from trac.util import translation
+from trac.util import translation, warn_setuptools_issue
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode, \
@@ -295,6 +295,7 @@ Type:  '?' or 'help' for help on commands.
     def do_help(self, line=None):
         arg = self.arg_tokenize(line)
         if arg[0]:
+            cmd_mgr = None
             doc = getattr(self, "_help_" + arg[0], None)
             if doc is None and self.env_check():
                 cmd_mgr = AdminCommandManager(self.env)
@@ -305,7 +306,9 @@ Type:  '?' or 'help' for help on commands.
                 printerr(_("No documentation found for '%(cmd)s'."
                            " Use 'help' to see the list of commands.",
                            cmd=' '.join(arg)))
-                cmds = cmd_mgr.get_similar_commands(arg[0])
+                cmds = None
+                if cmd_mgr:
+                    cmds = cmd_mgr.get_similar_commands(arg[0])
                 if cmds:
                     printout('')
                     printout(ngettext("Did you mean this?",
@@ -539,7 +542,7 @@ class TracAdminHelpMacro(WikiMacroBase):
             doc = TracAdmin.all_docs(self.env)
         buf = StringIO.StringIO()
         TracAdmin.print_doc(doc, buf, long=True)
-        return html.PRE(buf.getvalue(), class_='wiki')
+        return html.PRE(buf.getvalue().decode('utf-8'), class_='wiki')
 
 
 def run(args=None):
@@ -554,6 +557,7 @@ def run(args=None):
         except babel.UnknownLocaleError:
             pass
         translation.activate(locale)
+    warn_setuptools_issue()
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):

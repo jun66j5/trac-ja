@@ -243,8 +243,8 @@ smtp_password = password
 
 ''user'' と ''password'' の箇所は、 GMail のアカウントで置き換えてください。 ''たとえば'' [http://gmail.com] にログインするときに使用しているものです。
 
-代わりに `smtp_port = 25` を使用することもできます。 (訳注: おそらく `gmail.com` 宛のメールしか届きません)[[br]]
-しかし `smtp_port = 465` は使用できません。これは動作しないだけでなく、通知メール送信がデッドロックします。ポート番号 465 は SMTPS プロトコル (訳注: SSMTP とも言います) に使用されますが、 Trac はこれをサポートしていません。詳しくは [http://trac.edgewall.org/ticket/7107#comment:2 #7107] を参照してください。
+代わりに `smtp_port = 25` を使用することもできます。[[br]]
+しかし `smtp_port = 465` は使用できません。これは動作しないだけでなく、通知メール送信がデッドロックします。ポート番号 465 は SMTPS プロトコルに使用されますが、 Trac はこれをサポートしていません。詳しくは [trac:comment:2:ticket:7107 #7107] を参照してください。
 
 == 自分が変更した通知をフィルタする == #Filteringnotificationsforonesownchanges
 Gmail では、以下のフィルタを使用できます:

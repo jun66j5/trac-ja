@@ -141,12 +141,13 @@ class LogModule(Component):
                                 if rev != nrev: # no, we need a separator
                                     yield (np, nrev, None)
                             yield node_history[0]
-                        prevpath = node_history[-1][0] # follow copy
-                        b = repos.previous_rev(rev)
                         if len(node_history) > 1:
                             expected_next_item = node_history[-1]
+                            prevpath = expected_next_item[0]  # follow copy
+                            b = expected_next_item[1]
                         else:
                             expected_next_item = None
+                            break  # no more older revisions
                 if expected_next_item:
                     yield (expected_next_item[0], expected_next_item[1], None)
         else:
@@ -369,9 +370,10 @@ class LogModule(Component):
 
             if repos:
                 revranges = None
-                if any(c for c in ':-,' if c in revs):
+                if any(c in revs for c in ':-,'):
                     revranges = self._normalize_ranges(repos, path, revs)
-                    revs = None
+                    if revranges:
+                        revs = None
                 if 'LOG_VIEW' in formatter.perm:
                     if revranges:
                         href = formatter.href.log(repos.reponame or None,
@@ -384,7 +386,7 @@ class LogModule(Component):
                             rev = None
                         href = formatter.href.log(repos.reponame or None,
                                                   path or '/', rev=rev)
-                    if query and (revranges or revs):
+                    if query and '?' in href:
                         query = '&' + query[1:]
                     return tag.a(label, class_='source',
                                  href=href + query + fragment)
@@ -413,4 +415,7 @@ class LogModule(Component):
                 return None
             seps = splitted_ranges[1::2] + ['']
             ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
-            return Ranges(ranges)
+            try:
+                return Ranges(ranges)
+            except ValueError:
+                return None

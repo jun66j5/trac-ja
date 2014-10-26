@@ -58,7 +58,7 @@ class WikiMacroBase(Component):
     def parse_macro(self, parser, name, content):
         raise NotImplementedError
 
-    def expand_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content, args=None):
         # -- TODO: remove in 0.12
         if hasattr(self, 'render_macro'):
             self.log.warning('Executing pre-0.11 Wiki macro %s by provider %s'
@@ -286,7 +286,8 @@ class RecentChangesMacro(WikiMacroBase):
                 if len(argv) > 1:
                     limit = int(argv[1])
 
-        cursor = formatter.db.cursor()
+        db = formatter.db
+        cursor = db.cursor()
 
         sql = 'SELECT name, ' \
               '  max(version) AS max_version, ' \
@@ -294,8 +295,8 @@ class RecentChangesMacro(WikiMacroBase):
               'FROM wiki'
         args = []
         if prefix:
-            sql += ' WHERE name LIKE %s'
-            args.append(prefix + '%')
+            sql += ' WHERE name %s' % db.prefix_match()
+            args.append(db.prefix_match_value(prefix))
         sql += ' GROUP BY name ORDER BY max_time DESC'
         if limit:
             sql += ' LIMIT %s'
@@ -665,10 +666,10 @@ class TracIniMacro(WikiMacroBase):
     で始まるコンフィグのセクションとオプション名のみが出力されます。
     """
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         from trac.config import Option
         section_filter = key_filter = ''
-        args, kw = parse_args(args)
+        args, kw = parse_args(content)
         if args:
             section_filter = args.pop(0).strip()
         if args:
@@ -700,11 +701,11 @@ class KnownMimeTypesMacro(WikiMacroBase):
     引数が与えられた場合は、 mime-type へのフィルタとして作用します。
     """
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         from trac.mimeview.api import Mimeview
         mime_map = Mimeview(self.env).mime_map
         mime_type_filter = ''
-        args, kw = parse_args(args)
+        args, kw = parse_args(content)
         if args:
             mime_type_filter = args.pop(0).strip().rstrip('*')
 
@@ -764,7 +765,7 @@ class TracGuideTocMacro(WikiMacroBase):
            ('TracNotification',             'Notification'),
           ]
 
-    def expand_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, content):
         curpage = formatter.resource.id
 
         # scoped TOC (e.g. TranslateRu/TracGuide or 0.11/TracGuide ...)

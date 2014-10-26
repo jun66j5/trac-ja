@@ -38,6 +38,7 @@ from trac.util import as_bool, get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_utimestamp, utc
+from trac.util.html import to_fragment
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, to_unicode
 from trac.util.presentation import separated
@@ -113,12 +114,16 @@ class TicketModule(Component):
             return getattr(TicketSystem(self.env), name)
         raise AttributeError("TicketModule has no attribute '%s'" % name)
 
+    _must_preserve_newlines = None
+
     @property
     def must_preserve_newlines(self):
-        preserve_newlines = self.preserve_newlines
-        if preserve_newlines == 'default':
-            preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
-        return as_bool(preserve_newlines)
+        if self._must_preserve_newlines is None:
+            preserve_newlines = self.preserve_newlines
+            if preserve_newlines == 'default':
+                preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
+            self._must_preserve_newlines = as_bool(preserve_newlines)
+        return self._must_preserve_newlines
 
     # IContentConverter methods
 
@@ -1034,7 +1039,7 @@ class TicketModule(Component):
         for f in fields:
             name = f['name']
             value = ticket.values.get(name, '')
-            if name in ('cc', 'reporter'):
+            if name in ('cc', 'owner', 'reporter'):
                 value = Chrome(self.env).format_emails(context, value, ' ')
             elif name in ticket.time_fields:
                 value = format_datetime(value, tzinfo=req.tz)
@@ -1199,9 +1204,9 @@ class TicketModule(Component):
         except Exception, e:
             self.log.error("Failure sending notification on creation of "
                     "ticket #%s: %s", ticket.id, exception_to_unicode(e))
-            add_warning(req, _("The ticket has been created, but an error "
-                               "occurred while sending notifications: "
-                               "%(message)s", message=to_unicode(e)))
+            add_warning(req, tag_("The ticket has been created, but an error "
+                                  "occurred while sending notifications: "
+                                  "%(message)s", message=to_fragment(e)))
 
         # Redirect the user to the newly created ticket or add attachment
         ticketref=tag.a('#', ticket.id, href=req.href.ticket(ticket.id))
@@ -1250,7 +1255,7 @@ class TicketModule(Component):
                 add_warning(req, tag_("The %(change)s has been saved, but an "
                                       "error occurred while sending "
                                       "notifications: %(message)s",
-                                      change=change, message=to_unicode(e)))
+                                      change=change, message=to_fragment(e)))
                 fragment = ''
 
         # After saving the changes, apply the side-effects.

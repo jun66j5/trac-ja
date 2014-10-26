@@ -24,8 +24,9 @@ from genshi.builder import tag
 from trac import __version__
 from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
+from trac.util.html import to_fragment
 from trac.util.text import CRLF, fix_eol
-from trac.util.translation import _, deactivate, reactivate
+from trac.util.translation import _, deactivate, reactivate, tag_
 
 MAXHEADERLEN = 76
 EMAIL_LOOKALIKE_PATTERN = (
@@ -315,15 +316,19 @@ class NotifyEmail(Notify):
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError(tag(
-                    tag.p(_('Unable to send email due to identity crisis.')),
-                    tag.p(_('Neither %(from_)s nor %(reply_to)s are specified '
-                            'in the configuration.',
-                            from_=tag.b('notification.from'),
-                            reply_to=tag.b('notification.reply_to')))),
-                _('SMTP Notification Error'))
+            message = tag(
+                tag.p(_('Unable to send email due to identity crisis.')),
+                # convert explicitly to `Fragment` to avoid breaking message
+                # when passing `LazyProxy` object to `Fragment`
+                tag.p(to_fragment(tag_(
+                    "Neither %(from_)s nor %(reply_to)s are specified in the "
+                    "configuration.", from_=tag.b('[notification] smtp_from'),
+                    reply_to=tag.b('[notification] smtp_replyto')))))
+            raise TracError(message, _('SMTP Notification Error'))
 
         Notify.notify(self, resid)
+
+    _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)
 
     def format_header(self, key, name, email=None):
         from email.Header import Header
@@ -331,14 +336,23 @@ class NotifyEmail(Notify):
         # Do not sent ridiculous short headers
         if maxlength < 10:
             raise TracError(_("Header length is too short"))
-        try:
-            tmp = name.encode('ascii')
-            header = Header(tmp, 'ascii', maxlinelen=maxlength)
-        except UnicodeEncodeError:
-            header = Header(name, self._charset, maxlinelen=maxlength)
+        # when it matches mime-encoding, encode as mime even if only
+        # ascii characters
+        header = None
+        if not self._mime_encoding_re.search(name):
+            try:
+                tmp = name.encode('ascii')
+                header = Header(tmp, 'ascii', maxlinelen=maxlength)
+            except UnicodeEncodeError:
+                pass
+        if not header:
+            header = Header(name.encode(self._charset.output_codec),
+                            self._charset, maxlinelen=maxlength)
         if not email:
             return header
         else:
+            header = str(header).replace('\\', r'\\') \
+                                .replace('"', r'\"')
             return '"%s" <%s>' % (header, email)
 
     def add_headers(self, msg, headers):

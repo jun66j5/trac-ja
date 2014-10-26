@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2012-10-29 19:08+0100\n"
+"POT-Creation-Date: 2013-02-17 15:58+0100\n"
 "PO-Revision-Date: 2012-11-03 08:44+0000\n"
 "Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
 "Language-Team: Danish "
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: tracopt/mimeview/php.py:98
 msgid ""
@@ -524,39 +524,39 @@ msgstr "%(name)s ved version %(version)s"
 msgid "Command not found"
 msgstr "Kommando ikke fundet"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:112
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "Fejl: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:131
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Velkommen til trac-admin %(version)s\n"
 "Interaktiv Trac administrationskonsol.\n"
-"Copyright (C) 2003-2012 Edgewall Software\n"
+"Copyright (C) 2003-2013 Edgewall Software\n"
 "\n"
 "Skriv:  '?' eller 'help' for hjælp til kommandoer.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:165
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Kunne ikke åbne miljøet: %(err)s"
 
-#: trac/admin/console.py:247
+#: trac/admin/console.py:248
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Færdiggørelsesfejl: %(err)s"
 
-#: trac/admin/console.py:306
+#: trac/admin/console.py:307
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
@@ -565,33 +565,33 @@ msgstr ""
 "Ingen dokumentation fundet for '%(cmd)s'. Brug 'help' for at se listen "
 "med kommandoer."
 
-#: trac/admin/console.py:312
+#: trac/admin/console.py:313
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] "Mente du denne?"
 msgstr[1] "Mente du en af disse?"
 
-#: trac/admin/console.py:316
+#: trac/admin/console.py:317
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - Trac administrationskonsol %(version)s"
 
-#: trac/admin/console.py:320
+#: trac/admin/console.py:321
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
 "Brug: trac-admin </sti/til/projenv> [kommando [subkommando] [indstilling "
 "...]]\n"
 
-#: trac/admin/console.py:323
+#: trac/admin/console.py:324
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr "Start af trac-admin uden kommando starter interaktiv tilstand.\n"
 
-#: trac/admin/console.py:363
+#: trac/admin/console.py:364
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Opretter et nyt Trac miljø på %(envname)s"
 
-#: trac/admin/console.py:365
+#: trac/admin/console.py:366
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment \n"
@@ -607,12 +607,12 @@ msgstr ""
 " Indtast venligst dit projekts navn.\n"
 " Dette navn vil blive brug i sidetitler og beskrivelser.\n"
 
-#: trac/admin/console.py:373
+#: trac/admin/console.py:374
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Projektnavn [%(default)s]> "
 
-#: trac/admin/console.py:375
+#: trac/admin/console.py:376
 msgid ""
 " \n"
 " Please specify the connection string for the database to use.\n"
@@ -628,25 +628,25 @@ msgstr ""
 " PostgreSQL database (se Trac dokumentationen for korrekt\n"
 " forbindelsesstreng syntaks).\n"
 
-#: trac/admin/console.py:383
+#: trac/admin/console.py:384
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Database forbindelsesstreng [%(default)s]> "
 
-#: trac/admin/console.py:390
+#: trac/admin/console.py:391
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv for '%(env)s' mislykkedes."
 
-#: trac/admin/console.py:393
+#: trac/admin/console.py:394
 msgid "Does an environment already exist?"
 msgstr "Eksisterer der allerede et miljø?"
 
-#: trac/admin/console.py:397
+#: trac/admin/console.py:398
 msgid "Directory exists and is not empty."
 msgstr "Mappen eksisterer og er ikke tom."
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:404
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
@@ -655,23 +655,23 @@ msgstr ""
 "Grundmappen '%(env)s' eksisterer ikke. Opret den venligst manuelt og prøv"
 " igen."
 
-#: trac/admin/console.py:431
+#: trac/admin/console.py:432
 msgid "Creating and Initializing Project"
 msgstr "Opretter og initialisere projekt"
 
-#: trac/admin/console.py:448
+#: trac/admin/console.py:449
 msgid "Failed to create environment."
 msgstr "Kunne ikke oprette miljø."
 
-#: trac/admin/console.py:454
+#: trac/admin/console.py:455
 msgid " Installing default wiki pages"
 msgstr "Installerer standard wiki-sider"
 
-#: trac/admin/console.py:463
+#: trac/admin/console.py:464
 msgid " Indexing default repository"
 msgstr "Indexerer standard opbevaringssted"
 
-#: trac/admin/console.py:466
+#: trac/admin/console.py:467
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -697,7 +697,7 @@ msgstr ""
 "du skal tjekke din trac.ini fil og [trac] \n"
 "repository_type og repository_path indstillinger igen.\n"
 
-#: trac/admin/console.py:509
+#: trac/admin/console.py:510
 #, python-format
 msgid ""
 "\n"
@@ -750,7 +750,7 @@ msgstr ""
 "\n"
 "Tillykke!\n"
 
-#: trac/admin/console.py:568
+#: trac/admin/console.py:569
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "Ej-ascii miljøsti  '%(path)s' ikke understøttet."
@@ -1216,6 +1216,9 @@ msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
+"Bemærk at [1:Subject] eller [2:Group] navne ikke kan være med store "
+"bogstaver,\n"
+"      da de er begrænset til rettighedsnavne."
 
 #: trac/admin/templates/admin_plugins.html:35
 msgid "Manage Plugins"
@@ -1234,6 +1237,8 @@ msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
 msgstr ""
+"Webserveren har ikke de nødvendige rettigheder til at gemme filer i\n"
+"            miljøets udvidelsesmappe."
 
 #: trac/admin/templates/admin_plugins.html:50
 msgid "Upload a plugin packaged as Python egg."
@@ -1301,21 +1306,23 @@ msgstr "Frigivet:"
 msgid "Released"
 msgstr "Frigivet"
 
-#: trac/db/api.py:191
+#: trac/db/api.py:193
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Ej-understøttet databasetype \"%(scheme)s\""
 
-#: trac/db/api.py:227
+#: trac/db/api.py:229
 #, python-format
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
 " {scheme}:/"
 msgstr ""
+"Ukendt skema \"%(scheme)s\"; database forbindelsesstreng skal starte med "
+"{scheme}:/"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
-msgstr ""
+msgstr "Kan ikke indlæse Python bindinger for MySQL"
 
 #: trac/db/mysql_backend.py:205 trac/db/postgres_backend.py:175
 #: trac/db/postgres_backend.py:194
@@ -1340,21 +1347,21 @@ msgstr ""
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
-msgstr ""
+msgstr "Kan ikke indlæse Python bindinger for PostgreSQL"
 
 #: trac/db/postgres_backend.py:198
 #, python-format
 msgid "pg_dump failed: %(msg)s"
-msgstr ""
+msgstr "pg_dump misklykkedes: %(msg)s"
 
 #: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
-msgstr ""
+msgstr "Kan ikke indlæse Python bindinger for SQLite"
 
 #: trac/db/sqlite_backend.py:157
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
-msgstr ""
+msgstr "Kræver minimum PySqlite %(version)s eller nyere"
 
 #: trac/db/sqlite_backend.py:160
 msgid "PySqlite 2.5.2 - 2.5.4 break Trac, please use 2.5.5 or higher"
@@ -1376,16 +1383,18 @@ msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
+"Brugeren %(user)s skal have læse _og_ skrive rettigheder til "
+"databasefilen %(path)s og den mappe den er i."
 
 #: trac/mimeview/api.py:690 trac/mimeview/api.py:700
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr ""
+msgstr "Ingen tilgængelige MIME koverteringer fra %(old)s til %(new)s"
 
 #: trac/mimeview/api.py:815
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr ""
+msgstr "HTML forhåndsvisning ved brug af %(renderer)s mislykkedes (%(err)s)"
 
 #: trac/mimeview/api.py:846
 #, python-format
@@ -1520,11 +1529,14 @@ msgid ""
 "      dates and times displayed on this site to use your time zone\n"
 "      instead of that of the server."
 msgstr ""
+"Konfigurering af din tidszone vil resultere i at alle\n"
+"      datoer og tider der vises på dette websted, vil bruge din tidszone\n"
+"      i stedet for serverens."
 
 #: trac/prefs/templates/prefs_datetime.html:33
 #, python-format
 msgid "Example: The current time is [1:%(time)s] (UTC)."
-msgstr ""
+msgstr "Eksempel: den aktuelle tid er [1:%(time)s] (UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:36
 #, python-format
@@ -1532,13 +1544,15 @@ msgid ""
 "In your time zone %(tz)s, this would be displayed as\n"
 "            [1:%(formatted)s]."
 msgstr ""
+"I din tidszone %(tz)s, vil dette blive vist som\n"
+"            [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:42
 #, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr ""
+msgstr "I standard tidszonen, ville dette blive vist som [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:49
 msgid ""
@@ -1547,6 +1561,10 @@ msgid ""
 "        A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
+"Besmærk: Universal Co-ordinated Time (UTC) er også kendt som Greenwich "
+"Mean Time (GMT).[1:]\n"
+"        Et positivt tillæg bruges til at vise at tidszonen er øst for "
+"Greenwich, altså foran Universal Time."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1707,10 +1725,10 @@ msgstr ""
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2012\n"
+"Copyright © 2003-2013\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -1795,7 +1813,7 @@ msgid "Attach another file"
 msgstr "Vedhæft en anden fil"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:21
-#: trac/templates/macros.html:19 trac/util/text.py:529
+#: trac/templates/macros.html:19 trac/util/text.py:541
 #: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
@@ -1993,7 +2011,7 @@ msgstr "Ups..."
 
 #: trac/templates/error.html:82
 msgid "Trac detected an internal error:"
-msgstr ""
+msgstr "Trac opdagede en intern fejl:"
 
 #: trac/templates/error.html:87
 msgid ""
@@ -2015,7 +2033,7 @@ msgstr ""
 
 #: trac/templates/error.html:102
 msgid "This is probably a local installation issue."
-msgstr ""
+msgstr "Dette er sandsynligvis en lokal fejl."
 
 #: trac/templates/error.html:103
 #, python-format
@@ -2037,11 +2055,11 @@ msgstr ""
 #: trac/templates/error.html:113
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
-msgstr ""
+msgstr "Bemærk at %(name)s udvidelsen ser ud til at være involveret."
 
 #: trac/templates/error.html:116
 msgid "Note that the following plugins seem to be involved:"
-msgstr ""
+msgstr "Bemærk at følgende udvidelser ser ud til at være involveret:"
 
 #: trac/templates/error.html:120
 msgid "Please report this issue to the plugin maintainer."
@@ -2117,7 +2135,7 @@ msgstr "TracGuide"
 
 #: trac/templates/error.html:202
 msgid "— The Trac User and Administration Guide"
-msgstr ""
+msgstr "— Trac bruger og administrativ guide"
 
 #: trac/templates/history_view.html:16
 #, python-format
@@ -4522,6 +4540,8 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Rettesæt [1:%(new_rev)s] i %(reponame)s\n"
+"              for [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4534,6 +4554,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
+"Ændringer i [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] i %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:43
 #, python-format
@@ -4544,11 +4566,16 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Ændringer i %(reponame)s\n"
+"              fra [1:%(old_path)s]\n"
+"              ved [2:r%(old_rev)s]\n"
+"              til [3:%(new_path)s]\n"
+"              ved [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr ""
+msgstr "Rettesæt [1:%(new_rev)s] i %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:57
 #, python-format
@@ -4556,6 +4583,8 @@ msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Rettesæt [1:%(new_rev)s]\n"
+"              for [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:61
 #, python-format
@@ -4563,6 +4592,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
+"Ændringer i [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
 #, python-format
@@ -4573,6 +4604,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Ændringer\n"
+"              fra [1:%(old_path)s]\n"
+"              ved [2:r%(old_rev)s]\n"
+"              til [3:%(new_path)s]\n"
+"              ved [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
@@ -4582,7 +4618,7 @@ msgstr "Rettesæt [1:%(new_rev)s]"
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
-msgstr ""
+msgstr "Vis hvad der blev fjernet (indhold ved revision %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
@@ -4591,7 +4627,7 @@ msgstr "(rod)"
 #: trac/versioncontrol/templates/changeset.html:112
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
-msgstr ""
+msgstr "Vis original fil (revision %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:111
 #, python-format
@@ -4627,11 +4663,11 @@ msgstr[1] "%(num)d egenskaber"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
-msgstr ""
+msgstr "Vis tidligere version i browser"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
-msgstr ""
+msgstr "(Mindre end én time siden)"
 
 #: trac/versioncontrol/templates/changeset.html:140
 #, python-format
@@ -4704,7 +4740,7 @@ msgstr "slettet"
 #: trac/versioncontrol/templates/changeset.html:187
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "copied"
-msgstr ""
+msgstr "kopieret"
 
 #: trac/versioncontrol/templates/changeset.html:188
 #: trac/versioncontrol/templates/revisionlog.txt:12
@@ -4824,7 +4860,7 @@ msgstr "Følg kopier"
 
 #: trac/versioncontrol/templates/revisionlog.html:39
 msgid "Show only adds and deletes"
-msgstr ""
+msgstr "Vis kun tilføjelser og sletninger"
 
 #: trac/versioncontrol/templates/revisionlog.html:44
 msgid ""
@@ -5142,7 +5178,7 @@ msgstr "Ældre revisioner"
 
 #: trac/versioncontrol/web_ui/log.py:391
 msgid "No permission to view change log"
-msgstr ""
+msgstr "Ingen rettigheder til at se ændringslog"
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
 #: trac/versioncontrol/web_ui/util.py:67
@@ -5156,12 +5192,12 @@ msgid ""
 "but was later removed"
 msgstr ""
 
-#: trac/web/api.py:240
+#: trac/web/api.py:252
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr ""
 
-#: trac/web/api.py:484
+#: trac/web/api.py:496
 #, python-format
 msgid "File %(path)s not found"
 msgstr "Filen %(path)s blev ikke fundet"
@@ -5205,16 +5241,16 @@ msgstr "Allerede logget ind som %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:889
+#: trac/web/chrome.py:890
 msgid "(unknown template location)"
 msgstr "(ukendt skabelon placering)"
 
-#: trac/web/chrome.py:890
+#: trac/web/chrome.py:891
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:938 trac/web/chrome.py:946
+#: trac/web/chrome.py:939 trac/web/chrome.py:947
 msgid "anonymous"
 msgstr "anonym"
 
@@ -5229,7 +5265,7 @@ msgstr "Har du cookies aktiveret?"
 #: trac/web/main.py:239
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
-msgstr ""
+msgstr "Manglende eller ugyldig formular token. %(msg)s"
 
 #: trac/web/main.py:540
 #, python-format
@@ -5353,7 +5389,7 @@ msgstr "  %(page)s importeret fra %(filename)s"
 
 #: trac/wiki/admin.py:207
 msgid "Edits"
-msgstr ""
+msgstr "Redigeringer"
 
 #: trac/wiki/admin.py:213 trac/wiki/web_ui.py:296
 msgid "A new name is mandatory for a rename."
@@ -5726,7 +5762,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
-msgstr ""
+msgstr "Tilpas redigeringsområde-højde:"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
@@ -5756,7 +5792,7 @@ msgstr "Ret information"
 
 #: trac/wiki/templates/wiki_edit_form.html:54
 msgid "Comment about this change (optional):"
-msgstr ""
+msgstr "Kommentar til denne ændring (valgfri):"
 
 #: trac/wiki/templates/wiki_edit_form.html:61
 msgid "Page is read-only"

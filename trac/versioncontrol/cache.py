@@ -107,7 +107,7 @@ class CachedRepository(Repository):
                     """, (to_utimestamp(cset.date), cset.author, cset.message,
                           self.id, srev))
             else:
-                self._insert_changeset(cursor, rev, cset)
+                self._insert_changeset(cursor, cset.rev, cset)
         return old_cset[0]
 
     @cached('_metadata_id')
@@ -334,10 +334,65 @@ class CachedRepository(Repository):
         sfirst = self.db_rev(first)
         cursor.execute("SELECT DISTINCT rev FROM node_change "
                        "WHERE repos=%%s AND rev>=%%s AND rev<=%%s "
-                       " AND (path=%%s OR path %s)" % db.like(),
+                       " AND (path=%%s OR path %s)" % db.prefix_match(),
                        (self.id, sfirst, slast, path,
-                        db.like_escape(path + '/') + '%'))
+                        db.prefix_match_value(path + '/')))
         return [int(row[0]) for row in cursor]
+
+    def _get_changed_revs(self, node_infos):
+        if not node_infos:
+            return {}
+
+        node_infos = [(node, self.normalize_rev(first)) for node, first
+                                                        in node_infos]
+        sfirst = self.db_rev(min(first for node, first in node_infos))
+        slast = self.db_rev(max(node.rev for node, first in node_infos))
+        path_infos = dict((node.path, (node, first)) for node, first
+                                                     in node_infos)
+        path_revs = dict((node.path, []) for node, first in node_infos)
+
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+        prefix_match = db.prefix_match()
+
+        # Prevent "too many SQL variables" since max number of parameters is
+        # 999 on SQLite. No limitation on PostgreSQL and MySQL.
+        idx = 0
+        delta = (999 - 3) // 5
+        while idx < len(node_infos):
+            subset = node_infos[idx:idx + delta]
+            idx += delta
+            count = len(subset)
+
+            holders = ','.join(('%s',) * count)
+            query = """\
+                SELECT DISTINCT
+                  rev, (CASE WHEN path IN (%s) THEN path %s END) AS path
+                FROM node_change
+                WHERE repos=%%s AND rev>=%%s AND rev<=%%s AND (path IN (%s) %s)
+                """ % \
+                (holders,
+                 ' '.join(('WHEN path ' + prefix_match + ' THEN %s',) * count),
+                 holders,
+                 ' '.join(('OR path ' + prefix_match,) * count))
+            args = []
+            args.extend(node.path for node, first in subset)
+            for node, first in subset:
+                args.append(db.prefix_match_value(node.path + '/'))
+                args.append(node.path)
+            args.extend((self.id, sfirst, slast))
+            args.extend(node.path for node, first in subset)
+            args.extend(db.prefix_match_value(node.path + '/')
+                        for node, first in subset)
+            cursor.execute(query, args)
+
+            for srev, path in cursor:
+                rev = self.rev_db(srev)
+                node, first = path_infos[path]
+                if first <= rev <= node.rev:
+                    path_revs[path].append(rev)
+
+        return path_revs
 
     def has_node(self, path, rev=None):
         return self.repos.has_node(path, self.normalize_rev(rev))
@@ -349,10 +404,16 @@ class CachedRepository(Repository):
         return self.rev_db(self.metadata.get(CACHE_YOUNGEST_REV))
 
     def previous_rev(self, rev, path=''):
-        if self.has_linear_changesets:
-            return self._next_prev_rev('<', rev, path)
-        else:
-            return self.repos.previous_rev(self.normalize_rev(rev), path)
+        # Hitting the repository directly is faster than searching the
+        # database.  When there is a long stretch of inactivity on a file (in
+        # particular, when a file is added late in the history) the database
+        # query can take a very long time to determine that there is no
+        # previous revision in the node_changes table.  However, the repository
+        # will have a datastructure that will allow it to find the previous
+        # version of a node fairly directly.
+        #if self.has_linear_changesets:
+        #    return self._next_prev_rev('<', rev, path)
+        return self.repos.previous_rev(self.normalize_rev(rev), path)
 
     def next_rev(self, rev, path=''):
         if self.has_linear_changesets:
@@ -371,8 +432,8 @@ class CachedRepository(Repository):
         if path:
             path = path.lstrip('/')
             # changes on path itself or its children
-            sql += " AND (path=%s OR path " + db.like()
-            args.extend((path, db.like_escape(path + '/') + '%'))
+            sql += " AND (path=%s OR path " + db.prefix_match()
+            args.extend((path, db.prefix_match_value(path + '/')))
             # deletion of path ancestors
             components = path.lstrip('/').split('/')
             parents = ','.join(('%s',) * len(components))

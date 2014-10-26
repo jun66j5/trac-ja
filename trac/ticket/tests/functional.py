@@ -1436,7 +1436,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.go(ticket_url)
         tc.find('<strong>Milestone</strong>[ \n\t]*<em>%s</em> deleted' % name)
         tc.find('Changed <a.*</a> ago by admin')
-        tc.notfind('anonymous')
+        tc.notfind('</a> ago by anonymous')
 
 
 class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
@@ -1470,6 +1470,34 @@ class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
         tc.formvalue('propertyform', 'comment', random_sentence(3))
         tc.submit('Submit changes')
         tc.notfind('AssertionError')
+
+
+class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11618
+        fix for malformed `readonly="True"` attribute in milestone admin page
+        """
+        from trac.perm import PermissionSystem
+        env = self._testenv.get_trac_environment()
+        perm = PermissionSystem(env)
+        name = "11618Milestone"
+        self._tester.create_milestone(name)
+        try:
+            perm.grant_permission('user', 'TICKET_ADMIN')
+            env.config.touch()  # for permission change to take effect
+            self._tester.go_to_front()
+            self._tester.logout()
+            self._tester.login('user')
+            tc.go(self._tester.url + "/admin/ticket/milestones/" + name)
+            tc.notfind('No administration panels available')
+            tc.find(' readonly="readonly"')
+            tc.notfind(' readonly="True"')
+        finally:
+            perm.revoke_permission('user', 'TICKET_ADMIN')
+            env.config.touch()
+            self._tester.go_to_front()
+            self._tester.logout()
+            self._tester.login('admin')
 
 
 def functionalSuite(suite=None):
@@ -1562,6 +1590,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket8247())
     suite.addTest(RegressionTestTicket8861())
     suite.addTest(RegressionTestTicket9084())
+    suite.addTest(RegressionTestTicket11618())
 
     return suite
 

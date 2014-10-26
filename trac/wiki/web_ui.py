@@ -58,8 +58,7 @@ class WikiModule(Component):
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
     max_size = IntOption('wiki', 'max_size', 262144,
-        """Wiki ページで許容する最大のページサイズを設定します。
-        (''0.11.2 以降'')""")
+        """Wiki ページの最大文字数を指定します。(''0.11.2 以降'')""")
 
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
@@ -114,6 +113,14 @@ class WikiModule(Component):
         if not validate_page_name(pagename):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=pagename))
+
+        if version is not None:
+            try:
+                version = int(version)
+            except (ValueError, TypeError):
+               raise ResourceNotFound(
+                    _('No version "%(num)s" for Wiki page "%(name)s"',
+                      num=version, name=pagename))
 
         page = WikiPage(self.env, pagename)
         versioned_page = WikiPage(self.env, pagename, version=version)

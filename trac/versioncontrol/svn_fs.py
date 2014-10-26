@@ -46,6 +46,7 @@ Warning:
 import os.path
 import weakref
 import posixpath
+from urllib import quote
 
 from trac.config import ListOption
 from trac.core import *
@@ -55,19 +56,25 @@ from trac.versioncontrol import Changeset, Node, Repository, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.util import embedded_numbers
+from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import from_utimestamp
 
 
 application_pool = None
+application_pool_lock = threading.Lock()
 
 
 def _import_svn():
-    global fs, repos, core, delta, _kindmap
+    global fs, repos, core, delta, _kindmap, _svn_uri_canonicalize
     from svn import fs, repos, core, delta
     _kindmap = {core.svn_node_dir: Node.DIRECTORY,
                 core.svn_node_file: Node.FILE}
+    try:
+        _svn_uri_canonicalize = core.svn_uri_canonicalize  # Subversion 1.7+
+    except AttributeError:
+        _svn_uri_canonicalize = lambda v: v
     # Protect svn.core methods from GC
     Pool.apr_pool_clear = staticmethod(core.apr_pool_clear)
     Pool.apr_pool_destroy = staticmethod(core.apr_pool_destroy)
@@ -146,19 +153,24 @@ class Pool(object):
         """Create a new memory pool"""
 
         global application_pool
-        self._parent_pool = parent_pool or application_pool
 
-        # Create pool
-        if self._parent_pool:
-            self._pool = core.svn_pool_create(self._parent_pool())
-        else:
-            # If we are an application-level pool,
-            # then initialize APR and set this pool
-            # to be the application-level pool
-            core.apr_initialize()
-            application_pool = self
+        application_pool_lock.acquire()
+        try:
+            self._parent_pool = parent_pool or application_pool
 
-            self._pool = core.svn_pool_create(None)
+            # Create pool
+            if self._parent_pool:
+                self._pool = core.svn_pool_create(self._parent_pool())
+            else:
+                # If we are an application-level pool,
+                # then initialize APR and set this pool
+                # to be the application-level pool
+                core.apr_initialize()
+                self._pool = core.svn_pool_create(None)
+                application_pool = self
+        finally:
+            application_pool_lock.release()
+
         self._mark_valid()
 
     def __call__(self):
@@ -322,7 +334,8 @@ class SubversionRepository(Repository):
         else: # note that this should usually not happen (unicode arg expected)
             path_utf8 = to_unicode(path).encode('utf-8')
 
-        path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
+        path_utf8 = core.svn_path_canonicalize(
+                                os.path.normpath(path_utf8).replace('\\', '/'))
         self.path = path_utf8.decode('utf-8')
         
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
@@ -355,7 +368,8 @@ class SubversionRepository(Repository):
         assert self.scope[0] == '/'
         # we keep root_path_utf8 for  RA 
         ra_prefix = os.name == 'nt' and 'file:///' or 'file://'
-        self.ra_url_utf8 = ra_prefix + root_path_utf8
+        self.ra_url_utf8 = _svn_uri_canonicalize(ra_prefix +
+                                                 quote(root_path_utf8))
         self.clear()
 
     def clear(self, youngest_rev=None):
@@ -464,6 +478,18 @@ class SubversionRepository(Repository):
                 break
             revs.append(r)
         return revs
+
+    def _get_changed_revs(self, node_infos):
+        path_revs = {}
+        for node, first in node_infos:
+            path = node.path
+            revs = []
+            for p, r, chg in node.get_history():
+                if p != path or r < first:
+                    break
+                revs.append(r)
+            path_revs[path] = revs
+        return path_revs
 
     def _history(self, path, start, end, pool):
         """`path` is a unicode path in the scope.
@@ -603,14 +629,6 @@ class SubversionRepository(Repository):
 
     def get_changes(self, old_path, old_rev, new_path, new_rev,
                     ignore_ancestry=0):
-         def key(value):
-             return value[1] and value[1].path or value[0].path
-         return iter(sorted(self._get_changes(old_path, old_rev, new_path,
-                                              new_rev, ignore_ancestry),
-                            key=key))
-         
-    def _get_changes(self, old_path, old_rev, new_path, new_rev,
-                     ignore_ancestry):
         old_node = new_node = None
         old_rev = self.normalize_rev(old_rev)
         new_rev = self.normalize_rev(new_rev)
@@ -651,8 +669,12 @@ class SubversionRepository(Repository):
                                       entry_props,
                                       ignore_ancestry,
                                       subpool())
-            for path, kind, change in editor.deltas:
-                path = _from_svn(path)
+            # sort deltas by path before creating `SubversionNode`s to reduce
+            # memory usage (#10978)
+            deltas = sorted(((_from_svn(path), kind, change)
+                             for path, kind, change in editor.deltas),
+                            key=lambda entry: entry[0])
+            for path, kind, change in deltas:
                 old_node = new_node = None
                 if change != Changeset.ADD:
                     old_node = self.get_node(posixpath.join(old_path, path),
@@ -764,7 +786,10 @@ class SubversionNode(Node):
                 rev = _svn_rev(self.rev)
                 start = _svn_rev(0)
                 file_url_utf8 = posixpath.join(self.repos.ra_url_utf8,
-                                               self._scoped_path_utf8)
+                                               quote(self._scoped_path_utf8))
+                # svn_client_blame2() requires a canonical uri since
+                # Subversion 1.7 (#11167)
+                file_url_utf8 = _svn_uri_canonicalize(file_url_utf8)
                 self.repos.log.info('opening ra_local session to %r',
                                     file_url_utf8)
                 from svn import client

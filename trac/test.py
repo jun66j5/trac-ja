@@ -180,24 +180,26 @@ def reset_postgres_db(db, db_prop):
         # information_schema.sequences view is available in PostgreSQL 8.2+
         # however Trac supports PostgreSQL 8.0+, uses pg_get_serial_sequence()
         cursor.execute("""
-            SELECT sequence_name FROM (
-                SELECT pg_get_serial_sequence(%s||table_name, column_name)
-                       AS sequence_name
+            SELECT sequence_name
+            FROM (
+                SELECT pg_get_serial_sequence(
+                    quote_ident(table_schema) || '.' ||
+                    quote_ident(table_name), column_name) AS sequence_name
                 FROM information_schema.columns
                 WHERE table_schema=%s) AS tab
-            WHERE sequence_name IS NOT NULL""",
-            (dbname + '.', dbname))
-        for seq in cursor.fetchall():
-            cursor.execute('ALTER SEQUENCE %s RESTART WITH 1' % seq)
+            WHERE sequence_name IS NOT NULL""", (dbname,))
+        seqs = [seq for seq, in cursor]
+        for seq in seqs:
+            cursor.execute("ALTER SEQUENCE %s RESTART WITH 1" % seq)
         # clear tables
         cursor.execute('SELECT table_name FROM information_schema.tables '
                        'WHERE table_schema=%s', (dbname,))
         tables = cursor.fetchall()
-        for table in tables:
-            # PostgreSQL supports TRUNCATE TABLE as well 
+        for table, in tables:
+            # PostgreSQL supports TRUNCATE TABLE as well
             # (see http://www.postgresql.org/docs/8.1/static/sql-truncate.html)
             # but on the small tables used here, DELETE is actually much faster
-            cursor.execute('DELETE FROM %s' % table)
+            cursor.execute("DELETE FROM %s" % db.quote(table))
         db.commit()
         return tables
 
@@ -205,13 +207,19 @@ def reset_mysql_db(db, db_prop):
     dbname = os.path.basename(db_prop['path'])
     if dbname:
         cursor = db.cursor()
-        cursor.execute('SELECT table_name FROM information_schema.tables '
+        cursor.execute('SELECT table_name, auto_increment '
+                       'FROM information_schema.tables '
                        'WHERE table_schema=%s', (dbname,))
         tables = cursor.fetchall()
-        for table in tables:
-            # TRUNCATE TABLE is prefered to DELETE FROM, as we need to reset
-            # the auto_increment in MySQL.
-            cursor.execute('TRUNCATE TABLE %s' % table)
+        for table, auto_increment in tables:
+            if auto_increment is None or auto_increment == 1:
+                # DELETE FROM is prefered to TRUNCATE TABLE, as the
+                # auto_increment is not used or it is 1.
+                cursor.execute('DELETE FROM %s' % table)
+            else:
+                # TRUNCATE TABLE is prefered to DELETE FROM, as we need to
+                # reset the auto_increment in MySQL.
+                cursor.execute('TRUNCATE TABLE %s' % table)
         db.commit()
         return tables
 
@@ -241,6 +249,7 @@ class EnvironmentStub(Environment):
 
     href = abs_href = None
     dbenv = db = None
+    required = False
 
     def __init__(self, default_data=False, enable=None):
         """Construct a new Environment stub object.
@@ -282,6 +291,8 @@ class EnvironmentStub(Environment):
         if self.dburi.startswith('sqlite'):
             self.config.set('trac', 'database', 'sqlite::memory:')
             self.db = InMemoryDatabase()
+        else:
+            self.config.set('trac', 'database', self.dburi)
 
         if default_data:
             self.reset_db(default_data)

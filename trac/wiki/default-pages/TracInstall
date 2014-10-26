@@ -155,6 +155,12 @@ setuptools を使用すると、 Trac を Subversion リポジトリからイン
 === ソースからのインストール === #Fromsource
 よりインストールを管理したい場合には、アーカイブにあるソースをダウンロードできます。また、本家 [http://trac.edgewall.org/wiki/TracRepositories ソースコードリポジトリ] からチェックアウトすることができます。
 
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools に関する警告:**
+setuptools のバージョンが 5.4 から 5.6 の場合、著しいパフォーマンスの低下を防ぐために環境変数 `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` を設定する必要があります。
+詳細は[#RunningtheStandaloneServer スタンドアロンサーバの起動]と[#RunningTraconaWebServer Web サーバ上での Trac の起動]にあります。
+}}}
+
 必ず事前にインストール条件を整えておいて下さい。 Genshi と Babel のソースパッケージは http://www.edgewall.org で手に入れることができ、同様の手順でインストールすることができます。また、これらのパッケージは単に `easy_install` でインストールすることもできます。[#Usingeasy_install 上記] 参照。 
 
 Trac アーカイブの解凍またはチェックアウトを実行した後、トップレベルのディレクトリに移動し、以下を実行します:
@@ -267,6 +273,23 @@ $ tracd -s --port 8000 /path/to/myproject
 }}}
 
 === Web サーバ上での Trac の起動 === #RunningTraconaWebServer
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools に関する警告:**
+setuptools のバージョンが 5.4 から 5.6 の場合、著しいパフォーマンスの低下を防ぐために環境変数 `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` を設定する必要があります。
+この環境変数をシステム全体、もしくは、`tracd` プロセスを実行するユーザにだけ設定します。
+ここで説明する方法以外にも OS に依存した方法がいくつかあります。
+
+システム全体に反映させるには `/etc/profile.d` に以下の `export` 文を追加をします。
+ユーザセッションに反映させるには `~/.profile` に追加します。
+{{{#!sh
+export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
+}}}
+
+あるいは、`tracd` の実行前にシェルの中で変数を設定することもできます。
+{{{#!sh
+$ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
+}}}
+}}}
 
 Trac には "実際の" Web サーバへ接続するために、いくつかの選択肢があります:
  - [wiki:TracFastCgi FastCGI]

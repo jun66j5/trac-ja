@@ -20,7 +20,7 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.config import Option
-from trac.db.api import IDatabaseConnector, _parse_db_str
+from trac.db.api import DatabaseManager, IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
@@ -99,8 +99,8 @@ class MySQLConnector(Component):
                 port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
+        utf8_size = self._utf8_size(cnx)
         cursor = cnx.cursor()
-        utf8_size = {'utf8': 3, 'utf8mb4': 4}.get(cnx.charset)
         from trac.db_default import schema
         for table in schema:
             for stmt in self.to_sql(table, utf8_size=utf8_size):
@@ -108,7 +108,17 @@ class MySQLConnector(Component):
                 cursor.execute(stmt)
         cnx.commit()
 
-    def _collist(self, table, columns, utf8_size=3):
+    def _utf8_size(self, cnx):
+        if cnx is None:
+            connector, args = DatabaseManager(self.env).get_connector()
+            cnx = connector.get_connection(**args)
+            charset = cnx.charset
+            cnx.close()
+        else:
+            charset = cnx.charset
+        return (3, 4)[charset == 'utf8mb4']
+
+    def _collist(self, table, columns, utf8_size):
         """Take a list of columns and impose limits on each so that indexing
         works properly.
         
@@ -137,7 +147,9 @@ class MySQLConnector(Component):
             cols.append(name)
         return ','.join(cols)
 
-    def to_sql(self, table, utf8_size=3):
+    def to_sql(self, table, utf8_size=None):
+        if utf8_size is None:
+            utf8_size = self._utf8_size(None)
         sql = ['CREATE TABLE %s (' % table.name]
         coldefs = []
         for column in table.columns:
@@ -257,6 +269,14 @@ class MySQLConnection(ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def prefix_match(self):
+        """Return a case sensitive prefix-matching operator."""
+        return "LIKE %s ESCAPE '/'"
+
+    def prefix_match_value(self, prefix):
+        """Return a value for case sensitive prefix-matching operator."""
+        return self.like_escape(prefix) + '%'
+
     def quote(self, identifier):
         """Return the quoted identifier."""
         return "`%s`" % identifier.replace('`', '``')
@@ -285,3 +305,8 @@ class MySQLConnection(ConnectionWrapper):
 
     def cursor(self):
         return IterableCursor(MySQLUnicodeCursor(self.cnx), self.log)
+
+    def drop_table(self, table):
+        cursor = MySQLdb.cursors.Cursor(self.cnx)
+        cursor._defer_warnings = True  # ignore "Warning: Unknown table ..."
+        cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))

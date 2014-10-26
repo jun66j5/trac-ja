@@ -10,9 +10,9 @@
 
 define HELP
 
- Please use `make <target>' where <target> is one of: 
+ Please use `make <target>' where <target> is one of:
 
-  clean               delete all compiled files 
+  clean               delete all compiled files
   status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
@@ -33,7 +33,7 @@ define HELP
 
  ---------------- Standalone test server
 
-  server              start tracd
+  [start-]server      start tracd
 
   [port=...]          variable for selecting the port
   [auth=...]          variable for specifying authentication
@@ -65,14 +65,23 @@ define HELP
 
   diff                show relevant changes after an update for all catalogs
   diff-xy             show relevant changes after an update for the xy locale
-  [vc=...]            variable containing the version control command to use 
+  [vc=...]            variable containing the version control command to use
 
   [locale=...]        variable for selecting a set of locales
+
+  [updateopts=...]    variable containing extra options for update (e.g. -N)
+
+ ---------------- Miscellaneous
+
+  start-admin         start trac-admin (on `env')
+  start-python        start the Python interpreter
+
+  [adminopts=...]     variable containing extra options for trac-admin
 
 endef
 export HELP
 
-# ` (keep emacs font-lock happy)
+# ' (keep emacs font-lock happy)
 
 # ----------------------------------------------------------------------------
 #
@@ -94,9 +103,9 @@ status:
 	@echo -n "Python version: "
 	@python -V
 	@echo -n "figleaf: "
-	@-which figleaf 2>/dev/null || echo 
+	@-which figleaf 2>/dev/null || echo
 	@echo -n "coverage: "
-	@-which coverage 2>/dev/null || echo 
+	@-which coverage 2>/dev/null || echo
 	@echo "PYTHONPATH=$$PYTHONPATH"
 	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "server-options=$(server-options)"
@@ -113,8 +122,9 @@ Makefile Makefile.cfg: ;
 
 # ----------------------------------------------------------------------------
 #
-# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment,
-# no customizations to the present Makefile should be necessary.
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local
+# environment, no customizations to the present Makefile should be
+# necessary.
 #
 #
 -include Makefile.cfg
@@ -157,7 +167,8 @@ extract extraction:
 
 
 update-%:
-	python setup.py update_catalog -l $(*) update_catalog_js -l $(*)
+	python setup.py update_catalog $(updateopts) \
+	     -l $(*) update_catalog_js -l $(*)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
@@ -175,7 +186,7 @@ ifdef locale
 compile: $(addprefix compile-,$(locale))
 else
 compile:
-	python setup.py compile_catalog compile_catalog_js
+	python setup.py compile_catalog compile_catalog_js generate_messages_js
 endif
 
 
@@ -188,6 +199,9 @@ pre-check:
 check-%:
 	@echo -n "$(@): "
 	@python setup.py check_catalog -l $(*) check_catalog_js -l $(*)
+	@msgfmt --check $(messages.po) && msgfmt --check $(messages-js.po) \
+	 && echo msgfmt OK
+	@rm -f messages.mo
 
 
 stats: pre-stats $(addprefix stats-,$(locales))
@@ -198,7 +212,7 @@ pre-stats: stats-pot
 stats-pot:
 	@echo "translation statistics for catalog templates:"
 	@echo -n "messages.pot: "; msgfmt --statistics $(messages.pot)
-	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot) 
+	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot)
 
 stats-%:
 	@echo -n "$(*) messages.po: "; msgfmt --statistics $(messages.po)
@@ -243,9 +257,19 @@ diff: $(addprefix diff-,$(locales))
 vc ?= svn
 
 diff-%:
-	@$(vc) diff trac/locale/$(*) \
-	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+	@diff=l10n-$(*).diff; \
+	$(vc) diff trac/locale/$(*) > $$diff; \
+	[ -s $$diff ] && { \
+	    echo -n "# $(*) changed -> "; \
+	    python contrib/l10n_diff_index.py $$diff; \
+	} || rm $$diff
 
+# The above create l10n-xy.diff files but also a  l10n-xy.diff.index
+# file pointing to "interesting" diffs (message changes or addition
+# for valid msgid).
+#
+# See also contrib/l10n_sanitize_diffs.py, which removes in-file
+# *conflicts* for line change only.
 
 clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;
@@ -306,7 +330,7 @@ htmlcov/index.html:
 
 # ----------------------------------------------------------------------------
 #
-# Figleaf based coverage tasks 
+# Figleaf based coverage tasks
 #
 # (see http://darcs.idyll.org/~t/projects/figleaf/doc/)
 #
@@ -365,12 +389,29 @@ define server-options
  $(if $(wildcard $(env)/VERSION),$(env),-e $(env))
 endef
 
-server: Trac.egg-info
+server tracd start-tracd: start-server
+
+start-server: Trac.egg-info
 ifdef env
 	python trac/web/standalone.py $(server-options)
 else
 	@echo "\`env' variable was not specified. See \`make help'."
 endif
+
+trac-admin: start-admin
+
+start-admin:
+ifneq "$(wildcard $(env)/VERSION)" ""
+	@python trac/admin/console.py $(env) $(adminopts)
+else
+	@echo "\`env' variable was not specified or doesn't point to one env."
+endif
+
+start-python:
+	@python
+# (this doesn't seem to be much, but we're taking benefit of the
+# environment setup we're doing below)
+
 
 # ----------------------------------------------------------------------------
 #
@@ -380,7 +421,7 @@ python-home := $(python.$(if $(python),$(python),$($(db).python)))
 
 ifeq "$(OS)" "Windows_NT"
     ifndef python-home
-        # Detect location of current python 
+        # Detect location of current python
         python-exe := $(shell python -c 'import sys; print sys.executable')
         python-home := $(subst \python.exe,,$(python-exe))
     endif

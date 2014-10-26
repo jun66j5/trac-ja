@@ -31,6 +31,7 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges, as_bool
+from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
@@ -434,11 +435,12 @@ class Query(object):
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
-        cols = self.cols[:]
+        cols = []
         def add_cols(*args):
             for col in args:
                 if not col in cols:
                     cols.append(col)
+        add_cols(*self.cols)  # remove duplicated cols
         if self.group and not self.group in cols:
             add_cols(self.group)
         if self.rows:
@@ -453,14 +455,20 @@ class Query(object):
                                          if c not in custom_fields]))
         sql.append(",priority.value AS priority_value")
         for k in [db.quote(k) for k in cols if k in custom_fields]:
-            sql.append(",%s.value AS %s" % (k, k))
-        sql.append("\nFROM ticket AS t")
+            sql.append(",t.%s AS %s" % (k, k))
 
-        # Join with ticket_custom table as necessary
-        for k in [k for k in cols if k in custom_fields]:
-            qk = db.quote(k)
-            sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
-                       "(id=%s.ticket AND %s.name='%s')" % (qk, qk, qk, k))
+        # Use subquery of ticket_custom table as necessary
+        if any(k in custom_fields for k in cols):
+            sql.append('\nFROM (\n  SELECT ' +
+                       ','.join('t.%s AS %s' % (c, c)
+                                for c in cols if c not in custom_fields))
+            sql.extend(",\n  (SELECT c.value FROM ticket_custom c "
+                       "WHERE c.ticket=t.id AND c.name='%s') AS %s"
+                       % (k, db.quote(k))
+                       for k in cols if k in custom_fields)
+            sql.append("\n  FROM ticket AS t) AS t")
+        else:
+            sql.append("\nFROM ticket AS t")
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -487,7 +495,7 @@ class Query(object):
             if name not in custom_fields:
                 col = 't.' + name
             else:
-                col = '%s.value' % db.quote(name)
+                col = 't.' + db.quote(name)
             value = value[len(mode) + neg:]
 
             if name in self.time_fields:
@@ -576,11 +584,11 @@ class Query(object):
                         if a == b:
                             ids.append(str(a))
                         else:
-                            id_clauses.append('id BETWEEN %s AND %s')
+                            id_clauses.append('t.id BETWEEN %s AND %s')
                             args.append(a)
                             args.append(b)
                     if ids:
-                        id_clauses.append('id IN (%s)' % (','.join(ids)))
+                        id_clauses.append('t.id IN (%s)' % (','.join(ids)))
                     if id_clauses:
                         clauses.append('%s(%s)' % (neg and 'NOT ' or '',
                                                    ' OR '.join(id_clauses)))
@@ -589,7 +597,7 @@ class Query(object):
                     if k not in custom_fields:
                         col = 't.' + k
                     else:
-                        col = '%s.value' % db.quote(k)
+                        col = 't.' + db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
                                    % (col, neg and 'NOT ' or '',
                                       ','.join(['%s' for val in v])))
@@ -630,7 +638,7 @@ class Query(object):
             if name in enum_columns:
                 col = name + '.value'
             elif name in custom_fields:
-                col = '%s.value' % db.quote(name)
+                col = 't.' + db.quote(name)
             else:
                 col = 't.' + name
             desc = desc and ' DESC' or ''
@@ -1130,7 +1138,7 @@ class QueryModule(Component):
                 values = []
                 for col in cols:
                     value = result[col]
-                    if col in ('cc', 'reporter'):
+                    if col in ('cc', 'owner', 'reporter'):
                         value = Chrome(self.env).format_emails(context(ticket),
                                                                value)
                     elif col in query.time_fields:

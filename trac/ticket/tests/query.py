@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from trac.mimeview import Context
 from trac.test import Mock, EnvironmentStub, MockPerm
+from trac.ticket.model import Ticket
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.href import Href
@@ -257,12 +260,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         sql, args = query.get_sql()
         foo = self.db.quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,%s.value AS %s
-FROM ticket AS t
-  LEFT OUTER JOIN ticket_custom AS %s ON (id=%s.ticket AND %s.name='foo')
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,t.%s AS %s
+FROM (
+  SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,
+  (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
+  FROM ticket AS t) AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE ((COALESCE(%s.value,'')=%%s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 6))
+WHERE ((COALESCE(t.%s,'')=%%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
         self.assertEqual(['something'], args)
         tickets = query.execute(self.req)
 
@@ -272,14 +277,76 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 6))
         sql, args = query.get_sql()
         foo = self.db.quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,%s.value AS %s
-FROM ticket AS t
-  LEFT OUTER JOIN ticket_custom AS %s ON (id=%s.ticket AND %s.name='foo')
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,t.%s AS %s
+FROM (
+  SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,
+  (SELECT c.value FROM ticket_custom c WHERE c.ticket=t.id AND c.name='foo') AS %s
+  FROM ticket AS t) AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(%s.value,'')='',%s.value,COALESCE(t.id,0)=0,t.id""" %
-        ((foo,) * 7))
+ORDER BY COALESCE(t.%s,'')='',t.%s,COALESCE(t.id,0)=0,t.id""" %
+        ((foo,) * 5))
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+
+    def test_constrained_by_id_ranges(self):
+        query = Query.from_string(self.env, 'id=42,44,51-55&order=id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((t.id BETWEEN %s AND %s OR t.id IN (42,44)))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([51, 55], args)
+
+    def test_constrained_by_id_and_custom_field(self):
+        self.env.config.set('ticket-custom', 'foo', 'text')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe'
+        ticket['summary'] = 'Foo'
+        ticket['foo'] = 'blah'
+        ticket.insert()
+
+        query = Query.from_string(self.env, 'id=%d-42&foo=blah' % ticket.id)
+        tickets = query.execute(self.req)
+        self.assertEqual(1, len(tickets))
+        self.assertEqual(ticket.id, tickets[0]['id'])
+
+        query = Query.from_string(self.env, 'id=%d,42&foo=blah' % ticket.id)
+        tickets = query.execute(self.req)
+        self.assertEqual(1, len(tickets))
+        self.assertEqual(ticket.id, tickets[0]['id'])
+
+        query = Query.from_string(self.env, 'id=%d,42,43-84&foo=blah' %
+                                            ticket.id)
+        tickets = query.execute(self.req)
+        self.assertEqual(1, len(tickets))
+        self.assertEqual(ticket.id, tickets[0]['id'])
+
+    def test_too_many_custom_fields(self):
+        fields = ['col_%02d' % i for i in xrange(100)]
+        for f in fields:
+            self.env.config.set('ticket-custom', f, 'text')
+
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe'
+        ticket['summary'] = 'Foo'
+        for idx, f in enumerate(fields):
+            ticket[f] = '%d.%s' % (idx, f)
+        ticket.insert()
+
+        string = 'col_00=0.col_00&order=id&col=id&col=reporter&col=summary' + \
+                 ''.join('&col=' + f for f in fields)
+        query = Query.from_string(self.env, string)
+        tickets = query.execute(self.req)
+        self.assertEqual(ticket.id, tickets[0]['id'])
+        self.assertEqual('joe', tickets[0]['reporter'])
+        self.assertEqual('Foo', tickets[0]['summary'])
+        self.assertEqual('0.col_00', tickets[0]['col_00'])
+        self.assertEqual('99.col_99', tickets[0]['col_99'])
+
+        query = Query.from_string(self.env, 'col_00=notfound')
+        self.assertEqual([], query.execute(self.req))
 
     def test_constrained_by_multiple_owners(self):
         query = Query.from_string(self.env, 'owner=someone|someone_else',
@@ -502,6 +569,31 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
                                 query)
         self.assertEqual('col1\r\n"value, needs escaped"\r\n',
                          content)
+
+    def test_csv_obfuscation(self):
+        class NoEmailView(MockPerm):
+            def has_permission(self, action, realm_or_resource=None, id=False,
+                               version=False):
+                return action != 'EMAIL_VIEW'
+            __contains__ = has_permission
+
+        query = Mock(get_columns=lambda: ['owner', 'reporter', 'cc'],
+                     execute=lambda r,c: [{'id': 1,
+                                           'owner': 'joe@example.org',
+                                           'reporter': 'foo@example.org',
+                                           'cc': 'cc1@example.org, cc2'}],
+                     time_fields=['time', 'changetime'])
+        req = Mock(href=self.env.href, perm=NoEmailView())
+        content, mimetype = QueryModule(self.env).export_csv(req, query)
+        self.assertEqual(u'owner,reporter,cc\r\n'
+                         u'joe@…,foo@…,"cc1@…, cc2"\r\n',
+                         content.decode('utf-8'))
+        req = Mock(href=self.env.href, perm=MockPerm())
+        content, mimetype = QueryModule(self.env).export_csv(req, query)
+        self.assertEqual(
+            'owner,reporter,cc\r\n'
+            'joe@example.org,foo@example.org,"cc1@example.org, cc2"\r\n',
+            content.decode('utf-8'))
 
     def test_template_data(self):
         req = Mock(href=self.env.href, perm=MockPerm(), authname='anonymous',

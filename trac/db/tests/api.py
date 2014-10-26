@@ -5,6 +5,7 @@ import unittest
 
 from trac.db.api import DatabaseManager, _parse_db_str, get_column_names, \
                         with_transaction
+from trac.db.schema import Column, Table
 from trac.test import EnvironmentStub, Mock
 from trac.util.concurrency import ThreadLocal
 
@@ -281,6 +282,9 @@ class StringsTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_insert_unicode(self):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -321,14 +325,112 @@ class StringsTestCase(unittest.TestCase):
         self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
                          get_column_names(cursor)[0])
 
+    def test_quoted_id_with_percent(self):
+        db = self.env.get_read_db()
+        name = """%?`%s"%'%%"""
+
+        def test(db, logging=False):
+            cursor = db.cursor()
+            if logging:
+                cursor.log = self.env.log
+
+            cursor.execute('SELECT 1 AS ' + db.quote(name))
+            self.assertEqual(name, get_column_names(cursor)[0])
+            cursor.execute('SELECT %s AS ' + db.quote(name), (42,))
+            self.assertEqual(name, get_column_names(cursor)[0])
+            cursor.executemany("UPDATE system SET value=%s WHERE "
+                               "1=(SELECT 0 AS " + db.quote(name) + ")",
+                               [])
+            cursor.executemany("UPDATE system SET value=%s WHERE "
+                               "1=(SELECT 0 AS " + db.quote(name) + ")",
+                               [('42',), ('43',)])
+
+        test(db)
+        test(db, logging=True)
+
+    def test_prefix_match_case_sensitive(self):
+        @self.env.with_transaction()
+        def do_insert(db):
+            cursor = db.cursor()
+            cursor.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
+                               [('blahblah',), ('BlahBlah',), ('BLAHBLAH',),
+                                (u'BlähBlah',), (u'BlahBläh',)])
+
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT name FROM system WHERE name %s" %
+                       db.prefix_match(),
+                       (db.prefix_match_value('Blah'),))
+        names = sorted(name for name, in cursor)
+        self.assertEqual('BlahBlah', names[0])
+        self.assertEqual(u'BlahBläh', names[1])
+        self.assertEqual(2, len(names))
+
+    def test_prefix_match_metachars(self):
+        def do_query(prefix):
+            db = self.env.get_read_db()
+            cursor = db.cursor()
+            cursor.execute("SELECT name FROM system WHERE name %s "
+                           "ORDER BY name" % db.prefix_match(),
+                           (db.prefix_match_value(prefix),))
+            return [name for name, in cursor]
+
+        @self.env.with_transaction()
+        def do_insert(db):
+            values = ['foo*bar', 'foo*bar!', 'foo?bar', 'foo?bar!',
+                      'foo[bar', 'foo[bar!', 'foo]bar', 'foo]bar!',
+                      'foo%bar', 'foo%bar!', 'foo_bar', 'foo_bar!',
+                      'foo/bar', 'foo/bar!', 'fo*ob?ar[fo]ob%ar_fo/obar']
+            cursor = db.cursor()
+            cursor.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
+                               [(value,) for value in values])
+
+        self.assertEqual(['foo*bar', 'foo*bar!'], do_query('foo*'))
+        self.assertEqual(['foo?bar', 'foo?bar!'], do_query('foo?'))
+        self.assertEqual(['foo[bar', 'foo[bar!'], do_query('foo['))
+        self.assertEqual(['foo]bar', 'foo]bar!'], do_query('foo]'))
+        self.assertEqual(['foo%bar', 'foo%bar!'], do_query('foo%'))
+        self.assertEqual(['foo_bar', 'foo_bar!'], do_query('foo_'))
+        self.assertEqual(['foo/bar', 'foo/bar!'], do_query('foo/'))
+        self.assertEqual(['fo*ob?ar[fo]ob%ar_fo/obar'], do_query('fo*'))
+        self.assertEqual(['fo*ob?ar[fo]ob%ar_fo/obar'],
+                         do_query('fo*ob?ar[fo]ob%ar_fo/obar'))
+
 
 class ConnectionTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.db = self.env.get_db_cnx()
+        self.tables = [
+            Table('HOURS', key='ID')[
+                Column('ID', auto_increment=True),
+                Column('AUTHOR')],
+            Table('blog', key='bid')[
+                Column('bid', auto_increment=True),
+                Column('author')
+            ]
+        ]
+        self._drop_tables(self.tables)
+        self._create_tables(self.tables)
 
     def tearDown(self):
+        self._drop_tables(self.tables)
         self.env.reset_db()
+
+    def _create_tables(self, tables):
+        @self.env.with_transaction()
+        def do_create(db):
+            connector = DatabaseManager(self.env).get_connector()[0]
+            cursor = self.db.cursor()
+            for table in tables:
+                for sql in connector.to_sql(table):
+                    cursor.execute(sql)
+
+    def _drop_tables(self, tables):
+        @self.env.with_transaction()
+        def do_drop(db):
+            for table in tables:
+                self.db.drop_table(table.name)
 
     def test_get_last_id(self):
         c = self.db.cursor()
@@ -344,7 +446,7 @@ class ConnectionTestCase(unittest.TestCase):
         id2 = self.db.get_last_id(c, 'report')
         self.assertEqual(id1 + 1, id2)
 
-    def test_update_sequence(self):
+    def test_update_sequence_default_column(self):
         cursor = self.db.cursor()
         cursor.execute("""
             INSERT INTO report (id, author) VALUES (42, 'anonymous')
@@ -356,6 +458,40 @@ class ConnectionTestCase(unittest.TestCase):
         self.db.commit()
         cursor.execute("SELECT id FROM report WHERE author='next-id'")
         self.assertEqual(43, cursor.fetchall()[0][0])
+
+    def test_update_sequence_nondefault_column(self):
+        db = self.db
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO blog (bid, author) VALUES (42, 'anonymous')")
+        db.commit()
+
+        db.update_sequence(cursor, 'blog', 'bid')
+        db.commit()
+        cursor.execute("INSERT INTO blog (author) VALUES ('next-id')")
+        db.commit()
+
+        cursor.execute("SELECT bid FROM blog WHERE author='next-id'")
+        self.assertEqual(43, cursor.fetchall()[0][0])
+
+    def test_identifiers_need_quoting(self):
+        """Test for regression described in comment:4:ticket:11512."""
+        db = self.db
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO %s (%s, %s) VALUES (42, 'anonymous')"
+            % (db.quote('HOURS'), db.quote('ID'), db.quote('AUTHOR')))
+        db.commit()
+        db.update_sequence(cursor, 'HOURS', 'ID')
+        db.commit()
+
+        cursor.execute(
+            "INSERT INTO %s (%s) VALUES ('next-id')"
+            % (db.quote('HOURS'), db.quote('AUTHOR')))
+        db.commit()
+        last_id = db.get_last_id(cursor, 'HOURS', 'ID')
+
+        self.assertEqual(43, last_id)
 
 
 def suite():
