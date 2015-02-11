@@ -25,8 +25,8 @@ from trac.util.compat import any
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
 from trac.util.translation import _, ngettext, tag_
-from trac.versioncontrol import DbRepositoryProvider, RepositoryManager, \
-                                is_default
+from trac.versioncontrol import DbRepositoryProvider, InvalidRepository, \
+                                NoSuchChangeset, RepositoryManager, is_default
 from trac.web.chrome import Chrome, add_notice, add_warning
 
 
@@ -93,13 +93,17 @@ class VersionControlAdmin(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        rm.notify('changeset_added', reponame, revs)
+        errors = rm.notify('changeset_added', reponame, revs)
+        for error in errors:
+            printout(error)
 
     def _do_changeset_modified(self, reponame, *revs):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        rm.notify('changeset_modified', reponame, revs)
+        errors = rm.notify('changeset_modified', reponame, revs)
+        for error in errors:
+            printout(error)
 
     def _do_list(self):
         rm = RepositoryManager(self.env)
@@ -213,8 +217,9 @@ class RepositoryAdminPanel(Component):
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
                         name = req.args.get('name')
-                        resync = tag.tt('trac-admin $ENV repository resync '
-                                        '"%s"' % (name or '(default)'))
+                        resync = tag.tt('trac-admin %s repository resync '
+                                        '"%s"' % (self.env.path,
+                                                  name or '(default)'))
                         if 'dir' in changes:
                             msg = tag_('You should now run %(resync)s to '
                                        'synchronize Trac with the repository.',
@@ -226,9 +231,10 @@ class RepositoryAdminPanel(Component):
                                        resync=resync)
                             add_notice(req, msg)
                         if name and name != path_info and not 'alias' in info:
-                            cset_added = tag.tt('trac-admin $ENV changeset '
+                            cset_added = tag.tt('trac-admin %s changeset '
                                                 'added "%s" $REV'
-                                                % (name or '(default)'))
+                                                % (self.env.path,
+                                                   name or '(default)'))
                             msg = tag_('You will need to update your '
                                        'post-commit hook to call '
                                        '%(cset_added)s with the new '
@@ -263,18 +269,23 @@ class RepositoryAdminPanel(Component):
                         name = name or '(default)'
                         add_notice(req, _('The repository "%(name)s" has been '
                                           'added.', name=name))
-                        resync = tag.tt('trac-admin $ENV repository resync '
-                                        '"%s"' % name)
+                        resync = tag.tt('trac-admin %s repository resync '
+                                        '"%s"' % (self.env.path, name))
                         msg = tag_('You should now run %(resync)s to '
                                    'synchronize Trac with the repository.',
                                    resync=resync)
                         add_notice(req, msg)
-                        cset_added = tag.tt('trac-admin $ENV changeset '
-                                            'added "%s" $REV' % name)
+                        cset_added = tag.tt('trac-admin %s changeset '
+                                            'added "%s" $REV'
+                                            % (self.env.path, name))
+                        doc = tag.a(_("documentation"),
+                                    href=req.href.wiki('TracRepositoryAdmin')
+                                         + '#Synchronization')
                         msg = tag_('You should also set up a post-commit hook '
                                    'on the repository to call %(cset_added)s '
-                                   'for each committed changeset.',
-                                   cset_added=cset_added)
+                                   'for each committed changeset. See the '
+                                   '%(doc)s for more information.',
+                                   cset_added=cset_added, doc=doc)
                         add_notice(req, msg)
                         req.redirect(req.href.admin(category, page))
 
@@ -337,11 +348,17 @@ class RepositoryAdminPanel(Component):
         if not info.get('alias'):
             try:
                 repos = RepositoryManager(self.env).get_repository(reponame)
+            except InvalidRepository, e:
+                info['error'] = e
+            except TracError:
+                pass  # Probably "unsupported connector"
+            else:
                 youngest_rev = repos.get_youngest_rev()
                 info['rev'] = youngest_rev
-                info['display_rev'] = repos.display_rev(youngest_rev)
-            except Exception:
-                pass
+                try:
+                    info['display_rev'] = repos.display_rev(youngest_rev)
+                except NoSuchChangeset:
+                    pass
         return info
 
     def _check_dir(self, req, dir):

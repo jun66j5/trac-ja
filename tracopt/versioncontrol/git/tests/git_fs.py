@@ -12,8 +12,10 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import sys
 import tempfile
 import unittest
+from cStringIO import StringIO
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
@@ -23,7 +25,9 @@ from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
+from trac.util.text import to_utf8
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
+                                    InvalidRepository, Node, \
                                     NoSuchChangeset, NoSuchNode, \
                                     RepositoryManager
 from trac.versioncontrol.web_ui.browser import BrowserModule
@@ -47,15 +51,30 @@ class GitCommandMixin(object):
         kwargs['env'] = env
         return self._git(*args, **kwargs)
 
+    def _spawn_git(self, *args, **kwargs):
+        args = map(to_utf8, (git_bin,) + args)
+        kwargs.setdefault('stdout', PIPE)
+        kwargs.setdefault('stderr', PIPE)
+        kwargs.setdefault('cwd', self.repos_path)
+        return Popen(args, close_fds=close_fds, **kwargs)
+
     def _git(self, *args, **kwargs):
-        args = (git_bin,) + args
-        proc = Popen(args, stdout=PIPE, stderr=PIPE, close_fds=close_fds,
-                     cwd=self.repos_path, **kwargs)
+        proc = self._spawn_git(*args, **kwargs)
         stdout, stderr = proc.communicate()
         self.assertEqual(0, proc.returncode,
-                         'git exits with %r, args %r, stdout %r, stderr %r' %
-                         (proc.returncode, args, stdout, stderr))
+                         'git exits with %r, args %r, kwargs %r, stdout %r, '
+                         'stderr %r' %
+                         (proc.returncode, args, kwargs, stdout, stderr))
         return proc
+
+    def _git_fast_import(self, data):
+        if isinstance(data, unicode):
+            data = data.encode('utf-8')
+        proc = self._spawn_git('fast-import', stdin=PIPE)
+        stdout, stderr = proc.communicate(input=data)
+        self.assertEqual(0, proc.returncode,
+                         'git exits with %r, stdout %r, stderr %r' %
+                         (proc.returncode, stdout, stderr))
 
     def _git_date_format(self, dt):
         if dt.tzinfo is None:
@@ -84,6 +103,8 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
             self.env.config.set('git', 'git_bin', git_bin)
 
     def tearDown(self):
+        for repos in self._repomgr.get_real_repositories():
+            repos.close()
         self._repomgr.reload_repositories()
         StorageFactory._clean()
         self.env.reset_db()
@@ -272,12 +293,22 @@ class GitNormalTestCase(BaseTestCase):
 
     def _test_on_empty_repos(self, cached_repository):
         self.env.config.set('git', 'persistent_cache', 'false')
-        self.env.config.set('git', 'cached_repository', cached_repository)
+        self.env.config.set('git', 'cached_repository',
+                            'true' if cached_repository else 'false')
 
         self._git_init(data=False, bare=True)
         self._add_repository(bare=True)
         repos = self._repomgr.get_repository('gitrepos')
-        repos.sync()
+        if cached_repository:
+            # call sync() thrice with empty repository (#11851)
+            for i in xrange(3):
+                repos.sync()
+                rows = self.env.db_query("SELECT value FROM repository "
+                                         "WHERE id=%s AND name=%s",
+                                         (repos.id, 'youngest_rev'))
+                self.assertEqual('', rows[0][0])
+        else:
+            repos.sync()
         youngest_rev = repos.youngest_rev
         self.assertEqual(None, youngest_rev)
         self.assertEqual(None, repos.oldest_rev)
@@ -304,10 +335,10 @@ class GitNormalTestCase(BaseTestCase):
         self.assertEqual([], rv[1]['items'])
 
     def test_on_empty_and_cached_repos(self):
-        self._test_on_empty_repos('true')
+        self._test_on_empty_repos(True)
 
     def test_on_empty_and_non_cached_repos(self):
-        self._test_on_empty_repos('false')
+        self._test_on_empty_repos(False)
 
 
 class GitRepositoryTestCase(BaseTestCase):
@@ -330,6 +361,10 @@ class GitRepositoryTestCase(BaseTestCase):
                                                n * 2 + idx))
         self._git('checkout', 'alpha')
         self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
+
+    def test_invalid_path_raises(self):
+        self.assertRaises(InvalidRepository, GitRepository, self.env,
+                          '/the/invalid/path', [], self.env.log)
 
     def test_repository_instance(self):
         self._git_init()
@@ -392,7 +427,7 @@ class GitRepositoryTestCase(BaseTestCase):
 
     def test_parent_child_revs(self):
         self._git_init()
-        self._git('branch', 'initial')
+        self._git('branch', 'initial')  # root commit
         self._create_merge_commit()
         self._git('branch', 'latest')
 
@@ -407,14 +442,31 @@ class GitRepositoryTestCase(BaseTestCase):
         self.assertEqual(0, len(parents), 'parent_revs: %r' % parents)
         self.assertEqual(1, len(repos.child_revs(children[0])))
         self.assertEqual(1, len(repos.child_revs(children[1])))
+        self.assertEqual([('.gitignore', Node.FILE, Changeset.ADD, None,
+                           None)],
+                         sorted(repos.get_changeset(rev).get_changes()))
 
         rev = repos.normalize_rev('latest')
+        cset = repos.get_changeset(rev)
         children = repos.child_revs(rev)
         self.assertEqual(0, len(children), 'child_revs: %r' % children)
         parents = repos.parent_revs(rev)
         self.assertEqual(2, len(parents), 'parent_revs: %r' % parents)
         self.assertEqual(1, len(repos.parent_revs(parents[0])))
         self.assertEqual(1, len(repos.parent_revs(parents[1])))
+
+        # check the differences against the first parent
+        def fn_repos_changes(entry):
+            old_node, new_node, kind, change = entry
+            if old_node:
+                old_path, old_rev = old_node.path, old_node.rev
+            else:
+                old_path, old_rev = None, None
+            return new_node.path, kind, change, old_path, old_rev
+        self.assertEqual(sorted(map(fn_repos_changes,
+                                    repos.get_changes('/', parents[0], '/',
+                                                      rev))),
+                         sorted(cset.get_changes()))
 
     def _get_quickjump_names(self, repos):
         return sorted(name for type, name, path, rev
@@ -494,6 +546,79 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
             self.assertEqual(revs[:3], revs2)
             repos.sync(feedback=feedback_2)  # restart sync
         self.assertEqual(revs, revs2)
+
+    def test_sync_too_many_merges(self):
+        data = self._generate_data_many_merges(100)
+        self._git_init(data=False, bare=True)
+        self._git_fast_import(data)
+        self._add_repository('gitrepos', bare=True)
+        repos = self._repomgr.get_repository('gitrepos')
+
+        reclimit = sys.getrecursionlimit()
+        try:
+            sys.setrecursionlimit(80)
+            repos.sync()
+        finally:
+            sys.setrecursionlimit(reclimit)
+
+        rows = self.env.db_query("SELECT COUNT(*) FROM revision "
+                                 "WHERE repos=%s", (repos.id,))
+        self.assertEqual(202, rows[0][0])
+
+    def _generate_data_many_merges(self, n, timestamp=1400000000):
+        init = """\
+blob
+mark :1
+data 0
+
+reset refs/heads/dev
+commit refs/heads/dev
+mark :2
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 5
+root
+M 100644 :1 .gitignore
+
+commit refs/heads/master
+mark :3
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 7
+master
+from :2
+M 100644 :1 master.txt
+
+"""
+        merge = """\
+commit refs/heads/dev
+mark :%(dev)d
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 4
+dev
+from :2
+M 100644 :1 dev%(dev)08d.txt
+
+commit refs/heads/master
+mark :%(merge)d
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 19
+Merge branch 'dev'
+from :%(from)d
+merge :%(dev)d
+M 100644 :1 dev%(dev)08d.txt
+
+"""
+        data = StringIO()
+        data.write(init % {'timestamp': timestamp})
+        for idx in xrange(n):
+            data.write(merge % {'timestamp': timestamp,
+                                'dev': 4 + idx * 2,
+                                'merge': 5 + idx * 2,
+                                'from': 3 + idx * 2})
+        return data.getvalue()
 
 
 class StopSync(Exception):

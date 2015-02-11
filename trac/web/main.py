@@ -44,7 +44,8 @@ from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
                       read_file, safe_repr, translation, warn_setuptools_issue
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, localtz, timezone, user_time
-from trac.util.text import exception_to_unicode, shorten_line, to_unicode
+from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
+                           unicode_quote
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import *
@@ -189,7 +190,7 @@ class RequestDispatcher(Component):
                 if not chosen_handler:
                     if req.path_info.endswith('/'):
                         # Strip trailing / and redirect
-                        target = req.path_info.rstrip('/').encode('utf-8')
+                        target = unicode_quote(req.path_info.rstrip('/'))
                         if req.query_string:
                             target += '?' + req.query_string
                         req.redirect(req.href + target, permanent=True)
@@ -523,7 +524,7 @@ def _dispatch_request(req, env, env_error):
 def _send_user_error(req, env, e):
     # See trac/web/api.py for the definition of HTTPException subclasses.
     if env:
-        env.log.warn('[%s] %s' % (req.remote_addr, exception_to_unicode(e)))
+        env.log.warn('[%s] %s', req.remote_addr, exception_to_unicode(e))
     data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
     if e.code == 403 and req.authname == 'anonymous':

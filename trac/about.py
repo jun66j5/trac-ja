@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import re
 
 from genshi.builder import tag
@@ -58,7 +59,8 @@ class AboutModule(Component):
         return re.match(r'/about(?:_trac)?(?:/.+)?$', req.path_info)
 
     def process_request(self, req):
-        data = {'systeminfo': None, 'plugins': None, 'config': None}
+        data = {'systeminfo': None, 'plugins': None,
+                'config': None, 'interface': None}
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
@@ -68,6 +70,10 @@ class AboutModule(Component):
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
             # Collect plugin information
             data['plugins'] = get_plugin_info(self.env)
+
+        if 'CONFIG_VIEW' in req.perm('config', 'interface'):
+            data['interface'] = \
+                Chrome(self.env).get_interface_customization_files()
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information

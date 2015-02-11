@@ -139,15 +139,22 @@ Makefile.cfg:
 	@echo "$$HELP_CFG"
 
 status:
-	@echo -n "Python version: "
-	@python -V
-	@echo -n "figleaf: "
-	@-which figleaf 2>/dev/null || echo
-	@echo -n "coverage: "
-	@-which coverage 2>/dev/null || echo
-	@echo "PYTHONPATH=$$PYTHONPATH"
-	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
-	@echo "server-options=$(server-options)"
+	@echo
+	@echo -n "Python: "
+	@which python
+	@echo
+	@python contrib/make_status.py
+	@echo
+	@echo "Variables:"
+	@echo "  PATH=$(PATH-extension)$(SEP)\$$PATH"
+	@echo "  PYTHONPATH=$(PYTHONPATH-extension)$(SEP)\$$PYTHONPATH"
+	@echo "  TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
+	@echo "  server-options=$(server-options)"
+	@echo
+	@echo "External dependencies:"
+	@echo -n "  Git version: "
+	@git --version 2>/dev/null || echo "not installed"
+	@echo
 
 Trac.egg-info: status
 	python setup.py egg_info
@@ -368,6 +375,8 @@ pylint:
 #
 # ----------------------------------------------------------------------------
 
+COVERAGEOPTS ?= --branch --source=trac,tracopt
+
 .PHONY: coverage clean-coverage show-coverage
 
 coverage: clean-coverage test-coverage show-coverage
@@ -384,18 +393,18 @@ test-coverage: unit-test-coverage functional-test-coverage
 endif
 
 unit-test-coverage:
-	coverage run -a $(coverageopts) trac/test.py --skip-functional-tests
+	coverage run -a $(coverageopts) $(COVERAGEOPTS) \
+	    trac/test.py --skip-functional-tests $(testopts)
 
 functional-test-coverage:
-	FIGLEAF='coverage run -a $(coverageopts)' python \
-	    trac/tests/functional/testcases.py -v
+	FIGLEAF='coverage run -a $(coverageopts) $(COVERAGEOPTS)' \
+	python trac/tests/functional/__init__.py -v $(testopts)
 
 show-coverage: htmlcov/index.html
-	#coverage report
+	$(if $(START),$(START) $(<))
 
 htmlcov/index.html:
-	coverage html \
-	    --omit=$(subst $(space),$(comma),$(wildcard trac/*/templates)),trac/templates
+	coverage html --omit=*/__init__.py
 
 # ----------------------------------------------------------------------------
 #
@@ -543,7 +552,7 @@ clean-doc:
 #
 # Setup environment variables
 
-python-home := $(python.$(if $(python),$(python),$($(db).python)))
+python-home := $(python.$(or $(python),$($(db).python)))
 
 ifeq "$(OS)" "Windows_NT"
     ifndef python-home
@@ -553,14 +562,17 @@ ifeq "$(OS)" "Windows_NT"
     endif
     SEP = ;
     python-bin = $(python-home)$(SEP)$(python-home)/Scripts
+    START ?= start
 else
     SEP = :
+    START ?= xdg-open
 endif
 
-ifdef python-bin
-    export PATH := $(python-bin)$(SEP)$(PATH)
-endif
-export PYTHONPATH := .$(SEP)$(PYTHONPATH)
+PATH-extension = $(python-bin)$(SEP)$(path.$(python))
+PYTHONPATH-extension = .$(SEP)$(pythonpath.$(python))
+
+export PATH := $(PATH-extension)$(SEP)$(PATH)
+export PYTHONPATH := $(PYTHONPATH-extension)$(SEP)$(PYTHONPATH)
 export TRAC_TEST_DB_URI = $($(db).uri)
 
 # Misc.

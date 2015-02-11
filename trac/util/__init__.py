@@ -19,6 +19,8 @@
 
 from __future__ import with_statement
 
+from cStringIO import StringIO
+import csv
 import errno
 import functools
 import inspect
@@ -348,13 +350,9 @@ class NaivePopen:
         try:
             self.err = None
             self.errorlevel = os.system(command) >> 8
-            outfd = file(outfile, 'r')
-            self.out = outfd.read()
-            outfd.close()
+            self.out = read_file(outfile)
             if capturestderr:
-                errfd = file(errfile,'r')
-                self.err = errfd.read()
-                errfd.close()
+                self.err = read_file(errfile)
         finally:
             if os.path.isfile(outfile):
                 os.remove(outfile)
@@ -721,6 +719,9 @@ def get_pkginfo(dist):
                 resource_name = os.path.normpath(resource_name)
                 return any(resource_name == os.path.normpath(name)
                            for name in dist.get_metadata_lines('SOURCES.txt'))
+            if dist.has_metadata('RECORD'):  # *.dist-info/RECORD
+                reader = csv.reader(StringIO(dist.get_metadata('RECORD')))
+                return any(resource_name == row[0] for row in reader)
             toplevel = resource_name.split('/')[0]
             if dist.has_metadata('top_level.txt'):
                 return toplevel in dist.get_metadata_lines('top_level.txt')
@@ -740,21 +741,25 @@ def get_pkginfo(dist):
         else:
             return {}
     import email
+    from trac.util.translation import _
     attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
              'description', 'version')
     info = {}
     def normalize(attr):
         return attr.lower().replace('-', '_')
+    metadata = 'METADATA' if dist.has_metadata('METADATA') else 'PKG-INFO'
     try:
-        pkginfo = email.message_from_string(dist.get_metadata('PKG-INFO'))
+        pkginfo = email.message_from_string(dist.get_metadata(metadata))
         for attr in [key for key in attrs if key in pkginfo]:
             info[normalize(attr)] = pkginfo[attr]
     except IOError, e:
-        err = 'Failed to read PKG-INFO file for %s: %s' % (dist, e)
+        err = _("Failed to read %(metadata)s file for %(dist)s: %(err)s",
+                metadata=metadata, dist=dist, err=to_unicode(e))
         for attr in attrs:
             info[normalize(attr)] = err
     except email.Errors.MessageError, e:
-        err = 'Failed to parse PKG-INFO file for %s: %s' % (dist, e)
+        err = _("Failed to parse %(metadata)s file for %(dist)s: %(err)s",
+                metadata=metadata, dist=dist, err=to_unicode(e))
         for attr in attrs:
             info[normalize(attr)] = err
     return info
@@ -1217,6 +1222,13 @@ def as_bool(value):
 def pathjoin(*args):
     """Strip `/` from the arguments and join them with a single `/`."""
     return '/'.join(filter(None, (each.strip('/') for each in args if each)))
+
+
+def to_list(splittable, sep=','):
+    """Split a string at `sep` and return a list without any empty items.
+    """
+    split = [x.strip() for x in splittable.split(sep)]
+    return [item for item in split if item]
 
 
 # Imports for backward compatibility (at bottom to avoid circular dependencies)

@@ -69,6 +69,9 @@ class Ticket(object):
             tkt_id = int(tkt_id)
         self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
+        self.editable_fields = \
+            set(f['name'] for f in self.fields
+                          if f['name'] not in self.protected_fields)
         self.std_fields, self.custom_fields, self.time_fields = [], [], []
         for f in self.fields:
             if f.get('custom'):
@@ -104,8 +107,8 @@ class Ticket(object):
                         default = options[int(default)]
                     except (ValueError, IndexError):
                         self.env.log.warning('Invalid default value "%s" '
-                                             'for custom field "%s"'
-                                             % (default, field['name']))
+                                             'for custom field "%s"',
+                                             default, field['name'])
             if default:
                 self.values.setdefault(field['name'], default)
 
@@ -146,18 +149,18 @@ class Ticket(object):
     def __setitem__(self, name, value):
         """Log ticket modifications so the table ticket_change can be updated
         """
-        if name in self.values and self.values[name] == value:
-            return
-        if name not in self._old: # Changed field
-            self._old[name] = self.values.get(name)
-        elif self._old[name] == value: # Change of field reverted
-            del self._old[name]
         if value:
             if isinstance(value, list):
                 raise TracError(_("Multi-values fields not supported yet"))
             field = [field for field in self.fields if field['name'] == name]
             if field and field[0].get('type') != 'textarea':
                 value = value.strip()
+        if name in self.values and self.values[name] == value:
+            return
+        if name not in self._old: # Changed field
+            self._old[name] = self.values.get(name)
+        elif self._old[name] == value: # Change of field reverted
+            del self._old[name]
         self.values[name] = value
 
     def get_value_or_default(self, name):
@@ -218,10 +221,7 @@ class Ticket(object):
             self['owner'] = default_to_owner
 
         # Perform type conversions
-        values = dict(self.values)
-        for field in self.time_fields:
-            if field in values:
-                values[field] = to_utimestamp(values[field])
+        db_values = self._to_db_types(self.values)
 
         # Insert ticket record
         std_fields = []
@@ -238,7 +238,7 @@ class Ticket(object):
             cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
                            % (','.join(std_fields),
                               ','.join(['%s'] * len(std_fields))),
-                           [values[name] for name in std_fields])
+                           [db_values.get(name) for name in std_fields])
             tkt_id = db.get_last_id(cursor, 'ticket')
 
             # Insert custom fields
@@ -246,7 +246,7 @@ class Ticket(object):
                 db.executemany(
                     """INSERT INTO ticket_custom (ticket, name, value)
                        VALUES (%s, %s, %s)
-                    """, [(tkt_id, c, self[c]) for c in custom_fields])
+                    """, [(tkt_id, c, db_values.get(c)) for c in custom_fields])
 
         self.id = tkt_id
         self.resource = self.resource(id=tkt_id)
@@ -302,6 +302,10 @@ class Ticket(object):
                     # we just leave the owner as is.
                     pass
 
+        # Perform type conversions
+        db_values = self._to_db_types(self.values)
+        old_db_values = self._to_db_types(self._old)
+
         with self.env.db_transaction as db:
             db("UPDATE ticket SET changetime=%s WHERE id=%s",
                (when_ts, self.id))
@@ -335,20 +339,20 @@ class Ticket(object):
                                      """, (self.id, name)):
                         db("""UPDATE ticket_custom SET value=%s
                               WHERE ticket=%s AND name=%s
-                              """, (self[name], self.id, name))
+                              """, (db_values.get(name), self.id, name))
                         break
                     else:
                         db("""INSERT INTO ticket_custom (ticket,name,value)
                               VALUES(%s,%s,%s)
-                              """, (self.id, name, self[name]))
+                              """, (self.id, name, db_values.get(name)))
                 else:
                     db("UPDATE ticket SET %s=%%s WHERE id=%%s"
-                       % name, (self[name], self.id))
+                       % name, (db_values.get(name), self.id))
                 db("""INSERT INTO ticket_change
                         (ticket,time,author,field,oldvalue,newvalue)
                       VALUES (%s, %s, %s, %s, %s, %s)
-                      """, (self.id, when_ts, author, name, self._old[name],
-                            self[name]))
+                      """, (self.id, when_ts, author, name,
+                            old_db_values.get(name), db_values.get(name)))
 
             # always save comment, even if empty
             # (numbering support for timeline)
@@ -364,6 +368,15 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_changed(self, comment, author, old_values)
         return int(cnum.rsplit('.', 1)[-1])
+
+    def _to_db_types(self, values):
+        values = values.copy()
+        for field, value in values.iteritems():
+            if field in self.time_fields:
+                values[field] = to_utimestamp(values[field])
+            else:
+                values[field] = value if value else None
+        return values
 
     def get_changelog(self, when=None, db=None):
         """Return the changelog as a list of tuples of the form
@@ -1073,7 +1086,6 @@ class Milestone(object):
             if self.name != old['name']:
                 # Update milestone field in tickets
                 self.move_tickets(self.name, author, "Milestone renamed")
-                TicketSystem(self.env).reset_ticket_fields()
                 # Reparent attachments
                 Attachment.reparent_all(self.env, 'milestone', old['name'],
                                         'milestone', self.name)
@@ -1086,6 +1098,8 @@ class Milestone(object):
                         to_utimestamp(self.completed),
                         self.description, old['name']))
             self.checkin()
+        # Fields need reset if renamed or completed/due changed
+        TicketSystem(self.env).reset_ticket_fields()
 
         old_values = dict((k, v) for k, v in old.iteritems()
                           if getattr(self, k) != v)
@@ -1234,7 +1248,8 @@ class Version(object):
                 db("UPDATE ticket SET version=%s WHERE version=%s",
                    (self.name, self._old_name))
                 self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields()
+        # Fields need reset if renamed or if time is changed
+        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):

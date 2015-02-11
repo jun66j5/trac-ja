@@ -26,7 +26,7 @@ import time
 from trac.admin.api import console_date_format, get_console_locale
 from trac.core import TracError, Component, implements
 from trac.util import hex_entropy
-from trac.util.text import print_table
+from trac.util.text import print_table, to_utf8
 from trac.util.translation import _
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, to_datetime, to_timestamp
@@ -137,6 +137,9 @@ class DetachedSession(dict):
             # new ones. The last concurrent request to do so "wins".
 
             if self._old != self:
+                if self._old.get('name') != self.get('name') or \
+                        self._old.get('email') != self.get('email'):
+                    self.env.invalidate_known_users_cache()
                 if not items and not authenticated:
                     # No need to keep around empty unauthenticated sessions
                     db("DELETE FROM session WHERE sid=%s AND authenticated=0",
@@ -241,6 +244,9 @@ class Session(DetachedSession):
         assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
             return
+        if not to_utf8(new_sid).isalnum():
+            raise TracError(_("Session ID must be alphanumeric."),
+                            _("Error renaming session"))
         with self.env.db_transaction as db:
             if db("SELECT sid FROM session WHERE sid=%s", (new_sid,)):
                 raise TracError(_("Session '%(id)s' already exists. "
@@ -438,6 +444,7 @@ class SessionAdmin(Component):
             if email is not None:
                 db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",
                     (sid, authenticated, email))
+        self.env.invalidate_known_users_cache()
 
     def _do_set(self, attr, sid, val):
         if attr not in ('name', 'email'):
@@ -456,6 +463,7 @@ class SessionAdmin(Component):
                 """, (sid, authenticated, attr))
             db("INSERT INTO session_attribute VALUES (%s, %s, %s, %s)",
                (sid, authenticated, attr, val))
+        self.env.invalidate_known_users_cache()
 
     def _do_delete(self, *sids):
         with self.env.db_transaction as db:
@@ -473,6 +481,7 @@ class SessionAdmin(Component):
                         DELETE FROM session_attribute
                         WHERE sid=%s AND authenticated=%s
                         """, (sid, authenticated))
+        self.env.invalidate_known_users_cache()
 
     def _do_purge(self, age):
         when = parse_date(age, hint='datetime',

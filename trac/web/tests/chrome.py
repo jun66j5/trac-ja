@@ -16,6 +16,7 @@ import shutil
 import tempfile
 import unittest
 
+from genshi.builder import tag
 import trac.tests.compat
 from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, locale_en
@@ -47,6 +48,12 @@ class ChromeTestCase(unittest.TestCase):
     def tearDown(self):
         from trac.core import ComponentMeta
         ComponentMeta._registry = self._old_registry
+
+    def _get_navigation_item(self, items, name):
+        for item in items:
+            if item['name'] == name:
+                return item
+        return {}
 
     def test_add_meta(self):
         req = Request(href=Href('/trac.cgi'))
@@ -186,16 +193,18 @@ class ChromeTestCase(unittest.TestCase):
         # Test with a relative path to the logo image
         self.env.config.set('header_logo', 'src', 'foo.png')
         info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('/trac.cgi/chrome/common/foo.png', info['logo']['src'])
+        self.assertEqual('/trac.cgi/chrome/common/foo.png',
+                         info['logo']['src'])
         self.assertEqual('http://example.org/trac.cgi/chrome/common/foo.png',
-                    info['logo']['src_abs'])
+                         info['logo']['src_abs'])
 
         # Test with a location in project htdocs
         self.env.config.set('header_logo', 'src', 'site/foo.png')
         info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('/trac.cgi/chrome/site/foo.png', info['logo']['src'])
+        self.assertEqual('/trac.cgi/chrome/site/foo.png',
+                         info['logo']['src'])
         self.assertEqual('http://example.org/trac.cgi/chrome/site/foo.png',
-                    info['logo']['src_abs'])
+                         info['logo']['src_abs'])
 
         # Test with a server-relative path to the logo image
         self.env.config.set('header_logo', 'src', '/img/foo.png')
@@ -207,8 +216,10 @@ class ChromeTestCase(unittest.TestCase):
         self.env.config.set('header_logo', 'src',
                             'http://www.example.org/foo.png')
         info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('http://www.example.org/foo.png', info['logo']['src'])
-        self.assertEqual('http://www.example.org/foo.png', info['logo']['src_abs'])
+        self.assertEqual('http://www.example.org/foo.png',
+                         info['logo']['src'])
+        self.assertEqual('http://www.example.org/foo.png',
+                         info['logo']['src_abs'])
 
     def test_default_links(self):
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
@@ -250,7 +261,8 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('/favicon.ico', links['shortcut icon'][0]['href'])
 
         # Absolute URL for icon config option
-        self.env.config.set('project', 'icon', 'http://example.com/favicon.ico')
+        self.env.config.set('project', 'icon',
+                            'http://example.com/favicon.ico')
         links = chrome.prepare_request(req)['links']
         self.assertEqual('http://example.com/favicon.ico',
                          links['icon'][0]['href'])
@@ -345,6 +357,79 @@ class ChromeTestCase(unittest.TestCase):
         self.assertIn({'value': 'Z', 'label': '+00:00'},
                       req.chrome['script_data']['jquery_ui']['timezone_list'])
 
+    def test_navigation_item_customization(self):
+        class TestNavigationContributor1(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test1', 'Test 1'
+        class TestNavigationContributor2(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test2', 'Test 2'
+        class TestNavigationContributor3(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test3', 'Test 3'
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='/',
+                      add_redirect_listener=lambda listener: None)
+        self.env.config.set('mainnav', 'test2.href', 'testtwo')
+        self.env.config.set('mainnav', 'test3.label', 'Test Three')
+        self.env.config.set('mainnav', 'test3.href', 'testthree')
+
+        chrome = Chrome(self.env)
+        items = chrome.prepare_request(req)['nav']['mainnav']
+
+        item = self._get_navigation_item(items, 'test1')
+        self.assertEqual('Test 1', item['label'])
+        item = self._get_navigation_item(items, 'test2')
+        self.assertEqual(str(tag.a('Test 2', href='testtwo')),
+                         str(item['label']))
+        item = self._get_navigation_item(items, 'test3')
+        self.assertEqual(str(tag.a('Test Three', href='testthree')),
+                         str(item['label']))
+
+    def test_attributes_preserved_in_navigation_item(self):
+        class TestNavigationContributor1(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test1', \
+                      tag.a('Test 1', href='test1', target='blank')
+        class TestNavigationContributor2(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test2', \
+                      tag.a('Test 2', href='test2', target='blank')
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='/',
+                      add_redirect_listener=lambda listener: None)
+        self.env.config.set('mainnav', 'test1.label', 'Test One')
+        self.env.config.set('mainnav', 'test2.label', 'Test Two')
+        self.env.config.set('mainnav', 'test2.href', 'testtwo')
+
+        chrome = Chrome(self.env)
+        items = chrome.prepare_request(req)['nav']['mainnav']
+
+        item = self._get_navigation_item(items, 'test1')
+        self.assertEqual(str(tag.a('Test One', href='test1', target='blank')),
+                         str(item['label']))
+        item = self._get_navigation_item(items, 'test2')
+        self.assertEqual(str(tag.a('Test Two', href='testtwo',
+                                   target='blank')),
+                         str(item['label']))
+
 
 class ChromeTestCase2(unittest.TestCase):
 
@@ -386,6 +471,7 @@ def suite():
     suite.addTest(unittest.makeSuite(ChromeTestCase))
     suite.addTest(unittest.makeSuite(ChromeTestCase2))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

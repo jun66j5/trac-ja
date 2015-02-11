@@ -25,7 +25,7 @@ from urlparse import urlsplit
 
 from trac import db_default
 from trac.admin import AdminCommandError, IAdminCommandProvider
-from trac.cache import CacheManager
+from trac.cache import CacheManager, cached
 from trac.config import BoolOption, ConfigSection, Configuration, Option, \
                         PathOption
 from trac.core import Component, ComponentManager, implements, Interface, \
@@ -287,6 +287,14 @@ class Environment(Component, ComponentManager):
             for setup_participant in self.setup_participants:
                 setup_participant.environment_created()
 
+    @property
+    def env(self):
+        """Property returning the `Environment` object, which is often
+        required for functions and methods that take a `Component` instance.
+        """
+        # The cached decorator requires the object have an `env` attribute.
+        return self
+
     def get_systeminfo(self):
         """Return a list of `(name, version)` tuples describing the
         name and version information of external packages used by Trac
@@ -385,10 +393,11 @@ class Environment(Component, ComponentManager):
         try:
             tag = read_file(os.path.join(self.path, 'VERSION')).splitlines()[0]
             if tag != _VERSION:
-                raise Exception("Unknown Trac environment type '%s'" % tag)
+                raise Exception(_("Unknown Trac environment type '%(type)s'",
+                                  type=tag))
         except Exception, e:
-            raise TracError("No Trac environment found at %s\n%s"
-                            % (self.path, e))
+            raise TracError(_("No Trac environment found at %(path)s\n"
+                              "%(e)s", path=self.path, e=e))
 
     def get_db_cnx(self):
         """Return a database connection from the connection pool
@@ -688,16 +697,23 @@ class Environment(Component, ComponentManager):
         :since 1.0: deprecation warning: the `cnx` parameter is no
                     longer used and will be removed in version 1.1.1
         """
-        for username, name, email in self.db_query("""
+        return iter(self._known_users)
+
+    @cached
+    def _known_users(self):
+        return self.db_query("""
                 SELECT DISTINCT s.sid, n.value, e.value
                 FROM session AS s
                  LEFT JOIN session_attribute AS n ON (n.sid=s.sid
-                  and n.authenticated=1 AND n.name = 'name')
+                  AND n.authenticated=1 AND n.name = 'name')
                  LEFT JOIN session_attribute AS e ON (e.sid=s.sid
                   AND e.authenticated=1 AND e.name = 'email')
                 WHERE s.authenticated=1 ORDER BY s.sid
-                """):
-            yield username, name, email
+        """)
+
+    def invalidate_known_users_cache(self):
+        """Clear the known_users cache."""
+        del self._known_users
 
     def backup(self, dest=None):
         """Create a backup of the database.
@@ -759,10 +775,7 @@ class Environment(Component, ComponentManager):
         if not self.base_url:
             self.log.warn("base_url option not set in configuration, "
                           "generated links may be incorrect")
-            _abs_href = Href('')
-        else:
-            _abs_href = Href(self.base_url)
-        return _abs_href
+        return Href(self.base_url)
 
 
 class EnvironmentSetup(Component):

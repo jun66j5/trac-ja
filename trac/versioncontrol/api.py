@@ -34,6 +34,10 @@ def is_default(reponame):
     return not reponame or reponame in ('(default)', _('(default)'))
 
 
+class InvalidRepository(TracError):
+    """Exception raised when a repository is invalid."""
+
+
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
@@ -546,11 +550,13 @@ class RepositoryManager(Component):
         """Retrieve the appropriate `Repository` for the given
         repository name.
 
-           :param reponame: the key for specifying the repository.
-                            If no name is given, take the default
-                            repository.
-           :return: if no corresponding repository was defined,
-                    simply return `None`.
+        :param reponame: the key for specifying the repository.
+                         If no name is given, take the default
+                         repository.
+        :return: if no corresponding repository was defined,
+                 simply return `None`.
+
+        :raises InvalidRepository: if the repository cannot be opened.
         """
         reponame = reponame or ''
         repoinfo = self.get_all_repositories().get(reponame, {})
@@ -680,28 +686,47 @@ class RepositoryManager(Component):
             self.log.warn("Found no repositories matching '%s' base.",
                           base or reponame)
             return
+
+        errors = []
         for repos in sorted(repositories, key=lambda r: r.reponame):
+            reponame = repos.reponame or '(default)'
+            if reponame in self.repository_sync_per_request:
+                self.log.warn("Repository '%s' should be removed from [trac] "
+                              "repository_sync_per_request for explicit "
+                              "synchronization", reponame)
             repos.sync()
             for rev in revs:
                 args = []
                 if event == 'changeset_modified':
-                    args.append(repos.sync_changeset(rev))
+                    try:
+                        old_changeset = repos.sync_changeset(rev)
+                    except NoSuchChangeset, e:
+                        errors.append(exception_to_unicode(e))
+                        self.log.warn(
+                            "No changeset '%s' found in repository '%s'. "
+                            "Skipping subscribers for event %s",
+                            rev, reponame, event)
+                        continue
+                    else:
+                        args.append(old_changeset)
                 try:
                     changeset = repos.get_changeset(rev)
                 except NoSuchChangeset:
                     try:
                         repos.sync_changeset(rev)
                         changeset = repos.get_changeset(rev)
-                    except NoSuchChangeset:
-                        self.log.debug(
+                    except NoSuchChangeset, e:
+                        errors.append(exception_to_unicode(e))
+                        self.log.warn(
                             "No changeset '%s' found in repository '%s'. "
                             "Skipping subscribers for event %s",
-                            rev, repos.reponame or '(default)', event)
+                            rev, reponame, event)
                         continue
                 self.log.debug("Event %s on repository '%s' for revision '%s'",
-                               event, repos.reponame or '(default)', rev)
+                               event, reponame, rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset, *args)
+        return errors
 
     def shutdown(self, tid=None):
         """Free `Repository` instances bound to a given thread identifier"""
@@ -782,6 +807,8 @@ class Repository(object):
                           the surrogate key that identifies the repository in
                           the database under the key "id".
            :param log: a logger instance.
+
+           :raises InvalidRepository: if the repository cannot be opened.
         """
         self.name = name
         self.params = params
@@ -959,11 +986,16 @@ class Repository(object):
 
         In addition, if `rev` is `None` or '', the youngest revision should
         be returned.
+
+        :raise NoSuchChangeset: If the given `rev` isn't found.
         """
         raise NotImplementedError
 
     def short_rev(self, rev):
-        """Return a compact representation of a revision in the repos."""
+        """Return a compact representation of a revision in the repos.
+
+        :raise NoSuchChangeset: If the given `rev` isn't found.
+        """
         return self.normalize_rev(rev)
 
     def display_rev(self, rev):
@@ -972,6 +1004,8 @@ class Repository(object):
 
         This can be a shortened revision string, e.g. for repositories using
         long hashes.
+
+        :raise NoSuchChangeset: If the given `rev` isn't found.
         """
         return self.normalize_rev(rev)
 

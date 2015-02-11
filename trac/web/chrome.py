@@ -53,7 +53,7 @@ from trac.util import compat, get_reporter_id, html, presentation, \
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
-                           javascript_quote, exception_to_unicode
+                           javascript_quote, exception_to_unicode, to_js_string
 from trac.util.datefmt import (
     pretty_timedelta, format_datetime, format_date, format_time,
     from_utimestamp, http_date, utc, get_date_format_jquery_ui, is_24_hours,
@@ -115,6 +115,7 @@ def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
             'scheme': scheme, 'lang': lang, 'xml:lang': lang}
     req.chrome.setdefault('metas', []).append(meta)
 
+
 def add_link(req, rel, href, title=None, mimetype=None, classname=None,
              **attrs):
     """Add a link to the chrome info that will be inserted as <link> element in
@@ -131,6 +132,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None,
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
 
+
 def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
@@ -143,6 +145,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """
     href = _chrome_resource_path(req, filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
+
 
 def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
                ie_if=None):
@@ -166,6 +169,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
 
+
 def add_script_data(req, data={}, **kwargs):
     """Add data to be made available in javascript scripts as global variables.
 
@@ -177,9 +181,11 @@ def add_script_data(req, data={}, **kwargs):
     script_data.update(data)
     script_data.update(kwargs)
 
+
 def add_javascript(req, filename):
     """:deprecated: since 0.10, use `add_script` instead."""
     add_script(req, filename, mimetype='text/javascript')
+
 
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
@@ -194,6 +200,7 @@ def add_warning(req, msg, *args):
     if msg not in req.chrome['warnings']:
         req.chrome['warnings'].append(msg)
 
+
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
 
@@ -207,6 +214,7 @@ def add_notice(req, msg, *args):
     if msg not in req.chrome['notices']:
         req.chrome['notices'].append(msg)
 
+
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar."""
     if href:
@@ -214,6 +222,7 @@ def add_ctxtnav(req, elm_or_label, href=None, title=None):
     else:
         elm = elm_or_label
     req.chrome.setdefault('ctxtnav', []).append(elm)
+
 
 def prevnext_nav(req, prev_label, next_label, up_label=None):
     """Add Previous/Up/Next navigation links.
@@ -299,6 +308,47 @@ def auth_link(req, link):
     if req.authname != 'anonymous':
         return req.href.login(referer=link)
     return link
+
+
+def chrome_info_script(req, use_late=None):
+    """Get script elements from chrome info of the request object during
+    rendering template or after rendering.
+
+    :param      req: the HTTP request object.
+    :param use_late: if True, `late_links` will be used instead of `links`.
+    """
+    chrome = req.chrome
+    if use_late:
+        links = chrome.get('late_links', {}).get('stylesheet', [])
+        scripts = chrome.get('late_scripts', [])
+        script_data = chrome.get('late_script_data', {})
+    else:
+        links = chrome.get('early_links', {}).get('stylesheet', []) + \
+                chrome.get('links', {}).get('stylesheet', [])
+        scripts = chrome.get('early_scripts', []) + chrome.get('scripts', [])
+        script_data = {}
+        script_data.update(chrome.get('early_script_data', {}))
+        script_data.update(chrome.get('script_data', {}))
+
+    content = []
+    content.extend('jQuery.loadStyleSheet(%s, %s);' %
+                   (to_js_string(link['href']), to_js_string(link['type']))
+                   for link in links or ())
+    content.extend('var %s=%s;' % (name, presentation.to_json(value))
+                   for name, value in (script_data or {}).iteritems())
+
+    fragment = tag()
+    if content:
+        fragment.append(tag.script('\n'.join(content), type='text/javascript'))
+    for script in scripts:
+        fragment.append(script['prefix'])
+        fragment.append(tag.script(
+            'jQuery.loadScript(%s, %s, %s)' %
+            (to_js_string(script['href']), to_js_string(script['type']),
+             to_js_string(script['charset'])), type='text/javascript'))
+        fragment.append(script['suffix'])
+
+    return fragment
 
 
 def _chrome_resource_path(req, filename):
@@ -466,14 +516,17 @@ class Chrome(Component):
         """Height of the header logo image in pixels.""")
 
     show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
-        """Show email addresses instead of usernames. If false, we obfuscate
-        email addresses. (''since 0.11'')""")
+        """Show email addresses instead of usernames. If false, email
+        addresses are obfuscated for users that don't have EMAIL_VIEW
+        permission. (''since 0.11'')
+        """)
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
         """Never obfuscate `mailto:` links explicitly written in the wiki,
-        even if `show_email_addresses` is false or the user has not the
-        EMAIL_VIEW permission (''since 0.11.6'').""")
+        even if `show_email_addresses` is false or the user doesn't have
+        EMAIL_VIEW permission (''since 0.11.6'').
+        """)
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
         """Show IP addresses for resource edits (e.g. wiki).
@@ -691,7 +744,7 @@ class Chrome(Component):
         add_script(req, self.jquery_location or 'common/js/jquery.js')
         # Only activate noConflict mode if requested to by the handler
         if handler is not None and \
-           getattr(handler.__class__, 'jquery_noconflict', False):
+                getattr(handler.__class__, 'jquery_noconflict', False):
             add_script(req, 'common/js/noconflict.js')
         add_script(req, 'common/js/babel.js')
         if req.locale is not None and str(req.locale) != 'en_US':
@@ -720,24 +773,23 @@ class Chrome(Component):
                     category_section = self.config[category]
                     if category_section.getbool(name, True):
                         # the navigation item is enabled (this is the default)
-                        item = None
-                        if isinstance(text, Element) and \
-                                text.tag.localname == 'a':
-                            item = text
+                        item = text if isinstance(text, Element) and \
+                                       text.tag.localname == 'a' \
+                                    else None
                         label = category_section.get(name + '.label')
                         href = category_section.get(name + '.href')
-                        if href:
-                            if href.startswith('/'):
-                                href = req.href + href
+                        if href and href.startswith('/'):
+                            href = req.href + href
+                        if item:
                             if label:
-                                item = tag.a(label) # create new label
-                            elif not item:
-                                item = tag.a(text) # wrap old text
-                            item = item(href=href) # use new href
-                        elif label and item: # create new label, use old href
-                            item = tag.a(label, href=item.attrib.get('href'))
-                        elif not item: # use old text
-                            item = text
+                                item.children[0] = label
+                            if href:
+                                item = item(href=href)
+                        else:
+                            if href or label:
+                                item = tag.a(label or text, href=href)
+                            else:
+                                item = text
                         allitems.setdefault(category, {})[name] = item
                 if contributor is handler:
                     active = contributor.get_active_navigation_item(req)
@@ -863,8 +915,8 @@ class Chrome(Component):
             })
 
         try:
-            show_email_addresses = (self.show_email_addresses or not req or \
-                                'EMAIL_VIEW' in req.perm)
+            show_email_addresses = self.show_email_addresses or \
+                                   not req or 'EMAIL_VIEW' in req.perm
         except Exception, e:
             # simply log the exception here, as we might already be rendering
             # the error page
@@ -911,6 +963,7 @@ class Chrome(Component):
             'name_of': partial(get_resource_name, self.env),
             'shortname_of': partial(get_resource_shortname, self.env),
             'summary_of': partial(get_resource_summary, self.env),
+            'resource_link': partial(render_resource_link, self.env),
             'req': req,
             'abs_href': abs_href,
             'href': href,
@@ -1027,9 +1080,9 @@ class Chrome(Component):
         links = req.chrome.get('links')
         scripts = req.chrome.get('scripts')
         script_data = req.chrome.get('script_data')
-        req.chrome['links'] = {}
-        req.chrome['scripts'] = []
-        req.chrome['script_data'] = {}
+        req.chrome.update({'early_links': links, 'early_scripts': scripts,
+                           'early_script_data': script_data,
+                           'links': {}, 'scripts': [], 'script_data': {}})
         data.setdefault('chrome', {}).update({
             'late_links': req.chrome['links'],
             'late_scripts': req.chrome['scripts'],
@@ -1044,9 +1097,9 @@ class Chrome(Component):
                                                _invalid_control_chars)
         except Exception, e:
             # restore what may be needed by the error template
-            req.chrome['links'] = links
-            req.chrome['scripts'] = scripts
-            req.chrome['script_data'] = script_data
+            req.chrome.update({'early_links': None, 'early_scripts': None,
+                               'early_script_data': None, 'links': links,
+                               'scripts': scripts, 'script_data': script_data})
             # give some hints when hitting a Genshi unicode error
             if isinstance(e, UnicodeError):
                 pos = self._stream_location(stream)
@@ -1059,6 +1112,36 @@ class Chrome(Component):
                                   error=e.__class__.__name__,
                                   location=location))
             raise
+
+    def get_interface_customization_files(self):
+        """Returns a dictionary containing the lists of files present in the
+        site and shared templates and htdocs directories.
+        """
+        files = {}
+        # Collect templates list
+        site_templates = sorted(os.listdir(self.env.get_templates_dir()))
+        site_templates = [t for t in site_templates
+                            if t.endswith('.html')]
+        shared_templates = []
+        shared_templates_dir = Chrome(self.env).shared_templates_dir
+        if os.path.exists(shared_templates_dir):
+            shared_templates = sorted(os.listdir(shared_templates_dir))
+            shared_templates = [t for t in shared_templates
+                                  if t.endswith('.html')]
+        # Collect static resources list
+        site_htdocs = sorted(os.listdir(self.env.get_htdocs_dir()))
+        shared_htdocs = []
+        shared_htdocs_dir = Chrome(self.env).shared_htdocs_dir
+        if os.path.exists(shared_htdocs_dir):
+            shared_htdocs = sorted(os.listdir(shared_htdocs_dir))
+        if any((site_templates, shared_templates, site_htdocs, shared_htdocs)):
+            files = {
+                'site-templates': site_templates,
+                'shared-templates': shared_templates,
+                'site-htdocs': site_htdocs,
+                'shared-htdocs': shared_htdocs,
+            }
+        return files
 
     # E-mail formatting utilities
 
@@ -1170,7 +1253,7 @@ class Chrome(Component):
         def _generate(stream, ctxt=None):
             for kind, data, pos in stream:
                 if kind is START and data[0].localname == 'form' \
-                                 and data[1].get('method', '').lower() == 'post':
+                        and data[1].get('method', '').lower() == 'post':
                     yield kind, data, pos
                     for event in elem.generate():
                         yield event

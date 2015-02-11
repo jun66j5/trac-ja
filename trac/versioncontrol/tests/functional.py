@@ -26,6 +26,19 @@ class TestAdminRepositoryAuthorization(AuthorizationTestCaseSetup):
                                 'VERSIONCONTROL_ADMIN', "Manage Repositories")
 
 
+class TestAdminInvalidRepository(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Repository with an invalid path is rendered with an error
+        message on the repository admin page.
+        """
+        self._tester.go_to_admin("Repositories")
+        tc.formvalue('trac-addrepos', 'name', 'InvalidRepos')
+        tc.formvalue('trac-addrepos', 'dir', '/the/invalid/path')
+        tc.submit()
+        tc.find((u'<span class="missing" title="[^"]*">'
+                 u'/the/\u200binvalid/\u200bpath</span>').encode('utf-8'))
+
+
 class TestEmptySvnRepo(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Check empty repository"""
@@ -336,6 +349,21 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
+class RegressionTestTicket11777(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11777
+        fix for raw revisions in search results.
+        """
+        self._testenv.svn_mkdir(['ticket11777'], '')
+        rev = self._testenv.svn_add('ticket11777/file1.txt', 'data',
+                                    'ticket-11777')
+        tc.go(self._tester.url +
+              '/search?q=ticket-11777&noquickjump=1&changeset=on')
+        tc.notfind(r'\[%010d\]: ticket-11777' % rev)
+        tc.find(r'\[%d\]: ticket-11777' % rev)
+        tc.find(' href="/changeset/%d"' % rev)
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -343,6 +371,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminRepositoryAuthorization())
     suite.addTest(RegressionTestTicket11355())
     if has_svn:
+        suite.addTest(TestAdminInvalidRepository())
         suite.addTest(TestEmptySvnRepo())
         suite.addTest(TestRepoCreation())
         suite.addTest(TestRepoBrowse())
@@ -355,6 +384,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11438())
         suite.addTest(RegressionTestTicket11584())
         suite.addTest(RegressionTestTicket11618())
+        suite.addTest(RegressionTestTicket11777())
         suite.addTest(RegressionTestRev5877())
     else:
         print "SKIP: versioncontrol/tests/functional.py (no svn bindings)"

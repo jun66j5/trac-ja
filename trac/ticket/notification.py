@@ -18,18 +18,21 @@
 
 from __future__ import with_statement
 
+from contextlib import contextmanager
+from datetime import datetime
 from hashlib import md5
 
 from genshi.template.text import NewTextTemplate
 
+from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
-from trac.util.datefmt import to_utimestamp
-from trac.util.text import obfuscate_email_address, shorten_line, \
-                           text_width, wrap
+from trac.util.datefmt import to_utimestamp, utc
+from trac.util.text import exception_to_unicode, obfuscate_email_address, \
+                           shorten_line, text_width, wrap
 from trac.util.translation import deactivate, reactivate
 
 
@@ -145,56 +148,47 @@ class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""
 
     template_name = "ticket_notify_email.txt"
-    ticket = None
-    newticket = None
-    modtime = 0
     from_email = 'trac+ticket@localhost'
     COLS = 75
 
     def __init__(self, env):
-        NotifyEmail.__init__(self, env)
+        super(TicketNotifyEmail, self).__init__(env)
         ambiguous_char_width = env.config.get('notification',
                                               'ambiguous_char_width',
                                               'single')
         self.ambiwidth = 2 if ambiguous_char_width == 'double' else 1
+        self.ticket = None
+        self.modtime = 0
+        self.newticket = None
+        self.reporter = None
+        self.owner = None
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
-        t = deactivate()
-        translated_fields = ticket.fields
-        try:
-            ticket.fields = TicketSystem(self.env).get_ticket_fields()
-            self._notify(ticket, newticket, modtime)
-        finally:
-            ticket.fields = translated_fields
-            reactivate(t)
-
-    def _notify(self, ticket, newticket=True, modtime=None):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
-
-        changes_body = ''
         self.reporter = ''
         self.owner = ''
-        changes_descr = ''
-        change_data = {}
         link = self.env.abs_href.ticket(ticket.id)
         summary = self.ticket['summary']
         author = None
 
+        changes_body = ''
+        changes_descr = ''
+        change_data = {}
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
-            for change in TicketModule(self.env).grouped_changelog_entries(
-                                                ticket, when=modtime):
-                if not change['permanent']: # attachment with same time...
+            for change in TicketModule(self.env) \
+                          .grouped_changelog_entries(ticket, when=modtime):
+                if not change['permanent']:  # attachment with same time...
                     continue
                 author = change['author']
                 change_data.update({
                     'author': self.obfuscate_email(author),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
                                     '\n', self.ambiwidth)
-                    })
+                })
                 link += '#comment:%s' % str(change.get('cnum', ''))
                 for field, values in change['fields'].iteritems():
                     old = values['old']
@@ -205,7 +199,7 @@ class TicketNotifyEmail(NotifyEmail):
                                          self.ambiwidth)
                         old_descr = wrap(old, self.COLS, '> ', '> ', '\n',
                                          self.ambiwidth)
-                        old_descr = old_descr.replace(2 * '\n', '\n' + '>' + \
+                        old_descr = old_descr.replace(2 * '\n', '\n' + '>' +
                                                       '\n')
                         cdescr = '\n'
                         cdescr += 'Old description:' + 2 * '\n' + old_descr + \
@@ -216,7 +210,7 @@ class TicketNotifyEmail(NotifyEmail):
                     elif field == 'summary':
                         summary = "%s (was: %s)" % (new, old)
                     elif field == 'cc':
-                        (addcc, delcc) = self.diff_cc(old, new)
+                        addcc, delcc = self.diff_cc(old, new)
                         chgcc = ''
                         if delcc:
                             chgcc += wrap(" * cc: %s (removed)" %
@@ -265,19 +259,61 @@ class TicketNotifyEmail(NotifyEmail):
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
 
-        subject = self.format_subj(summary)
-        if not self.newticket:
-            subject = 'Re: ' + subject
-        self.data.update({
-            'ticket_props': self.format_props(),
-            'ticket_body_hdr': self.format_hdr(),
-            'subject': subject,
-            'ticket': ticket_values,
-            'changes_body': changes_body,
-            'changes_descr': changes_descr,
-            'change': change_data
+        subject = self.format_subj(summary, newticket)
+
+        with _translation_deactivated(ticket):
+            self.data.update({
+                'ticket_props': self.format_props(),
+                'ticket_body_hdr': self.format_hdr(),
+                'subject': subject,
+                'ticket': ticket_values,
+                'changes_body': changes_body,
+                'changes_descr': changes_descr,
+                'change': change_data
             })
-        NotifyEmail.notify(self, ticket.id, subject, author)
+            super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
+
+    def notify_attachment(self, ticket, attachment, added=True):
+        """Send ticket attachment notification (untranslated)"""
+        self.ticket = ticket
+        self.modtime = attachment.date or datetime.now(utc)
+        self.newticket = False
+        self.reporter = ''
+        self.owner = ''
+        link = self.env.abs_href.ticket(ticket.id)
+        summary = self.ticket['summary']
+        author = attachment.author
+
+        # Note: no translation yet
+        changes_body = wrap(" * Attachment \"%s\" %s."
+                            % (attachment.filename,
+                               "added" if added else "removed"),
+                            self.COLS, ' ', ' ', '\n',
+                            self.ambiwidth) + "\n"
+        if attachment.description:
+            changes_body += "\n" + wrap(attachment.description, self.COLS,
+                                        ' ', ' ', '\n', self.ambiwidth)
+
+        ticket_values = ticket.values.copy()
+        ticket_values['id'] = ticket.id
+        ticket_values['description'] = wrap(
+            ticket_values.get('description', ''), self.COLS,
+            initial_indent=' ', subsequent_indent=' ', linesep='\n',
+            ambiwidth=self.ambiwidth)
+        ticket_values['new'] = self.newticket
+        ticket_values['link'] = link
+        subject = self.format_subj(summary, False)
+        with _translation_deactivated(ticket):
+            self.data.update({
+                'ticket_props': self.format_props(),
+                'ticket_body_hdr': self.format_hdr(),
+                'subject': subject,
+                'ticket': ticket_values,
+                'changes_body': changes_body,
+                'changes_descr': '',
+                'change': {'author': self.obfuscate_email(author)},
+            })
+            super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
 
     def format_props(self):
         tkt = self.ticket
@@ -289,7 +325,7 @@ class TicketNotifyEmail(NotifyEmail):
             if f['type'] == 'textarea':
                 continue
             fname = f['name']
-            if not fname in tkt.values:
+            if fname not in tkt.values:
                 continue
             fval = tkt[fname] or ''
             if fval.find('\n') != -1:
@@ -385,19 +421,19 @@ class TicketNotifyEmail(NotifyEmail):
     def diff_cc(self, old, new):
         oldcc = NotifyEmail.addrsep_re.split(old)
         newcc = NotifyEmail.addrsep_re.split(new)
-        added = [self.obfuscate_email(x) \
-                                for x in newcc if x and x not in oldcc]
-        removed = [self.obfuscate_email(x) \
-                                for x in oldcc if x and x not in newcc]
-        return (added, removed)
+        added = [self.obfuscate_email(x)
+                 for x in newcc if x and x not in oldcc]
+        removed = [self.obfuscate_email(x)
+                   for x in oldcc if x and x not in newcc]
+        return added, removed
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
                                                  self.COLS, linesep='\n',
                                                  ambiwidth=self.ambiwidth))
 
-    def format_subj(self, summary):
-        template = self.config.get('notification','ticket_subject_template')
+    def format_subj(self, summary, newticket=True):
+        template = self.config.get('notification', 'ticket_subject_template')
         template = NewTextTemplate(template.encode('utf8'))
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
@@ -411,15 +447,18 @@ class TicketNotifyEmail(NotifyEmail):
             'env': self.env,
         }
 
-        return template.generate(**data).render('text', encoding=None).strip()
+        subj = template.generate(**data).render('text', encoding=None).strip()
+        if not newticket:
+            subj = "Re: " + subj
+        return subj
 
     def get_recipients(self, tktid):
-        torecipients, ccrecipients, reporter, owner = \
+        to_recipients, cc_recipients, reporter, owner = \
             get_ticket_notification_recipients(self.env, self.config, tktid,
                                                modtime=self.modtime)
         self.reporter = reporter
         self.owner = owner
-        return (torecipients, ccrecipients)
+        return to_recipients, cc_recipients
 
     def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
@@ -433,15 +472,16 @@ class TicketNotifyEmail(NotifyEmail):
 
     def send(self, torcpts, ccrcpts):
         dest = self.reporter or 'anonymous'
-        hdrs = {}
-        hdrs['Message-ID'] = self.get_message_id(dest, self.modtime)
-        hdrs['X-Trac-Ticket-ID'] = str(self.ticket.id)
-        hdrs['X-Trac-Ticket-URL'] = self.data['ticket']['link']
+        hdrs = {
+            'Message-ID': self.get_message_id(dest, self.modtime),
+            'X-Trac-Ticket-ID': str(self.ticket.id),
+            'X-Trac-Ticket-URL': self.data['ticket']['link']
+        }
         if not self.newticket:
             msgid = self.get_message_id(dest)
             hdrs['In-Reply-To'] = msgid
             hdrs['References'] = msgid
-        NotifyEmail.send(self, torcpts, ccrcpts, hdrs)
+        super(TicketNotifyEmail, self).send(torcpts, ccrcpts, hdrs)
 
     def get_text_width(self, text):
         return text_width(text, ambiwidth=self.ambiwidth)
@@ -457,28 +497,59 @@ class TicketNotifyEmail(NotifyEmail):
             return obfuscate_email_address(text)
 
 
+class TicketAttachmentNotifier(Component):
+    """Sends notification on attachment change."""
+
+    implements(IAttachmentChangeListener)
+
+    # IAttachmentChangeListener methods
+
+    def attachment_added(self, attachment):
+        self._notify_attachment(attachment, True)
+
+    def attachment_deleted(self, attachment):
+        self._notify_attachment(attachment, False)
+
+    def attachment_reparented(self, attachment, old_parent_realm,
+                              old_parent_id):
+        pass
+
+    # Internal methods
+
+    def _notify_attachment(self, attachment, added):
+        resource = attachment.resource.parent
+        if resource.realm != 'ticket':
+            return
+        ticket = Ticket(self.env, resource.id)
+        tn = TicketNotifyEmail(self.env)
+        try:
+            tn.notify_attachment(ticket, attachment, added)
+        except Exception, e:
+            self.log.error("Failure sending notification when adding "
+                           "attachment %s to ticket #%s: %s",
+                           attachment.filename, ticket.id,
+                           exception_to_unicode(e))
+
+
 class BatchTicketNotifyEmail(NotifyEmail):
     """Notification of ticket batch modifications."""
 
     template_name = "batch_ticket_notify_email.txt"
 
     def __init__(self, env):
-        NotifyEmail.__init__(self, env)
+        super(BatchTicketNotifyEmail, self).__init__(env)
 
     def notify(self, tickets, new_values, comment, action, author):
         """Send batch ticket change notification e-mail (untranslated)"""
-        t = deactivate()
-        try:
+        with _translation_deactivated():
             self._notify(tickets, new_values, comment, action, author)
-        finally:
-            reactivate(t)
 
     def _notify(self, tickets, new_values, comment, action, author):
         self.tickets = tickets
         self.reporter = ''
         self.owner = ''
         changes_descr = '\n'.join(['%s to %s' % (prop, val)
-                                  for (prop, val) in new_values.iteritems()])
+                                   for (prop, val) in new_values.iteritems()])
         tickets_descr = ', '.join(['#%s' % t for t in tickets])
         subject = self.format_subj(tickets_descr)
         link = self.env.abs_href.query(id=','.join([str(t) for t in tickets]))
@@ -490,11 +561,11 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'author': author,
             'subject': subject,
             'ticket_query_link': link,
-            })
-        NotifyEmail.notify(self, tickets, subject, author)
+        })
+        super(BatchTicketNotifyEmail, self).notify(tickets, subject, author)
 
     def format_subj(self, tickets_descr):
-        template = self.config.get('notification','batch_subject_template')
+        template = self.config.get('notification', 'batch_subject_template')
         template = NewTextTemplate(template.encode('utf8'))
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
@@ -510,11 +581,26 @@ class BatchTicketNotifyEmail(NotifyEmail):
         return shorten_line(subj)
 
     def get_recipients(self, tktids):
-        alltorecipients = set()
-        allccrecipients = set()
+        all_to_recipients = set()
+        all_cc_recipients = set()
         for t in tktids:
-            torecipients, ccrecipients, reporter, owner = \
+            to_recipients, cc_recipients, reporter, owner = \
                 get_ticket_notification_recipients(self.env, self.config, t)
-            alltorecipients.update(torecipients)
-            allccrecipients.update(ccrecipients)
-        return list(alltorecipients), list(allccrecipients)
+            all_to_recipients.update(to_recipients)
+            all_cc_recipients.update(cc_recipients)
+        return list(all_to_recipients), list(all_cc_recipients)
+
+
+@contextmanager
+def _translation_deactivated(ticket=None):
+    t = deactivate()
+    if ticket is not None:
+        ts = TicketSystem(ticket.env)
+        translated_fields = ticket.fields
+        ticket.fields = ts.get_ticket_fields()
+    try:
+        yield
+    finally:
+        if ticket is not None:
+            ticket.fields = translated_fields
+        reactivate(t)

@@ -19,9 +19,9 @@ from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            IAdminPanelProvider, console_date_format, \
                            console_datetime_format, get_console_locale
 from trac.core import *
-from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
+from trac.ticket.api import TicketSystem
 from trac.util import getuser
 from trac.util.datefmt import utc, parse_date, format_date, format_datetime, \
                               get_datetime_format_hint, user_time
@@ -90,7 +90,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                     try:
                         comp.update()
                     except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The component "%(name)s" already '
+                        raise TracError(_('Component "%(name)s" already '
                                           'exists.', name=name))
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
@@ -120,8 +120,8 @@ class ComponentAdminPanel(TicketAdminPanel):
                     else:
                         if comp.name is None:
                             raise TracError(_("Invalid component name."))
-                        raise TracError(_("Component %(name)s already exists.",
-                                          name=name))
+                        raise TracError(_('Component "%(name)s" already '
+                                          'exists.', name=name))
 
                 # Remove components
                 elif req.args.get('remove'):
@@ -150,17 +150,10 @@ class ComponentAdminPanel(TicketAdminPanel):
                     'components': list(model.Component.select(self.env)),
                     'default': default}
 
-        if self.config.getbool('ticket', 'restrict_owner'):
-            perm = PermissionSystem(self.env)
-            def valid_owner(username):
-                return perm.get_user_permissions(username).get('TICKET_MODIFY')
-            data['owners'] = [username for username, name, email
-                              in self.env.get_known_users()
-                              if valid_owner(username)]
-            data['owners'].insert(0, '')
-            data['owners'].sort()
-        else:
-            data['owners'] = None
+        owners = TicketSystem(self.env).get_allowed_owners()
+        if owners is not None:
+            owners.insert(0, '')
+        data.update({'owners': owners})
 
         return 'admin_components.html', data
 
@@ -187,8 +180,7 @@ class ComponentAdminPanel(TicketAdminPanel):
         return [c.name for c in model.Component.select(self.env)]
 
     def get_user_list(self):
-        return [username for username, in
-                self.env.db_query("SELECT DISTINCT username FROM permission")]
+        return TicketSystem(self.env).get_allowed_owners()
 
     def _complete_add(self, args):
         if len(args) == 2:
@@ -268,7 +260,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     try:
                         mil.update(author=req.authname)
                     except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The milestone "%(name)s" already '
+                        raise TracError(_('Milestone "%(name)s" already '
                                           'exists.', name=name))
                     add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
@@ -301,8 +293,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     else:
                         if mil.name is None:
                             raise TracError(_('Invalid milestone name.'))
-                        raise TracError(_("Milestone %(name)s already exists.",
-                                          name=name))
+                        raise TracError(_('Milestone "%(name)s" already '
+                                          'exists.', name=name))
 
                 # Remove milestone
                 elif req.args.get('remove'):
@@ -314,8 +306,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
-                            mil = model.Milestone(self.env, name)
-                            mil.delete(author=req.authname)
+                            milestone = model.Milestone(self.env, name)
+                            milestone.move_tickets(None, req.authname,
+                                                   "Milestone deleted")
+                            milestone.delete()
                     add_notice(req, _("The selected milestones have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
@@ -458,7 +452,7 @@ class VersionAdminPanel(TicketAdminPanel):
                     try:
                         ver.update()
                     except self.env.db_exc.IntegrityError:
-                        raise TracError(_('The version "%(name)s" already '
+                        raise TracError(_('Version "%(name)s" already '
                                           'exists.', name=name))
 
                     add_notice(req, _('Your changes have been saved.'))
@@ -491,8 +485,8 @@ class VersionAdminPanel(TicketAdminPanel):
                     else:
                         if ver.name is None:
                             raise TracError(_("Invalid version name."))
-                        raise TracError(_("Version %(name)s already exists.",
-                                          name=name))
+                        raise TracError(_('Version "%(name)s" already '
+                                          'exists.', name=name))
 
                 # Remove versions
                 elif req.args.get('remove'):

@@ -691,13 +691,12 @@ class BrowserModule(Component):
                 # XSS attacks
                 req.send_header('Content-Disposition', 'attachment')
             req.end_headers()
-
-            def chunks():
-                c = chunk
-                while c:
-                    yield c
-                    c = content.read(CHUNK_SIZE)
-            raise RequestDone(chunks())
+            # Note: don't pass an iterable instance to RequestDone, instead
+            # call req.write() with each chunk here to avoid SEGVs (#11805)
+            while chunk:
+                req.write(chunk)
+                chunk = content.read(CHUNK_SIZE)
+            raise RequestDone
         else:
             # The changeset corresponding to the last change on `node`
             # is more interesting than the `rev` changeset.
@@ -716,8 +715,8 @@ class BrowserModule(Component):
             add_link(req, 'alternate', raw_href, _('Original Format'),
                      mime_type)
 
-            self.log.debug("Rendering preview of node %s@%s with mime-type %s"
-                           % (node.name, str(rev), mime_type))
+            self.log.debug("Rendering preview of node %s@%s with mime-type %s",
+                           node.name, rev, mime_type)
 
             content = None # the remainder of that content is not needed
 

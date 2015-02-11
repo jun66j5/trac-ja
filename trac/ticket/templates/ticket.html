@@ -101,6 +101,8 @@
           // Collapse property form if comment editor has focus
           if (show_preview && comment_focused)
             $("#modify").parent().addClass("collapsed");
+          // Execute scripts to load stylesheets
+          items.filter("script").appendTo("head");
         }, "#ticketchange .trac-loading");
         $("#trac-comment-editor").autoSubmit({preview_comment: '1'}, function(data, reply) {
           var comment = $("#trac-comment-editor").next("div.comment").html(reply);
@@ -215,7 +217,7 @@ ${comment}</textarea>
           <div id="modify">
             <!--! Properties -->
             <fieldset id="properties" py:if="can_modify or can_edit or can_create"
-                      py:with="fields = [f for f in fields if not f.skip]">
+                      py:with="fields = [f for f in fields if not f.skip and f.editable]">
               <legend py:choose="">
                   <py:when test="ticket.exists">Change Properties</py:when>
                   <py:otherwise>Properties</py:otherwise>
@@ -293,17 +295,30 @@ ${value}</textarea>
                         </label>
                         <py:otherwise><!--! Text input fields -->
                           <py:choose>
-                            <span py:when="field.cc_entry"><!--! Special case for Cc: field -->
-                              <em>${field.cc_entry}</em>
-                              <input type="checkbox" id="field-cc" name="cc_update"
-                                title="This checkbox allows you to add or remove yourself from the CC list."
-                                checked="${field.cc_update}" />
-                            </span>
-                            <!--! Cc: when TICKET_EDIT_CC is allowed -->
+                            <!--! Special case for Cc: field -->
                             <span py:when="field.name == 'cc'">
-                              <input  type="text" id="field-${field.name}"
-                                title="Space or comma delimited email addresses and usernames are accepted."
-                                name="field_${field.name}" value="${value}" />
+                              <py:choose>
+                                <!--! Unauthenticated user without TICKET_EDIT_CC and with email set in prefs -->
+                                <py:when test="'cc_entry' in field" py:choose="">
+                                  <em py:when="field.cc_action is None" i18n:msg="">
+                                    Set your email in <a href="${href.prefs()}" class="trac-target-new">Preferences</a>
+                                  </em>
+                                  <label py:otherwise="" for="field-cc"><em>$field.cc_entry</em></label>
+                                  <input type="checkbox" id="field-cc" name="cc_update"
+                                         title="This checkbox allows you to add or remove yourself from the CC list."
+                                         disabled="${field.cc_action is None or None}" checked="${field.cc_update or None}" />
+                                </py:when>
+                                <!--! Unauthenticated user without TICKET_EDIT_CC and no email set in prefs -->
+                                <py:when test="field.cc_action is None">
+
+                                </py:when>
+                                <!--! TICKET_EDIT_CC is allowed -->
+                                <py:otherwise>
+                                  <input type="text" id="field-${field.name}"
+                                         title="Space or comma delimited email addresses and usernames are accepted."
+                                         name="field_${field.name}" value="${value}" />
+                                </py:otherwise>
+                              </py:choose>
                             </span>
                             <!--! All the other text input fields -->
                             <input py:otherwise="" type="text" id="field-${field.name}"

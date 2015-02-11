@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2009 Edgewall Software
+# Copyright (C) 2003-2014 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
@@ -21,8 +21,8 @@ from __future__ import with_statement
 
 import doctest
 import os
-import unittest
 import sys
+import unittest
 
 try:
     from babel import Locale
@@ -30,14 +30,13 @@ try:
 except ImportError:
     locale_en = None
 
-from trac.config import Configuration
-from trac.core import Component, ComponentManager
-from trac.env import Environment
-from trac.db.api import _parse_db_str, DatabaseManager
-from trac.db.sqlite_backend import SQLiteConnection
-from trac.db.util import ConnectionWrapper
-import trac.db.postgres_backend
 import trac.db.mysql_backend
+import trac.db.postgres_backend
+import trac.db.sqlite_backend
+from trac.config import Configuration
+from trac.core import ComponentManager
+from trac.db.api import DatabaseManager, _parse_db_str
+from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
 
@@ -238,7 +237,6 @@ def reset_mysql_db(env, db_prop):
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
-    href = abs_href = None
     global_databasemanager = None
     required = False
 
@@ -265,7 +263,6 @@ class EnvironmentStub(Environment):
             raise TypeError('Keyword argument "disable" must be a list')
 
         ComponentManager.__init__(self)
-        Component.__init__(self)
 
         self.systeminfo = []
 
@@ -311,16 +308,12 @@ class EnvironmentStub(Environment):
             self.config.set('trac', 'database', self.dburi)
             self.global_databasemanager = DatabaseManager(self)
             self.config.set('trac', 'debug_sql', True)
-            self.config.set('logging', 'log_type', 'stderr')
-            self.config.set('logging', 'log_level', 'DEBUG')
             init_global = not destroying
 
         if default_data or init_global:
             self.reset_db(default_data)
 
-        from trac.web.href import Href
-        self.href = Href('/trac.cgi')
-        self.abs_href = Href('http://example.org/trac.cgi')
+        self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
 
         self.known_users = []
         translation.activate(locale_en)
@@ -338,7 +331,7 @@ class EnvironmentStub(Environment):
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
                 # check the database version
-                database_version = self.get_version()
+                database_version = self.database_version
         except Exception:
             # "Database not found ...",
             # "OperationalError: no such table: system" or the like
@@ -354,8 +347,6 @@ class EnvironmentStub(Environment):
                 # different version or version unknown, drop the tables
                 remove_sqlite_db = True
                 self.destroy_db(scheme, db_prop)
-
-        db = None  # as we might shutdown the pool    FIXME no longer needed!
 
         if scheme == 'sqlite' and remove_sqlite_db:
             path = db_prop['path']
@@ -467,11 +458,11 @@ def suite():
     suite.addTest(doctest.DocTestSuite(sys.modules[__name__]))
     if INCLUDE_FUNCTIONAL_TESTS:
         suite.addTest(trac.tests.functionalSuite())
-
     return suite
 
+
 if __name__ == '__main__':
-    #FIXME: this is a bit inelegant
+    # FIXME: this is a bit inelegant
     if '--skip-functional-tests' in sys.argv:
         sys.argv.remove('--skip-functional-tests')
         INCLUDE_FUNCTIONAL_TESTS = False

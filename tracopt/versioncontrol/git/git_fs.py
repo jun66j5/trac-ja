@@ -17,7 +17,6 @@ from __future__ import with_statement
 from datetime import datetime
 import itertools
 import os
-import sys
 
 from genshi.builder import tag
 from genshi.core import Markup
@@ -30,8 +29,9 @@ from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.text import to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \
-                                    IRepositoryConnector, NoSuchChangeset, \
-                                    NoSuchNode, IRepositoryProvider
+                                    IRepositoryConnector, InvalidRepository,\
+                                    NoSuchChangeset, NoSuchNode, \
+                                    IRepositoryProvider
 from trac.versioncontrol.cache import CACHE_YOUNGEST_REV, CachedRepository, \
                                       CachedChangeset
 from trac.versioncontrol.web_ui import IPropertyRenderer
@@ -90,7 +90,7 @@ class GitCachedRepository(CachedRepository):
 
         metadata = self.metadata
         self.save_metadata(metadata)
-        meta_youngest = metadata.get(CACHE_YOUNGEST_REV)
+        meta_youngest = metadata.get(CACHE_YOUNGEST_REV, '')
         repos = self.repos
 
         def is_synced(rev):
@@ -100,30 +100,30 @@ class GitCachedRepository(CachedRepository):
                 return count > 0
             return False
 
-        def traverse(rev, seen, revs=None):
-            if revs is None:
-                revs = []
+        def traverse(rev, seen):
+            revs = []
+            merge_revs = []
             while True:
                 if rev in seen:
-                    return revs
+                    break
                 seen.add(rev)
                 if is_synced(rev):
-                    return revs
+                    break
                 revs.append(rev)
                 parent_revs = repos.parent_revs(rev)
-                if not parent_revs:
-                    return revs
-                if len(parent_revs) == 1:
-                    rev = parent_revs[0]
-                    continue
-                idx = len(revs)
-                traverse(parent_revs.pop(), seen, revs)
-                for parent in parent_revs:
-                    revs[idx:idx] = traverse(parent, seen)
+                if not parent_revs:  # root commit?
+                    break
+                rev = parent_revs[0]
+                if len(parent_revs) > 1:
+                    merge_revs.append((len(revs), parent_revs[1:]))
+            for idx, parent_revs in reversed(merge_revs):
+                for rev in parent_revs:
+                    revs[idx:idx] = traverse(rev, seen)
+            return revs
 
         while True:
             repos.sync()
-            repos_youngest = repos.youngest_rev
+            repos_youngest = repos.youngest_rev or ''
             updated = False
             seen = set()
 
@@ -214,16 +214,15 @@ class GitConnector(Component):
         try:
             self._version = PyGIT.Storage.git_version(git_bin=self.git_bin)
         except PyGIT.GitError, e:
-            self.log.error("GitError: " + str(e))
+            self.log.error("GitError: %s", e)
 
         if self._version:
-            self.log.info("detected GIT version %s" % self._version['v_str'])
+            self.log.info("detected GIT version %s", self._version['v_str'])
             self.env.systeminfo.append(('GIT', self._version['v_str']))
             if not self._version['v_compatible']:
                 self.log.error("GIT version %s installed not compatible"
-                               "(need >= %s)" %
-                               (self._version['v_str'],
-                                self._version['v_min_str']))
+                               "(need >= %s)", self._version['v_str'],
+                               self._version['v_min_str'])
 
     # IWikiSyntaxProvider methods
 
@@ -283,8 +282,13 @@ class GitConnector(Component):
         """)
 
     trac_user_rlookup = BoolOption('git', 'trac_user_rlookup', 'false',
-        """Enable reverse mapping of git email addresses to trac user ids
-        (costly if you have many users).""")
+        """Enable reverse mapping of git email addresses to trac user ids.
+        Performance will be reduced if there are many users and the
+        `cached_repository` option is `disabled`.
+
+        A repository resync is required after changing the value of this
+        option.
+        """)
 
     use_committer_id = BoolOption('git', 'use_committer_id', 'true',
         """Use git-committer id instead of git-author id for the
@@ -311,18 +315,20 @@ class GitConnector(Component):
         assert type == 'git'
 
         if not (4 <= self.shortrev_len <= 40):
-            raise TracError("[git] shortrev_len setting must be within [4..40]")
+            raise TracError(_("%(option)s must be in the range [4..40]",
+                              option="[git] shortrev_len"))
 
         if not (4 <= self.wiki_shortrev_len <= 40):
-            raise TracError("[git] wikishortrev_len must be within [4..40]")
+            raise TracError(_("%(option)s must be in the range [4..40]",
+                              option="[git] wikishortrev_len"))
 
         if not self._version:
-            raise TracError("GIT backend not available")
+            raise TracError(_("GIT backend not available"))
         elif not self._version['v_compatible']:
-            raise TracError("GIT version %s installed not compatible"
-                            "(need >= %s)" %
-                            (self._version['v_str'],
-                             self._version['v_min_str']))
+            raise TracError(_("GIT version %(hasver)s installed not "
+                              "compatible (need >= %(needsver)s)",
+                              hasver=self._version['v_str'],
+                              needsver=self._version['v_min_str']))
 
         if self.trac_user_rlookup:
             def rlookup_uid(email):
@@ -362,9 +368,9 @@ class GitConnector(Component):
 
         if self.cached_repository:
             repos = GitCachedRepository(self.env, repos, self.log)
-            self.log.debug("enabled CachedRepository for '%s'" % dir)
+            self.log.debug("enabled CachedRepository for '%s'", dir)
         else:
-            self.log.debug("disabled CachedRepository for '%s'" % dir)
+            self.log.debug("disabled CachedRepository for '%s'", dir)
 
         return repos
 
@@ -452,7 +458,7 @@ class CsetPropertyRenderer(Component):
                 format_datetime(time_, tzinfo=context.req.tz))
             return unicode(_str)
 
-        raise TracError("Internal error")
+        raise TracError(_("Internal error"))
 
 
 class GitRepository(Repository):
@@ -485,8 +491,9 @@ class GitRepository(Repository):
             self._git = factory.getInstance()
         except PyGIT.GitError, e:
             log.error(exception_to_unicode(e))
-            raise TracError("%s does not appear to be a Git "
-                            "repository." % path)
+            raise InvalidRepository(
+                _("%(path)s does not appear to be a Git repository.",
+                  path=path))
 
         Repository.__init__(self, 'git:' + path, self.params, log)
         self._cached_git_id = str(self.id)
@@ -558,7 +565,7 @@ class GitRepository(Repository):
                     ignore_ancestry=0):
         # TODO: handle renames/copies, ignore_ancestry
         if old_path != new_path:
-            raise TracError("not supported in git_fs")
+            raise TracError(_("Not supported in git_fs"))
 
         with self.git.get_historian(old_rev,
                                     old_path.strip('/')) as old_historian:
@@ -665,8 +672,8 @@ class GitNode(Node):
             elif k == 'blob':
                 kind = Node.FILE
             else:
-                raise TracError("Internal error (got unexpected object " \
-                                "kind '%s')" % k)
+                raise TracError(_("Internal error (got unexpected object "
+                                  "kind '%(kind)s')", kind=k))
 
         self.created_path = path
         self.created_rev = rev
@@ -682,7 +689,7 @@ class GitNode(Node):
         if self.isdir:
             return p and (p + '/')
 
-        raise TracError("internal error")
+        raise TracError(_("Internal error"))
 
     def get_content(self):
         if not self.isfile:
@@ -745,7 +752,7 @@ class GitNode(Node):
             user, ts = _parse_user_time(props['committer'][0])
         except:
             self.log.error("internal error (could not get timestamp from "
-                           "commit '%s')" % self.rev)
+                           "commit '%s')", self.rev)
             return None
 
         return ts
@@ -836,34 +843,24 @@ class GitChangeset(Changeset):
         return properties
 
     def get_changes(self):
-        paths_seen = set()
-        for parent in self.props.get('parent', [None]):
-            for mode1, mode2, obj1, obj2, action, path1, path2 in \
-                    self.repos.git.diff_tree(parent, self.rev,
-                                             find_renames=True):
-                path = path2 or path1
-                p_path, p_rev = path1, parent
+        # Returns the differences against the first parent
+        parent = self.props.get('parent')
+        parent = parent[0] if parent else None
+        for mode1, mode2, obj1, obj2, action, path1, path2 in \
+                self.repos.git.diff_tree(parent, self.rev, find_renames=True):
+            path = path2 or path1
+            p_path, p_rev = path1, parent
 
-                kind = Node.FILE
-                if mode2.startswith('04') or mode1.startswith('04'):
-                    kind = Node.DIRECTORY
+            kind = Node.DIRECTORY \
+                   if mode2.startswith('04') or mode1.startswith('04') \
+                   else Node.FILE
 
-                action = GitChangeset.action_map[action[0]]
+            action = GitChangeset.action_map[action[0]]
 
-                if action == Changeset.ADD:
-                    p_path = ''
-                    p_rev = None
+            if action == Changeset.ADD:
+                p_path = p_rev = None
 
-                # CachedRepository expects unique (rev, path, change_type) key
-                # this is only an issue in case of merges where files required
-                # editing
-                if path in paths_seen:
-                    continue
-
-                paths_seen.add(path)
-
-                yield path, kind, action, p_path, p_rev
-
+            yield path, kind, action, p_path, p_rev
 
     def get_branches(self):
         _rev = self.rev

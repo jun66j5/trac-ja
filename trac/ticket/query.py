@@ -34,7 +34,6 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
 from trac.util import Ranges, as_bool
-from trac.util.compat import any
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc, user_time
 from trac.util.presentation import Paginator
@@ -314,7 +313,6 @@ class Query(object):
                     raise TracError(_("Page %(page)s is beyond the number of "
                                       "pages in the query", page=self.page))
 
-            # self.env.log.debug("SQL: " + sql % tuple([repr(a) for a in args]))
             cursor.execute(sql, args)
             columns = get_column_names(cursor)
             fields = []
@@ -882,8 +880,8 @@ class QueryModule(Component):
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
         if 'TICKET_VIEW' in req.perm and \
-                not (self.env.is_component_enabled(ReportModule) and
-                     'REPORT_VIEW' in req.perm):
+                (not self.env.is_component_enabled(ReportModule) or
+                 'REPORT_VIEW' not in req.perm):
             yield ('mainnav', 'tickets',
                    tag.a(_('View Tickets'), href=req.href.query()))
 
@@ -894,7 +892,7 @@ class QueryModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('TICKET_VIEW')
-        report_id = req.args.get('report')
+        report_id = req.args.getfirst('report')
         if report_id:
             req.perm('report', report_id).assert_permission('REPORT_VIEW')
 
@@ -911,7 +909,7 @@ class QueryModule(Component):
                 qstring = self.default_anonymous_query
                 user = email or name or None
 
-            self.log.debug('QueryModule: Using default query: %s', str(qstring))
+            self.log.debug('QueryModule: Using default query: %s', qstring)
             if qstring.startswith('?'):
                 arg_list = parse_arg_list(qstring[1:])
                 args = arg_list_to_args(arg_list)
@@ -951,8 +949,11 @@ class QueryModule(Component):
         max = args.get('max')
         if max is None and format in ('csv', 'tab'):
             max = 0 # unlimited unless specified explicitly
+        order = args.get('order')
+        if isinstance(order, (list, tuple)):
+            order = order[0] if order else None
         query = Query(self.env, report_id,
-                      constraints, cols, args.get('order'),
+                      constraints, cols, order,
                       'desc' in args, args.get('group'),
                       'groupdesc' in args, 'verbose' in args,
                       rows,
